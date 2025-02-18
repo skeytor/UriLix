@@ -1,0 +1,7 @@
+services:
+  urilix.api:
+    image: ${DOCKER_REGISTRY-}urilixapi
+    build:
+      context: .
+      dockerfile: src/UriLix.API/Dockerfile
+    container_name: urilix-api
