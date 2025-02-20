@@ -17,6 +17,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UriLix.Domain", "src\Core\U
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UriLix.Persistence", "src\Core\Urilix.Persistence\UriLix.Persistence.csproj", "{27E08BCB-C7A0-4AAD-9CA2-92993756EF6D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Systems", "Systems", "{150D0968-096E-4096-96AA-0A36BB855142}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UriLix.Persistence.Test", "tests\Systems\UriLix.Persistence.Test\UriLix.Persistence.Test.csproj", "{4729BA81-FFC1-4942-8926-3FAA5061BE0A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,10 @@ Global
 		{27E08BCB-C7A0-4AAD-9CA2-92993756EF6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27E08BCB-C7A0-4AAD-9CA2-92993756EF6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27E08BCB-C7A0-4AAD-9CA2-92993756EF6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4729BA81-FFC1-4942-8926-3FAA5061BE0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4729BA81-FFC1-4942-8926-3FAA5061BE0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4729BA81-FFC1-4942-8926-3FAA5061BE0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4729BA81-FFC1-4942-8926-3FAA5061BE0A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,6 +56,8 @@ Global
 		{3D52DC37-DB9B-FAF4-8A1E-0B2ABADFC717} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{86572CD4-8A4B-4903-BD67-1F11C32B4E09} = {89482D41-D270-47B3-A66C-4D492AE7EF54}
 		{27E08BCB-C7A0-4AAD-9CA2-92993756EF6D} = {89482D41-D270-47B3-A66C-4D492AE7EF54}
+		{150D0968-096E-4096-96AA-0A36BB855142} = {528A600C-A379-439E-AE8F-B9648E1B2BA0}
+		{4729BA81-FFC1-4942-8926-3FAA5061BE0A} = {150D0968-096E-4096-96AA-0A36BB855142}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7C24ED0E-C2FE-432D-A10A-A6B1145FAEFD}
