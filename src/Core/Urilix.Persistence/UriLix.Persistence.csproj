@@ -23,4 +23,8 @@
     <ProjectReference Include="..\UriLix.Domain\UriLix.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
+
 </Project>
