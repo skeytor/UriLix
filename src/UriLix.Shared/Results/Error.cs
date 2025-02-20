@@ -1,4 +1,6 @@
-﻿namespace UriLix.Shared.Results;
+﻿using UriLix.Shared.Enums;
+
+namespace UriLix.Shared.Results;
 
 public sealed class Error
 {
