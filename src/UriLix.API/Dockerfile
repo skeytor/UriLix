@@ -13,6 +13,8 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /app
 COPY ["src/UriLix.API/UriLix.API.csproj", "UriLix.API/"]
+COPY ["src/Core/UriLix.Domain/UriLix.Domain.csproj", "UriLix.Domain/"]
+COPY ["src/Core/UriLix.Persistence/UriLix.Persistence.csproj", "UriLix.Persistence/"]
 RUN dotnet restore "./UriLix.API/UriLix.API.csproj"
 COPY . .
 WORKDIR "/app/src/UriLix.API"
