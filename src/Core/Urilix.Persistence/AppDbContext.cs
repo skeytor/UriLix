@@ -10,9 +10,9 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
 {
     public DbSet<User> Users { get; set; }
 
-    public DbSet<ShortenedUrl> ShortenedUrl { get; set; }
+    public DbSet<ShortenedLink> ShortenedLinks { get; set; }
 
-    public DbSet<ClickStatistic> ClickStatistic { get; set; }
+    public DbSet<ClickStatistic> ClickStatistics { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
