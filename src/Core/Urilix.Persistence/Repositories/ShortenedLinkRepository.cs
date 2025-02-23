@@ -18,7 +18,7 @@ public class ShortenedLinkRepository(IAppDbContext _context) : BaseRepository(_c
         Guid id, 
         params Expression<Func<ShortenedLink, TProperty>>[] includes)
     {
-        var query = GetAutoIncludes(includes);
+        IQueryable<ShortenedLink> query = GetRelates(includes);
         return await query.FirstOrDefaultAsync(x => x.Id == id);
     }
 
@@ -29,7 +29,7 @@ public class ShortenedLinkRepository(IAppDbContext _context) : BaseRepository(_c
         Guid userId, 
         params Expression<Func<ShortenedLink, TProperty>>[] includes)
     {
-        var query = GetAutoIncludes(includes);
+        IQueryable<ShortenedLink> query = GetRelates(includes);
         return await query
                      .Where(x => x.UserId == userId)
                      .AsNoTracking()
