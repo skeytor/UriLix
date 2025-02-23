@@ -3,8 +3,8 @@
 public class ClickStatistic
 {
     public int Id { get; set; }
-    public Guid ShortenedUrlId { get; set; }
-    public ShortenedUrl ShortenedUrl { get; set; } = null!;
+    public Guid ShortenedLinkId { get; set; }
+    public ShortenedLink ShortenedLink { get; set; } = null!;
     public string IpAddress { get; set; } = string.Empty;
     public string Device { get; set; } = string.Empty;
     public string Country { set; get; } = string.Empty;

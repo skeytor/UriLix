@@ -25,6 +25,14 @@ internal sealed class UserConfig : IEntityTypeConfiguration<User>
             .HasMaxLength(200)
             .IsRequired();
 
-        
+        ConfigureRelationships(builder);
+    }
+    private static void ConfigureRelationships(EntityTypeBuilder<User> builder)
+    {
+        builder.HasMany(x => x.ShortenedLinks)
+            .WithOne(x => x.User)
+            .HasForeignKey(x => x.UserId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

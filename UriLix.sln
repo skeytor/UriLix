@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Systems", "Systems", "{150D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UriLix.Persistence.Test", "tests\Systems\UriLix.Persistence.Test\UriLix.Persistence.Test.csproj", "{4729BA81-FFC1-4942-8926-3FAA5061BE0A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UriLix.Shared", "src\UriLix.Shared\UriLix.Shared.csproj", "{DAF6AFF9-6154-4F94-18AE-D446AB2DF2CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{4729BA81-FFC1-4942-8926-3FAA5061BE0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4729BA81-FFC1-4942-8926-3FAA5061BE0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4729BA81-FFC1-4942-8926-3FAA5061BE0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAF6AFF9-6154-4F94-18AE-D446AB2DF2CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAF6AFF9-6154-4F94-18AE-D446AB2DF2CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAF6AFF9-6154-4F94-18AE-D446AB2DF2CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAF6AFF9-6154-4F94-18AE-D446AB2DF2CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,6 +64,7 @@ Global
 		{27E08BCB-C7A0-4AAD-9CA2-92993756EF6D} = {89482D41-D270-47B3-A66C-4D492AE7EF54}
 		{150D0968-096E-4096-96AA-0A36BB855142} = {528A600C-A379-439E-AE8F-B9648E1B2BA0}
 		{4729BA81-FFC1-4942-8926-3FAA5061BE0A} = {150D0968-096E-4096-96AA-0A36BB855142}
+		{DAF6AFF9-6154-4F94-18AE-D446AB2DF2CF} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7C24ED0E-C2FE-432D-A10A-A6B1145FAEFD}
