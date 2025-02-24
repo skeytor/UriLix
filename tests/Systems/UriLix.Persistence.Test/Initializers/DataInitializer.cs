@@ -7,7 +7,7 @@ internal static class DataInitializer
 {
     internal static async Task SeedData(AppDbContext context, CancellationToken cancellationToken)
     {
-        Faker<ShortenedLink> shortenedLinkFaker = new Faker<ShortenedLink>()
+        Faker<ShortenedUrl> shortenedLinkFaker = new Faker<ShortenedUrl>()
             .RuleFor(x => x.Id, f => f.Random.Guid())
             .RuleFor(x => x.OriginalUrl, f => f.Internet.Url())
             .RuleFor(x => x.ShortCode, f => f.Random.Hash(6))
@@ -20,11 +20,11 @@ internal static class DataInitializer
             .RuleFor(x => x.Password, f => f.Internet.Password())
             .RuleFor(x => x.ShortenedLinks, f => [.. shortenedLinkFaker.Generate(3)]);
         
-        List<ShortenedLink> links = shortenedLinkFaker.Generate(10);
+        List<ShortenedUrl> links = shortenedLinkFaker.Generate(10);
         List<User> users = userFaker.Generate(10);
         
         await context.Users.AddRangeAsync(users, cancellationToken);
-        await context.ShortenedLinks.AddRangeAsync(links, cancellationToken);
+        await context.ShortenedUrl.AddRangeAsync(links, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
     }
 }

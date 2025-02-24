@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\UriLix.Shared\UriLix.Shared.csproj" />
     <ProjectReference Include="..\UriLix.Domain\UriLix.Domain.csproj" />
   </ItemGroup>
 
