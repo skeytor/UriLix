@@ -5,11 +5,11 @@ using UriLix.Persistence.Helpers;
 
 namespace UriLix.Persistence.Configurations;
 
-internal sealed class ShortenedLinkConfig : IEntityTypeConfiguration<ShortenedLink>
+internal sealed class ShortenedUrlConfig : IEntityTypeConfiguration<ShortenedUrl>
 {
-    public void Configure(EntityTypeBuilder<ShortenedLink> builder)
+    public void Configure(EntityTypeBuilder<ShortenedUrl> builder)
     {
-        builder.ToTable(TableName.ShortenedLinks);
+        builder.ToTable(TableName.ShortenedUrl);
         
         builder.HasIndex(x => x.Id);
         
@@ -18,11 +18,11 @@ internal sealed class ShortenedLinkConfig : IEntityTypeConfiguration<ShortenedLi
             .IsRequired();
         
         builder.Property(x => x.ShortCode)
-            .HasMaxLength(100)
+            .HasMaxLength(5)
             .IsRequired();
 
         builder.Property(x => x.Alias)
-            .HasMaxLength(5)
+            .HasMaxLength(20)
             .IsRequired(false);
 
         builder.Property(x => x.CreateAt)
@@ -33,13 +33,18 @@ internal sealed class ShortenedLinkConfig : IEntityTypeConfiguration<ShortenedLi
             .ValueGeneratedOnUpdate()
             .HasDefaultValueSql("GETDATE()");
 
+        builder.HasIndex(x => x.ShortCode)
+            .IsUnique();
+        builder.HasIndex(x => x.Alias)
+            .IsUnique();
+
         ConfigureRelationships(builder);
     }
-    private static void ConfigureRelationships(EntityTypeBuilder<ShortenedLink> builder)
+    private static void ConfigureRelationships(EntityTypeBuilder<ShortenedUrl> builder)
     {
         builder.HasMany(x => x.ClickStatistics)
-            .WithOne(x => x.ShortenedLink)
-            .HasForeignKey(x => x.ShortenedLinkId)
+            .WithOne(x => x.ShortenedUrl)
+            .HasForeignKey(x => x.ShortenedUrlId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UriLix.Persistence.Test", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UriLix.Shared", "src\UriLix.Shared\UriLix.Shared.csproj", "{DAF6AFF9-6154-4F94-18AE-D446AB2DF2CF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UriLix.Application", "src\Core\UriLix.Application\UriLix.Application.csproj", "{24843F55-66E4-446F-943F-72C2E1856D87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{DAF6AFF9-6154-4F94-18AE-D446AB2DF2CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DAF6AFF9-6154-4F94-18AE-D446AB2DF2CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DAF6AFF9-6154-4F94-18AE-D446AB2DF2CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24843F55-66E4-446F-943F-72C2E1856D87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24843F55-66E4-446F-943F-72C2E1856D87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24843F55-66E4-446F-943F-72C2E1856D87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24843F55-66E4-446F-943F-72C2E1856D87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,6 +71,7 @@ Global
 		{150D0968-096E-4096-96AA-0A36BB855142} = {528A600C-A379-439E-AE8F-B9648E1B2BA0}
 		{4729BA81-FFC1-4942-8926-3FAA5061BE0A} = {150D0968-096E-4096-96AA-0A36BB855142}
 		{DAF6AFF9-6154-4F94-18AE-D446AB2DF2CF} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{24843F55-66E4-446F-943F-72C2E1856D87} = {89482D41-D270-47B3-A66C-4D492AE7EF54}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7C24ED0E-C2FE-432D-A10A-A6B1145FAEFD}

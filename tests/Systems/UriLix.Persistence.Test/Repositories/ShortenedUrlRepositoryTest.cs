@@ -16,19 +16,19 @@ public class ShortenedUrlRepositoryTest(
         await ExecutedInATransactionAsync(RunTest);
         async Task RunTest()
         {
-            ShortenedLink shortenedUrl = new()
+            ShortenedUrl shortenedUrl = new()
             {
                 OriginalUrl = "https://original.com",
                 Alias = "xl1",
                 ShortCode = "https://short.com",
             };
-            ShortenedLinkRepository repository = new(context);
+            ShortenedUrlRepository repository = new(context);
 
             var result = await repository.InsertAsync(shortenedUrl);
             await context.SaveChangesAsync();
 
             Assert.NotEqual(Guid.Empty, result.Id);
-            Assert.IsType<ShortenedLink>(result);
+            Assert.IsType<ShortenedUrl>(result);
             Assert.NotNull(shortenedUrl);
         }
     }
@@ -39,8 +39,8 @@ public class ShortenedUrlRepositoryTest(
         await ExecutedInATransactionAsync(RunTest);
         async Task RunTest()
         {
-            Guid id = context.ShortenedLinks.First().Id;
-            ShortenedLinkRepository repository = new(context);
+            Guid id = context.ShortenedUrl.First().Id;
+            ShortenedUrlRepository repository = new(context);
             
             var result = await repository.FindByIdAsync(id);
 
@@ -55,8 +55,8 @@ public class ShortenedUrlRepositoryTest(
         await ExecutedInATransactionAsync(RunTest);
         async Task RunTest()
         {
-            Guid id = context.ShortenedLinks.First().Id;
-            ShortenedLinkRepository repository = new(context);
+            Guid id = context.ShortenedUrl.First().Id;
+            ShortenedUrlRepository repository = new(context);
 
             var result = await repository.FindByIdAsync(id, includes: x => x.User);
 

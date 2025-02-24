@@ -1,6 +1,6 @@
 ﻿namespace UriLix.Domain.Entities;
 
-public class ShortenedLink
+public class ShortenedUrl
 {
     public Guid Id { get; set; }
     public Guid? UserId { get; set; }
