@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UriLix.Shared", "src\UriLix
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UriLix.Application", "src\Core\UriLix.Application\UriLix.Application.csproj", "{24843F55-66E4-446F-943F-72C2E1856D87}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UriLix.Application.UnitTest", "tests\Systems\UriLix.Application.UnitTest\UriLix.Application.UnitTest.csproj", "{34B729D4-3B91-4F7B-8846-43EF7C9C1EB6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{24843F55-66E4-446F-943F-72C2E1856D87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24843F55-66E4-446F-943F-72C2E1856D87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24843F55-66E4-446F-943F-72C2E1856D87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34B729D4-3B91-4F7B-8846-43EF7C9C1EB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34B729D4-3B91-4F7B-8846-43EF7C9C1EB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34B729D4-3B91-4F7B-8846-43EF7C9C1EB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34B729D4-3B91-4F7B-8846-43EF7C9C1EB6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -72,6 +78,7 @@ Global
 		{4729BA81-FFC1-4942-8926-3FAA5061BE0A} = {150D0968-096E-4096-96AA-0A36BB855142}
 		{DAF6AFF9-6154-4F94-18AE-D446AB2DF2CF} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{24843F55-66E4-446F-943F-72C2E1856D87} = {89482D41-D270-47B3-A66C-4D492AE7EF54}
+		{34B729D4-3B91-4F7B-8846-43EF7C9C1EB6} = {150D0968-096E-4096-96AA-0A36BB855142}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7C24ED0E-C2FE-432D-A10A-A6B1145FAEFD}
