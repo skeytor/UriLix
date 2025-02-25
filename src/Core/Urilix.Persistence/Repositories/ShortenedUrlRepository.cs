@@ -9,6 +9,9 @@ namespace UriLix.Persistence.Repositories;
 public class ShortenedUrlRepository(IAppDbContext _context) 
     : BaseRepository(_context), IShortenedUrlRepository
 {
+    public async Task<bool> AliasExistsAsync(string alias)
+        => await context.ShortenedUrl.AnyAsync(x => x.Alias == alias);
+
     public void DeleteAsync(Guid id, ShortenedUrl shortenedLink) 
         => context.ShortenedUrl.Remove(shortenedLink);
 
@@ -60,6 +63,9 @@ public class ShortenedUrlRepository(IAppDbContext _context)
         await context.ShortenedUrl.AddAsync(shortenedLink);
         return shortenedLink;
     }
+
+    public async Task<bool> ShortCodeExistsAsync(string shortCode) 
+        => await context.ShortenedUrl.AnyAsync(x => x.ShortCode == shortCode);
 
     public void UpdateAsync(ShortenedUrl shortenedLink) 
         => context.ShortenedUrl.Update(shortenedLink);
