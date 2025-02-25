@@ -1,6 +1,4 @@
-﻿using System.Text;
-using UriLix.Application.DOTs;
-using UriLix.Application.Helpers;
+﻿using UriLix.Application.DOTs;
 using UriLix.Application.Providers;
 using UriLix.Domain.Entities;
 using UriLix.Domain.Repositories;
@@ -55,7 +53,7 @@ public class UrlShorteningService(
         return Result.Failure<string>(
             Error.Validation(
                 "ShortCode.Duplicate", 
-                "Failed to generate a unique short code"));
+                $"Failed to generate a unique short code after {MAX_ATTEMPTS} attempts"));
     }
 
     public Task<IReadOnlyList<GetShortenedUrlResponse>> GetAllURLsAsync(Guid userId)
@@ -63,8 +61,14 @@ public class UrlShorteningService(
         throw new NotImplementedException();
     }
 
-    public Task<Result<string>> GetOriginalUrlAsync(string shortCode)
+    public async Task<Result<string>> GetOriginalUrlAsync(string shortCode)
     {
-        throw new NotImplementedException();
+        string? url = await shortUrlRepository.GetOriginalUrlAsync(shortCode);
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            return Result.Failure<string>(
+                Error.NotFound("ShortCode.NotFound", "Short code not found"));
+        }
+        return url;
     }
 }

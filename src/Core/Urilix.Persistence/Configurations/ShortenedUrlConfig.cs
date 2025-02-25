@@ -19,7 +19,7 @@ internal sealed class ShortenedUrlConfig : IEntityTypeConfiguration<ShortenedUrl
         
         builder.Property(x => x.ShortCode)
             .HasMaxLength(5)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(x => x.Alias)
             .HasMaxLength(20)

@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using UriLix.Persistence.Test.Fixtures;
-using UriLix.Persistence.Test.Helpers;
+using UriLix.Persistence.IntegrationTest.Fixtures;
+using UriLix.Persistence.IntegrationTest.Helpers;
 using Xunit.Abstractions;
 
-namespace UriLix.Persistence.Test;
+namespace UriLix.Persistence.IntegrationTest;
 
 [Collection(nameof(DatabaseCollection))]
 public abstract class TestBase(DatabaseFixture fixture, ITestOutputHelper outputHelper) : IAsyncLifetime

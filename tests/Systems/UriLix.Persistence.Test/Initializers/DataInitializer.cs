@@ -1,7 +1,7 @@
 ﻿using Bogus;
 using UriLix.Domain.Entities;
 
-namespace UriLix.Persistence.Test.Initializers;
+namespace UriLix.Persistence.IntegrationTest.Initializers;
 
 internal static class DataInitializer
 {

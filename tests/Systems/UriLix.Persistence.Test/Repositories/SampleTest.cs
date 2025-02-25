@@ -1,8 +1,8 @@
 ﻿using UriLix.Domain.Entities;
-using UriLix.Persistence.Test.Fixtures;
+using UriLix.Persistence.IntegrationTest.Fixtures;
 using Xunit.Abstractions;
 
-namespace UriLix.Persistence.Test.Repositories;
+namespace UriLix.Persistence.IntegrationTest.Repositories;
 
 public class SampleTest(DatabaseFixture fixture, ITestOutputHelper outputHelper) 
     : TestBase(fixture, outputHelper)
