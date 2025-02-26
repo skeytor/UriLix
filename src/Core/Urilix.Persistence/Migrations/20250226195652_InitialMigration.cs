@@ -92,7 +92,7 @@ namespace UriLix.Persistence.Migrations
                 table: "ShortenedUrl",
                 column: "Alias",
                 unique: true,
-                filter: "[Alias] IS NOT NULL");
+                filter: "[Alias] IS NOT NULL AND [Alias] <> ''");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ShortenedUrl_Id",
@@ -104,7 +104,7 @@ namespace UriLix.Persistence.Migrations
                 table: "ShortenedUrl",
                 column: "ShortCode",
                 unique: true,
-                filter: "[ShortCode] IS NOT NULL");
+                filter: "[ShortCode] IS NOT NULL AND [ShortCode] <> ''");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ShortenedUrl_UserId",

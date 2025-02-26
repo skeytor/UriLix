@@ -12,7 +12,7 @@ using UriLix.Persistence;
 namespace UriLix.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250225202739_InitialMigration")]
+    [Migration("20250226195652_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -114,13 +114,13 @@ namespace UriLix.Persistence.Migrations
 
                     b.HasIndex("Alias")
                         .IsUnique()
-                        .HasFilter("[Alias] IS NOT NULL");
+                        .HasFilter("[Alias] IS NOT NULL AND [Alias] <> ''");
 
                     b.HasIndex("Id");
 
                     b.HasIndex("ShortCode")
                         .IsUnique()
-                        .HasFilter("[ShortCode] IS NOT NULL");
+                        .HasFilter("[ShortCode] IS NOT NULL AND [ShortCode] <> ''");
 
                     b.HasIndex("UserId");
 

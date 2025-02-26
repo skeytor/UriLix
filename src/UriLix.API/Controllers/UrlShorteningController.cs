@@ -7,17 +7,18 @@ using UriLix.Application.Services.UrlShortening;
 namespace UriLix.API.Controllers;
 
 [Route("api/[controller]")]
-public class ShortenUrlController(IUrlShorteningService shorteningService) : ApiBaseController
+public class UrlShorteningController(IUrlShorteningService shorteningService) : ApiBaseController
 {
-    [HttpPut]
-    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> ShortenUrl([FromBody] CreateShortenedUrlRequest requestData)
+    [HttpPost]
+    [ProducesResponseType<Dictionary<string, string>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<BadRequest<ValidationProblemDetails>>(StatusCodes.Status400BadRequest)]
+    public async Task<Results<Ok<Dictionary<string, string>>, BadRequest>> ShortenUrl(
+        [FromBody] CreateShortenedUrlRequest requestData)
     {
         var result = await shorteningService.ShortenUrlAsync(requestData);
         return result.IsSuccess
-            ? Ok(result.Value)
-            : BadRequest();
+            ? TypedResults.Ok(new Dictionary<string, string> { { "shortCode", result.Value} })
+            : TypedResults.BadRequest();
     }
 
     [HttpGet("{shortCode}")]

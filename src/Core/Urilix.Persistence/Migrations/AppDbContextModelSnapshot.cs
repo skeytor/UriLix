@@ -111,13 +111,13 @@ namespace UriLix.Persistence.Migrations
 
                     b.HasIndex("Alias")
                         .IsUnique()
-                        .HasFilter("[Alias] IS NOT NULL");
+                        .HasFilter("[Alias] IS NOT NULL AND [Alias] <> ''");
 
                     b.HasIndex("Id");
 
                     b.HasIndex("ShortCode")
                         .IsUnique()
-                        .HasFilter("[ShortCode] IS NOT NULL");
+                        .HasFilter("[ShortCode] IS NOT NULL AND [ShortCode] <> ''");
 
                     b.HasIndex("UserId");
 
