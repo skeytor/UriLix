@@ -19,7 +19,7 @@ internal sealed class ShortenedUrlConfig : IEntityTypeConfiguration<ShortenedUrl
         
         builder.Property(x => x.ShortCode)
             .HasMaxLength(5)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(x => x.Alias)
             .HasMaxLength(20)
@@ -34,9 +34,12 @@ internal sealed class ShortenedUrlConfig : IEntityTypeConfiguration<ShortenedUrl
             .HasDefaultValueSql("GETDATE()");
 
         builder.HasIndex(x => x.ShortCode)
-            .IsUnique();
+            .IsUnique()
+            .HasFilter("[ShortCode] IS NOT NULL AND [ShortCode] <> ''");
+
         builder.HasIndex(x => x.Alias)
-            .IsUnique();
+            .IsUnique()
+            .HasFilter("[Alias] IS NOT NULL AND [Alias] <> ''");
 
         ConfigureRelationships(builder);
     }

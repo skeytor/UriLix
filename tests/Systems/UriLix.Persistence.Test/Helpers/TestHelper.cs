@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using UriLix.Persistence.Test.Initializers;
+using UriLix.Persistence.IntegrationTest.Initializers;
 using Xunit.Abstractions;
 
-namespace UriLix.Persistence.Test.Helpers;
+namespace UriLix.Persistence.IntegrationTest.Helpers;
 
 internal static class TestHelper
 {

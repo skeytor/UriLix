@@ -1,7 +1,6 @@
-﻿
-using Testcontainers.MsSql;
+﻿using Testcontainers.MsSql;
 
-namespace UriLix.Persistence.Test.Fixtures;
+namespace UriLix.Persistence.IntegrationTest.Fixtures;
 
 public sealed class DatabaseFixture : IAsyncLifetime
 {

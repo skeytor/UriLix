@@ -1,6 +1,7 @@
 using Scalar.AspNetCore;
 using UriLix.API.Extensions;
 using UriLix.Persistence;
+using UriLix.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,8 @@ builder.Services.AddOpenApi();
 builder.Services
     .AddDatabaseProvider(builder.Configuration)
     .AddRepositories();
+
+builder.Services.AddApplicationServices();
 
 var app = builder.Build();
 
@@ -31,3 +34,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { };

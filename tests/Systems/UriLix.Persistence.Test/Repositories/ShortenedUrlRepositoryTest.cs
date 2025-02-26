@@ -1,9 +1,9 @@
 ﻿using UriLix.Domain.Entities;
 using UriLix.Persistence.Repositories;
-using UriLix.Persistence.Test.Fixtures;
+using UriLix.Persistence.IntegrationTest.Fixtures;
 using Xunit.Abstractions;
 
-namespace UriLix.Persistence.Test.Repositories;
+namespace UriLix.Persistence.IntegrationTest.Repositories;
 
 public class ShortenedUrlRepositoryTest(
     DatabaseFixture fixture,
