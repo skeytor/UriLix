@@ -33,6 +33,7 @@ public class IntegrationTestWebApplication<TProgram>
                     context.SaveChanges();
                 }));
         });
+        builder.UseEnvironment("Development");
     }
     public Task InitializeAsync() => _msSqlContainer.StartAsync();
 
