@@ -13,8 +13,12 @@ internal sealed class UserConfig : IEntityTypeConfiguration<User>
 
         builder.HasIndex(x => x.Id);
 
-        builder.Property(x => x.UserName)
-            .HasMaxLength(20)
+        builder.Property(x => x.FirstName)
+            .HasMaxLength(50)
+            .IsRequired();
+
+        builder.Property(x => x.LastName)
+            .HasMaxLength(50)
             .IsRequired();
 
         builder.Property(x => x.Email)
@@ -24,6 +28,20 @@ internal sealed class UserConfig : IEntityTypeConfiguration<User>
         builder.Property(x => x.Password)
             .HasMaxLength(200)
             .IsRequired();
+
+        builder.Property(x => x.CreateAt)
+            .ValueGeneratedOnAdd()
+            .HasDefaultValueSql("GETDATE()");
+
+        builder.Property(x => x.UpdateAt)
+            .ValueGeneratedOnUpdate()
+            .HasDefaultValueSql("GETDATE()");
+
+        builder.Property(x => x.LastLoginAt)
+            .IsRequired(false);
+
+        builder.HasIndex(x => x.Email)
+            .IsUnique();
 
         ConfigureRelationships(builder);
     }

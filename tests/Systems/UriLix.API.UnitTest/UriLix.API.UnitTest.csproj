@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Core\UriLix.Application\UriLix.Application.csproj" />
+    <ProjectReference Include="..\..\..\src\UriLix.API\UriLix.API.csproj" />
   </ItemGroup>
 
   <ItemGroup>

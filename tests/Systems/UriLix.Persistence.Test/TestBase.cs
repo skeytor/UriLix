@@ -16,7 +16,6 @@ public abstract class TestBase(DatabaseFixture fixture, ITestOutputHelper output
     public async Task InitializeAsync()
     {
         await context.Database.EnsureCreatedAsync();
-        await context.Database.MigrateAsync();
     }
 
     protected void ExecutedInATransaction(Action action)
