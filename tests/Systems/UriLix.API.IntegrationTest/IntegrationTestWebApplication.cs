@@ -29,12 +29,14 @@ public class IntegrationTestWebApplication<TProgram>
                 .UseSqlServer(_msSqlContainer.GetConnectionString())
                 .UseSeeding((context, _) =>
                 {
-                    context.Set<ShortenedUrl>().AddRange(SampleData.ShortenedUrls);
+                    context.Set<ShortenedUrl>().AddRange(SampleData.ShortenedURLs);
+                    context.Set<User>().AddRange(SampleData.Users);
                     context.SaveChanges();
                 }));
         });
+        builder.UseEnvironment("Development");
     }
     public Task InitializeAsync() => _msSqlContainer.StartAsync();
 
-    Task IAsyncLifetime.DisposeAsync() => _msSqlContainer.StopAsync();
+    public new Task DisposeAsync() => _msSqlContainer.StopAsync();
 }

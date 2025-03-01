@@ -1,5 +1,4 @@
 ﻿using Moq;
-using System;
 using UriLix.Application.DOTs;
 using UriLix.Application.Providers;
 using UriLix.Application.Services.UrlShortening;
@@ -9,7 +8,7 @@ using UriLix.Shared.Enums;
 using UriLix.Shared.UnitOfWork;
 using Xunit.Abstractions;
 
-namespace UriLix.Application.UnitTest.Sys.Services.UrlShorting;
+namespace UriLix.Application.UnitTest.Services.UrlShorting;
 
 public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
 {

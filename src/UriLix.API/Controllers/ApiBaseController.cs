@@ -3,6 +3,4 @@
 namespace UriLix.API.Controllers;
 
 [ApiController]
-public abstract class ApiBaseController : ControllerBase
-{
-}
+public abstract class ApiBaseController : ControllerBase;

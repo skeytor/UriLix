@@ -16,7 +16,7 @@ public class SampleTest(DatabaseFixture fixture, ITestOutputHelper outputHelper)
         {
             User user = new()
             {
-                UserName = "Test",
+                FirstName = "Test",
                 Email = "test",
                 Password = "test",
                 CreateAt = DateTime.Now,

@@ -10,26 +10,27 @@ namespace UriLix.API.Controllers;
 public class UrlShorteningController(IUrlShorteningService shorteningService) : ApiBaseController
 {
     [HttpPost]
-    [ProducesResponseType<Dictionary<string, string>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<string>(StatusCodes.Status201Created)]
     [ProducesResponseType<BadRequest<ValidationProblemDetails>>(StatusCodes.Status400BadRequest)]
-    public async Task<Results<Ok<Dictionary<string, string>>, BadRequest>> ShortenUrl(
+    public async Task<Results<Created<string>, BadRequest>> ShortenUrl(
         [FromBody] CreateShortenedUrlRequest requestData)
     {
         var result = await shorteningService.ShortenUrlAsync(requestData);
         return result.IsSuccess
-            ? TypedResults.Ok(new Dictionary<string, string> { { "shortCode", result.Value} })
+            ? TypedResults.Created(nameof(ShortenUrl), result.Value)
             : TypedResults.BadRequest();
     }
 
     [HttpGet("{shortCode}")]
-    [ProducesResponseType<string>(StatusCodes.Status308PermanentRedirect)]
-    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status404NotFound)]
-    public async Task<Results<RedirectHttpResult, NotFound>> GetOriginalUrl(
+    [ProducesResponseType<string>(StatusCodes.Status307TemporaryRedirect)]
+    [ProducesResponseType<NotFound>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<BadRequest<ValidationProblemDetails>>(StatusCodes.Status404NotFound)]
+    public async Task<Results<RedirectHttpResult, BadRequest<ValidationProblemDetails>, NotFound>> GetOriginalUrl(
         [FromRoute, Length(5, 5)] string shortCode)
     {
         var result = await shorteningService.GetOriginalUrlAsync(shortCode);
         return result.IsSuccess
-            ? TypedResults.Redirect(result.Value)
+            ? TypedResults.Redirect(result.Value, permanent: true)
             : TypedResults.NotFound();
     }
 }
