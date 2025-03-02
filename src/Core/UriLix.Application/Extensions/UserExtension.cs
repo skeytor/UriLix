@@ -13,4 +13,6 @@ internal static class UserExtension
             Email = request.Email,
             Password = request.Password
         };
+    internal static UserProfileResponse MapToResponse(this User user)
+        => new($"{user.FirstName} {user.LastName}", user.Email);
 }
