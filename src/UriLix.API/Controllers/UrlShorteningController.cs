@@ -12,21 +12,22 @@ public class UrlShorteningController(IUrlShorteningService shorteningService) : 
     [HttpPost]
     [ProducesResponseType<string>(StatusCodes.Status201Created)]
     [ProducesResponseType<BadRequest<ValidationProblemDetails>>(StatusCodes.Status400BadRequest)]
-    public async Task<Results<Created<string>, BadRequest>> ShortenUrl(
+    public async Task<Results<CreatedAtRoute<string>, BadRequest>> ShortenUrl(
         [FromBody] CreateShortenedUrlRequest requestData)
     {
         var result = await shorteningService.ShortenUrlAsync(requestData);
         return result.IsSuccess
-            ? TypedResults.Created(nameof(ShortenUrl), result.Value)
+            ? TypedResults.CreatedAtRoute(result.Value, nameof(GetOriginalUrl), new { shortCode = result.Value })
             : TypedResults.BadRequest();
     }
 
-    [HttpGet("{shortCode}")]
+    //[HttpGet("{shortCode:length(5):regex(^[[A-Za-z0-9]]{{5}}$)}", Name = nameof(GetOriginalUrl))]
+    [HttpGet("{shortCode:length(5):regex(^[[A-Za-z0-9]]{{5}}$)}", Name = nameof(GetOriginalUrl))]
     [ProducesResponseType<string>(StatusCodes.Status307TemporaryRedirect)]
     [ProducesResponseType<NotFound>(StatusCodes.Status404NotFound)]
-    [ProducesResponseType<BadRequest<ValidationProblemDetails>>(StatusCodes.Status404NotFound)]
-    public async Task<Results<RedirectHttpResult, BadRequest<ValidationProblemDetails>, NotFound>> GetOriginalUrl(
-        [FromRoute, Length(5, 5)] string shortCode)
+    [ProducesResponseType<BadRequest<ValidationProblemDetails>>(StatusCodes.Status400BadRequest)]
+    public async Task<Results<RedirectHttpResult, NotFound, BadRequest<ValidationProblemDetails>>> GetOriginalUrl(
+        [FromRoute] string shortCode)
     {
         var result = await shorteningService.GetOriginalUrlAsync(shortCode);
         return result.IsSuccess
