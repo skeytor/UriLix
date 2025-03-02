@@ -9,6 +9,18 @@ namespace UriLix.Application.Services.Users;
 
 public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork) : IUserService
 {
+    public async Task<Result<UserProfileResponse>> GetProfileAsync(Guid userId)
+    {
+        User? user = await userRepository.FindByAsync(x => x.Id == userId);
+        if (user is null)
+        {
+            return Result.Failure<UserProfileResponse>(Error.NotFound(
+                "User.NotFound", 
+                $"User with {userId} not found"));
+        }
+        return user.MapToResponse();
+    }
+
     public async Task<Result<Guid>> RegisterAsync(CreateUserRequest request)
     {
         if (await userRepository.EmailExistsAsync(request.Email))

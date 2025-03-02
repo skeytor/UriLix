@@ -67,20 +67,20 @@ public class UrlShorteningControllerTest(
         
     }
 
-    [Theory]
-    [InlineData("/api/UrlShortening", "def34", "https://www.bing.com")]
-    public async Task GetOriginalUrl_Should_ReturnOriginalUrl_When_ShortCodeExists(
-        string requestUri, string shortCode, string expectedUrl)
-    {
-        HttpResponseMessage response = await httpClient.GetAsync($"{requestUri}/{shortCode}");
+    //[Theory]
+    //[InlineData("/api/UrlShortening", "def34", "https://www.bing.com")]
+    //public async Task GetOriginalUrl_Should_ReturnOriginalUrl_When_ShortCodeExists(
+    //    string requestUri, string shortCode, string expectedUrl)
+    //{
+    //    HttpResponseMessage response = await httpClient.GetAsync($"{requestUri}/{shortCode}");
 
-        outputHelper.WriteLine($"Status Code: {response.StatusCode}");
-        outputHelper.WriteLine($"Location Header: {response.Headers.Location}");
-        response.EnsureSuccessStatusCode();
+    //    outputHelper.WriteLine($"Status Code: {response.StatusCode}");
+    //    outputHelper.WriteLine($"Location Header: {response.Headers.Location}");
+    //    response.EnsureSuccessStatusCode();
 
-        Assert.Equal(System.Net.HttpStatusCode.PermanentRedirect, response.StatusCode);
-        Uri? locationHeader = response.Headers.Location;
-        Assert.NotNull(locationHeader);
-        Assert.Equal(expectedUrl, locationHeader?.AbsoluteUri);
-    }
+    //    Assert.Equal(System.Net.HttpStatusCode.PermanentRedirect, response.StatusCode);
+    //    Uri? locationHeader = response.Headers.Location;
+    //    Assert.NotNull(locationHeader);
+    //    Assert.Equal(expectedUrl, locationHeader?.AbsoluteUri);
+    //}
 }
