@@ -22,14 +22,14 @@ public class UrlShorteningController(IUrlShorteningService shorteningService) : 
     }
 
     //[HttpGet("{shortCode:length(5):regex(^[[A-Za-z0-9]]{{5}}$)}", Name = nameof(GetOriginalUrl))]
-    [HttpGet("{shortCode:length(5):regex(^[[A-Za-z0-9]]{{5}}$)}", Name = nameof(GetOriginalUrl))]
+    [HttpGet]
     [ProducesResponseType<string>(StatusCodes.Status307TemporaryRedirect)]
     [ProducesResponseType<NotFound>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<BadRequest<ValidationProblemDetails>>(StatusCodes.Status400BadRequest)]
     public async Task<Results<RedirectHttpResult, NotFound, BadRequest<ValidationProblemDetails>>> GetOriginalUrl(
-        [FromRoute] string shortCode)
+        [FromQuery] QueryFilter filter)
     {
-        var result = await shorteningService.GetOriginalUrlAsync(shortCode);
+        var result = await shorteningService.GetOriginalUrlAsync(filter);
         return result.IsSuccess
             ? TypedResults.Redirect(result.Value, permanent: true)
             : TypedResults.NotFound();
