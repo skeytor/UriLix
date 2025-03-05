@@ -61,14 +61,12 @@ public class UrlShorteningService(
         throw new NotImplementedException();
     }
 
-    public async Task<Result<string>> GetOriginalUrlAsync(string shortCode)
+    public async Task<Result<string>> GetOriginalUrlAsync(QueryFilter filter)
     {
-        string? url = await shortUrlRepository.GetOriginalUrlAsync(shortCode);
-        if (string.IsNullOrWhiteSpace(url))
+        if (filter.Type is UrlTypeFilter.Alias)
         {
-            return Result.Failure<string>(
-                Error.NotFound("ShortCode.NotFound", "Short code not found"));
+            string? url = await shortUrlRepository.GetOriginalUrlByAsync(x => x.Alias == filter.Code);
         }
-        return url;
+        return string.Empty;
     }
 }

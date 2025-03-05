@@ -12,7 +12,7 @@ public class UrlShorteningControllerTest(
     //[ThingUnderTest}_Should_[ExpectedResult]_[Conditions]
     [Theory]
     [InlineData("https://www.youtube.com/watch?v=191CJFrvBxM&t=923s")]
-    public async Task PostShortenUrl_Should_ReturnShorCode_When_UrlIsValid(string url)
+    public async Task PostShortenUrl_Should_Return201CreatedAtRoute_When_UrlIsValid(string url)
     {
         const int EXPECTED_LENGHT = 5;
         CreateShortenedUrlRequest request = new(url);
@@ -20,6 +20,7 @@ public class UrlShorteningControllerTest(
         HttpResponseMessage response = await httpClient.PostAsJsonAsync("/api/UrlShortening", request);
 
         response.EnsureSuccessStatusCode();
+        outputHelper.WriteLine($"== RESPONSE MESSAGE==\n\t{response.Headers.Location}");
         string? shortCode = await response.Content.ReadFromJsonAsync<string>();
 
         Assert.Equal(EXPECTED_LENGHT, shortCode?.Length);
@@ -28,6 +29,7 @@ public class UrlShorteningControllerTest(
 
     [Theory]
     [InlineData("https://www.youtube.com/watch?v=191CJFrvBxM&t=923s", "custom-alias")]
+    [InlineData("https://www.youtube.com/watch?v=191CJFrvBxM&t=923s", "customAlias")]
     public async Task PostShortenUrl_Should_ReturnAliasName_When_CustomAliasIsProvided(string url, string alias)
     {
         CreateShortenedUrlRequest request = new(url, Alias: alias);
@@ -67,20 +69,20 @@ public class UrlShorteningControllerTest(
         
     }
 
-    //[Theory]
-    //[InlineData("/api/UrlShortening", "def34", "https://www.bing.com")]
-    //public async Task GetOriginalUrl_Should_ReturnOriginalUrl_When_ShortCodeExists(
-    //    string requestUri, string shortCode, string expectedUrl)
-    //{
-    //    HttpResponseMessage response = await httpClient.GetAsync($"{requestUri}/{shortCode}");
+    [Theory]
+    [InlineData("/api/UrlShortening", "def34", "https://www.bing.com")]
+    public async Task GetOriginalUrl_Should_ReturnOriginalUrl_When_ShortCodeExists(
+        string requestUri, string shortCode, string expectedUrl)
+    {
+        HttpResponseMessage response = await httpClient.GetAsync($"{requestUri}/{shortCode}");
 
-    //    outputHelper.WriteLine($"Status Code: {response.StatusCode}");
-    //    outputHelper.WriteLine($"Location Header: {response.Headers.Location}");
-    //    response.EnsureSuccessStatusCode();
+        outputHelper.WriteLine($"Status Code: {response.StatusCode}");
+        outputHelper.WriteLine($"Location Header: {response.Headers.Location}");
+        response.EnsureSuccessStatusCode();
 
-    //    Assert.Equal(System.Net.HttpStatusCode.PermanentRedirect, response.StatusCode);
-    //    Uri? locationHeader = response.Headers.Location;
-    //    Assert.NotNull(locationHeader);
-    //    Assert.Equal(expectedUrl, locationHeader?.AbsoluteUri);
-    //}
+        Assert.Equal(System.Net.HttpStatusCode.PermanentRedirect, response.StatusCode);
+        Uri? locationHeader = response.Headers.Location;
+        Assert.NotNull(locationHeader);
+        Assert.Equal(expectedUrl, locationHeader?.AbsoluteUri);
+    }
 }
