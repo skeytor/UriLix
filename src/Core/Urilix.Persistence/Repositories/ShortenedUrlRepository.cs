@@ -55,6 +55,11 @@ public class ShortenedUrlRepository(IAppDbContext _context)
               .FirstOrDefaultAsync();
     }
 
+    public Task<string?> GetOriginalUrlByAsync(Expression<Func<ShortenedUrl, bool>> predicate)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<ShortenedUrl> InsertAsync(ShortenedUrl shortenedLink)
     {
         await context.ShortenedUrl.AddAsync(shortenedLink);
