@@ -10,8 +10,8 @@ public class UserRepository(IAppDbContext _context) : BaseRepository(_context), 
 {
     public Task<bool> EmailExistsAsync(string email) => context.Users.AnyAsync(u => u.Email == email);
 
-    public Task<User?> FindByAsync(Expression<Func<User, bool>> filter) 
-        => context.Users.FirstOrDefaultAsync(filter);
+    public Task<User?> FindByAsync(Expression<Func<User, bool>> predicate) 
+        => context.Users.FirstOrDefaultAsync(predicate);
 
     public async Task<User> InsertAsync(User user)
     {

@@ -71,10 +71,12 @@ public class UrlShorteningControllerTest(
 
     [Theory]
     [InlineData("/api/UrlShortening", "def34", "https://www.bing.com")]
-    public async Task GetOriginalUrl_Should_ReturnOriginalUrl_When_ShortCodeExists(
+    public async Task GetResolveUrl_Should_ReturnOriginalUrl_When_ShortCodeExists(
         string requestUri, string shortCode, string expectedUrl)
     {
-        HttpResponseMessage response = await httpClient.GetAsync($"{requestUri}/{shortCode}");
+        string url = $"{requestUri}?Code={shortCode}&Type={(int)FilterType.ShortCode}";
+        outputHelper.WriteLine(url);
+        HttpResponseMessage response = await httpClient.GetAsync($"{url}");
 
         outputHelper.WriteLine($"Status Code: {response.StatusCode}");
         outputHelper.WriteLine($"Location Header: {response.Headers.Location}");
