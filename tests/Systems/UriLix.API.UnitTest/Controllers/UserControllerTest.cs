@@ -50,7 +50,7 @@ public class UserControllerTest(ITestOutputHelper output)
     }
 
     [Fact]
-    public async Task GetAsync_Should_ReturnUserProfile_When_UserAlreadyExists()
+    public async Task GetUserProfile_Should_ReturnUserProfile_When_UserAlreadyExists()
     {
         Mock<IUserService> mockUserService = new();
         Guid id = Guid.NewGuid();

@@ -90,7 +90,7 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
 
     [Theory]
     [InlineData("https://localhost.com")]
-    public async Task ShortenUrlAsync_Should_ReturnFailure_When_AllShortCodesAreDuplicates(string url)
+    public async Task ShortenUrlAsync_Should_ReturnFailure_When_AllShortCodesAreDuplicated(string url)
     {
         Mock<IShortenedUrlRepository> mockRepository = new();
         Mock<IUnitOfWork> mockUnit = new();

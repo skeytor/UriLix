@@ -12,7 +12,7 @@ public class UrlShorteningControllerTest(
     //[ThingUnderTest}_Should_[ExpectedResult]_[Conditions]
     [Theory]
     [InlineData("https://www.youtube.com/watch?v=191CJFrvBxM&t=923s")]
-    public async Task PostShortenUrl_Should_Return201CreatedAtRouteWithShortCodeValue_When_UrlIsValid(string url)
+    public async Task POST_ShortenUrl_Should_Return201CreatedAtRoute_When_UrlIsValid(string url)
     {
         const int EXPECTED_LENGHT = 5;
         CreateShortenedUrlRequest request = new(url);
@@ -31,7 +31,7 @@ public class UrlShorteningControllerTest(
     [InlineData("https://www.youtube.com/watch?v=191CJFrvBxM&t=923s", "custom-alias")]
     [InlineData("https://www.youtube.com/watch?v=191CJFrvBxM&t=923s", "customAlias")]
     [InlineData("https://www.youtube.com/watch?v=191CJFrvBxM&t=923s", "C1stom-1alia2s")]
-    public async Task PostShortenUrl_Should_Return201CreatedAtRouteWithAliasValue_When_CustomAliasIsUnique(string url, string alias)
+    public async Task POST_ShortenUrl_Should_Return201CreatedAtRoute_When_CustomAliasIsUnique(string url, string alias)
     {
         CreateShortenedUrlRequest request = new(url, Alias: alias);
 
@@ -49,7 +49,7 @@ public class UrlShorteningControllerTest(
     [InlineData("https://www.youtube.com/watch?v=191CJFrvBxM&t=923s", "invalid!alias")]
     [InlineData("https://www.youtube.com/watch?v=191CJFrvBxM&t=923s", "invalid@alias")]
     [InlineData("https://www.youtube.com/watch?v=191CJFrvBxM&t=923s", "invalid$alias")]
-    public async Task PostShortenUrl_Should_Return404BadRequest_When_CustomAliasIsInvalid(string url, string invalidAlias)
+    public async Task POST_ShortenUrl_Should_Return404BadRequest_When_CustomAliasIsInvalid(string url, string invalidAlias)
     {
         CreateShortenedUrlRequest request = new(url, Alias: invalidAlias);
 
@@ -64,7 +64,7 @@ public class UrlShorteningControllerTest(
     [InlineData("https//www.youtube.com/watch?v=191CJFrvBxM&t=923s")]
     [InlineData("https:/www.youtube.com/watch?v=191CJFrvBxM&t=923s")]
     [InlineData("invalid-url")]
-    public async Task PostShortenUrl_Should_Return404BadRequest_When_UrlIsInvalid(string invalidUrl)
+    public async Task POST_ShortenUrl_Should_Return404BadRequest_When_UrlIsInvalid(string invalidUrl)
     {
         CreateShortenedUrlRequest request = new(invalidUrl);
 
@@ -78,7 +78,7 @@ public class UrlShorteningControllerTest(
 
     [Theory]
     [InlineData("/api/UrlShortening", "def34", "https://www.bing.com")]
-    public async Task GetResolveUrl_Should_ReturnOriginalUrl_When_ShortCodeExists(
+    public async Task GET_ResolveUrl_Should_ReturnOriginalUrl_When_ShortCodeExists(
         string requestUri, string shortCode, string expectedUrl)
     {
         string url = $"{requestUri}?Code={shortCode}&Type={UrlQueryType.ShortCode}";

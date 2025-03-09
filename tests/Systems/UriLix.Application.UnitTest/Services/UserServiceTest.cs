@@ -5,7 +5,6 @@ using UriLix.Application.Services.Users;
 using UriLix.Domain.Entities;
 using UriLix.Domain.Repositories;
 using UriLix.Shared.Enums;
-using UriLix.Shared.Results;
 using UriLix.Shared.UnitOfWork;
 
 namespace UriLix.Application.UnitTest.Services;
