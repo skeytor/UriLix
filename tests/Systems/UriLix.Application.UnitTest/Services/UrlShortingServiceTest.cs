@@ -1,4 +1,5 @@
 ﻿using Moq;
+using System.Linq.Expressions;
 using UriLix.Application.DOTs;
 using UriLix.Application.Providers;
 using UriLix.Application.Services.UrlShortening;
@@ -8,7 +9,7 @@ using UriLix.Shared.Enums;
 using UriLix.Shared.UnitOfWork;
 using Xunit.Abstractions;
 
-namespace UriLix.Application.UnitTest.Services.UrlShorting;
+namespace UriLix.Application.UnitTest.Services;
 
 public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
 {
@@ -34,7 +35,7 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
         var result = await sut.ShortenUrlAsync(request);
 
         Assert.True(result.IsSuccess);
-        Assert.Equal(shortCodeExpected, result.Value);
+        Assert.Equal(shortCodeExpected, result.Value.Code);
 
         mockRepository.Verify(x => x.InsertAsync(It.IsAny<ShortenedUrl>()), Times.Once);
         mockUnit.Verify(x => x.SaveChangesAsync(default), Times.Once);
@@ -81,7 +82,7 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
         var result = await sut.ShortenUrlAsync(request);
         
         Assert.True(result.IsSuccess);
-        Assert.Equal(shortCodeExpected, result.Value);
+        Assert.Equal(shortCodeExpected, result.Value.Code);
         
         mockRepository.Verify(x => x.ShortCodeExistsAsync(It.IsAny<string>()), Times.Exactly(2));
         mockProvider.Verify(x => x.GenerateShortCode(), Times.Exactly(2));
@@ -113,6 +114,7 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
         Assert.True(result.IsFailure);
         Assert.Equal(ErrorType.Validation, result.Error.Type);
         Assert.Equal("ShortCode.Duplicate", result.Error.Code);
+        testOutputHelper.WriteLine($"{result.Error.Description}");
     }
 
     [Fact]
@@ -138,7 +140,7 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
         testOutputHelper.WriteLine($"Response:\n\t Custom Alias {result.Value}");
 
         Assert.True(result.IsSuccess);
-        Assert.Equal(aliasExpected, result.Value);
+        Assert.Equal(aliasExpected, result.Value.Code);
 
         mockRepository.Verify(x => x.InsertAsync(It.IsAny<ShortenedUrl>()), Times.Once);
         mockUnit.Verify(x => x.SaveChangesAsync(default), Times.Once);
@@ -166,5 +168,99 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
         Assert.True(result.IsFailure);
         Assert.Equal(ErrorType.Validation, result.Error.Type);
         Assert.Equal("Alias.Duplicate", result.Error.Code);
+    }
+
+    [Theory]
+    [InlineData("custom-alias", "https://localhost.com/")]
+    public async Task GetOriginalUrlAsync_Should_ReturnOriginalUrl_When_AliasExists(
+        string alias, 
+        string urlExpected)
+    {
+        Mock<IShortenedUrlRepository> mockRepository = new();
+        Mock<IUnitOfWork> mockUnit = new();
+        Mock<IUrlShortingProvider> mockProvider = new();
+
+        OriginalUrlQueryParam queryParams = new(alias, UrlQueryType.Alias);
+        mockRepository.Setup(x => x.GetOriginalUrlByAsync(It.IsAny<Expression<Func<ShortenedUrl, bool>>>()))
+            .ReturnsAsync(urlExpected);
+        UrlShorteningService sut = new(
+            mockRepository.Object,
+            mockProvider.Object,
+            mockUnit.Object);
+
+        var result = await sut.GetOriginalUrlAsync(queryParams);
+        
+        Assert.True(result.IsSuccess);
+        Assert.Equal(urlExpected, result.Value);
+    }
+
+    [Theory]
+    [InlineData("alias-not-exists")]
+    public async Task GetOriginalUrlAsync_Should_ReturnFailure_When_AliasNotExist(string alias)
+    {
+        Mock<IShortenedUrlRepository> mockRepository = new();
+        Mock<IUnitOfWork> mockUnit = new();
+        Mock<IUrlShortingProvider> mockProvider = new();
+
+        OriginalUrlQueryParam queryParams = new(alias, UrlQueryType.Alias);
+        mockRepository.Setup(repo => repo.GetOriginalUrlByAsync(It.IsAny<Expression<Func<ShortenedUrl, bool>>>()))
+            .Returns(Task.FromResult<string?>(null));
+        UrlShorteningService sut = new(
+            mockRepository.Object,
+            mockProvider.Object,
+            mockUnit.Object);
+
+        var result = await sut.GetOriginalUrlAsync(queryParams);
+
+        Assert.True(result.IsFailure);
+        Assert.Equal(ErrorType.NotFound, result.Error.Type);
+        Assert.Equal("Url.NotFound", result.Error.Code);
+    }
+
+    [Theory]
+    [InlineData("xas12", "https://localhost.com/")]
+    public async Task GetOriginalUrlAsync_Should_ReturnOriginalUrl_When_ShortCodeExist(
+    string shortCode,
+    string urlExpected)
+    {
+        Mock<IShortenedUrlRepository> mockRepository = new();
+        Mock<IUnitOfWork> mockUnit = new();
+        Mock<IUrlShortingProvider> mockProvider = new();
+
+        OriginalUrlQueryParam queryParams = new(shortCode, UrlQueryType.ShortCode);
+        mockRepository.Setup(x => x.GetOriginalUrlByAsync(It.IsAny<Expression<Func<ShortenedUrl, bool>>>()))
+            .ReturnsAsync(urlExpected);
+        UrlShorteningService sut = new(
+            mockRepository.Object,
+            mockProvider.Object,
+            mockUnit.Object);
+
+        var result = await sut.GetOriginalUrlAsync(queryParams);
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal(urlExpected, result.Value);
+    }
+
+    [Theory]
+    [InlineData("fail1")]
+    public async Task GetOriginalUrlAsync_Should_ReturnFailure_When_ShortCodeNotExist(string shortCode)
+    {
+        Mock<IShortenedUrlRepository> mockRepository = new();
+        Mock<IUnitOfWork> mockUnit = new();
+        Mock<IUrlShortingProvider> mockProvider = new();
+
+        OriginalUrlQueryParam queryParams = new(shortCode, UrlQueryType.ShortCode);
+        mockRepository.Setup(repo => repo.GetOriginalUrlByAsync(It.IsAny<Expression<Func<ShortenedUrl, bool>>>()))
+            .Returns(Task.FromResult<string?>(null));
+        UrlShorteningService sut = new(
+            mockRepository.Object,
+            mockProvider.Object,
+            mockUnit.Object);
+
+        var result = await sut.GetOriginalUrlAsync(queryParams);
+
+        Assert.True(result.IsFailure);
+        Assert.Equal(ErrorType.NotFound, result.Error.Type);
+        Assert.Equal("Url.NotFound", result.Error.Code);
     }
 }

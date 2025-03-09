@@ -1,17 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace UriLix.Application.DOTs;
 
-public sealed record QueryFilter(
-    [Required, Length(5, 20)]
+public sealed record OriginalUrlQueryParam(
+    [Required]
+    [MinLength(5), MaxLength(20)]
     [RegularExpression("^[a-zA-Z0-9-]*$", ErrorMessage = "The code can only contain letters, numbers and underscore")]
     string Code,
 
     [Required]
-    [EnumDataType(typeof(UrlTypeFilter))]
-    UrlTypeFilter Type);
+    UrlQueryType Type);
 
-public enum UrlTypeFilter
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum UrlQueryType
 {
     Alias,
     ShortCode
