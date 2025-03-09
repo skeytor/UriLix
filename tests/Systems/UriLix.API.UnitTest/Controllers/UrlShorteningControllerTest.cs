@@ -3,6 +3,7 @@ using Moq;
 using UriLix.API.Controllers;
 using UriLix.Application.DOTs;
 using UriLix.Application.Services.UrlShortening;
+using UriLix.Shared.Results;
 
 namespace UriLix.API.UnitTest.Controllers;
 
@@ -15,13 +16,13 @@ public class UrlShorteningControllerTest
     {
         Mock<IUrlShorteningService> mockService = new();
         CreateShortenedUrlRequest request = new(longUrl);
-        CreateShortenedUrlResponse response = new(shortCodeExpected, FilterType.ShortCode);
+        CreateShortenedUrlResponse response = new(shortCodeExpected, UrlQueryType.ShortCode);
         mockService.Setup(service => service.ShortenUrlAsync(It.IsAny<CreateShortenedUrlRequest>()))
             .ReturnsAsync(response);
         UrlShorteningController sut = new(mockService.Object);
 
         var result = await sut.ShortenUrl(request);
-        
+
         var createdAtRouteResult = result.Result as CreatedAtRoute<string>;
 
         Assert.NotNull(createdAtRouteResult);
@@ -35,7 +36,7 @@ public class UrlShorteningControllerTest
     {
         Mock<IUrlShorteningService> mockService = new();
         CreateShortenedUrlRequest request = new(longUrl);
-        CreateShortenedUrlResponse response = new(aliasExpected, FilterType.Alias);
+        CreateShortenedUrlResponse response = new(aliasExpected, UrlQueryType.Alias);
         mockService.Setup(service => service.ShortenUrlAsync(It.IsAny<CreateShortenedUrlRequest>()))
             .ReturnsAsync(response);
         UrlShorteningController sut = new(mockService.Object);
@@ -43,28 +44,23 @@ public class UrlShorteningControllerTest
         var result = await sut.ShortenUrl(request);
 
         var createdAtRouteResult = result.Result as CreatedAtRoute<string>;
-
         Assert.NotNull(createdAtRouteResult);
         Assert.Equal(aliasExpected, createdAtRouteResult.Value);
     }
 
     [Fact]
-    public async Task ShortenUrl_Should_ReturnCreatedAtRoute_When_ShortCodeIsProvided()
+    public async Task ShortenUrl_Should_ReturnBadRequest_When_AliasProvidedAlreadyExists()
     {
         Mock<IUrlShorteningService> mockService = new();
-        CreateShortenedUrlRequest request = new("url");
-        CreateShortenedUrlResponse response = new("xase1", FilterType.ShortCode);
+        CreateShortenedUrlRequest request = new("url", Alias: "alias-exists");
+        var failure = Result.Failure<CreateShortenedUrlResponse>(Error.Validation("", ""));
         mockService.Setup(service => service.ShortenUrlAsync(It.IsAny<CreateShortenedUrlRequest>()))
-            .ReturnsAsync(response);
+            .ReturnsAsync(failure);
         UrlShorteningController sut = new(mockService.Object);
 
         var result = await sut.ShortenUrl(request);
 
-        var createdAtRouteResult = result.Result as CreatedAtRoute<string>;
-
-        Assert.NotNull(createdAtRouteResult);
-        HashSet<string> routeKeys = [.. createdAtRouteResult.RouteValues.Keys];
-        List<string> keys = ["Code", "Type"];
-        Assert.Collection(routeKeys, key => keys.Contains(key, Equ);
+        var badRequestResult = result.Result as BadRequest;
+        Assert.NotNull(badRequestResult);
     }
 }

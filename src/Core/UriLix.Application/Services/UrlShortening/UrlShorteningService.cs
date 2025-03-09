@@ -37,7 +37,7 @@ public class UrlShorteningService(
             shortenedUrl.Alias = request.Alias;
             await shortenedUrlRepository.InsertAsync(shortenedUrl);
             await unitOfWork.SaveChangesAsync();
-            return new CreateShortenedUrlResponse(request.Alias, FilterType.Alias);
+            return new CreateShortenedUrlResponse(request.Alias, UrlQueryType.Alias);
         }
         // If no custom alias is provided, generate a short code
         for (int attempt = 0; attempt < MAX_ATTEMPTS; attempt++)
@@ -48,7 +48,7 @@ public class UrlShorteningService(
                 shortenedUrl.ShortCode = shortCode;
                 await shortenedUrlRepository.InsertAsync(shortenedUrl);
                 await unitOfWork.SaveChangesAsync();
-                return new CreateShortenedUrlResponse(shortCode, FilterType.ShortCode);
+                return new CreateShortenedUrlResponse(shortCode, UrlQueryType.ShortCode);
             }
         }
         return Result.Failure<CreateShortenedUrlResponse>(
@@ -62,12 +62,12 @@ public class UrlShorteningService(
         throw new NotImplementedException();
     }
 
-    public async Task<Result<string>> GetOriginalUrlAsync(GetOriginalUrlQueryParam queryParams)
+    public async Task<Result<string>> GetOriginalUrlAsync(OriginalUrlQueryParam queryParams)
     {
         Expression<Func<ShortenedUrl, bool>> predicate = queryParams.Type switch
         {
-            FilterType.Alias => x => x.Alias == queryParams.Code,
-            FilterType.ShortCode => x => x.ShortCode == queryParams.Code,
+            UrlQueryType.Alias => x => x.Alias == queryParams.Code,
+            UrlQueryType.ShortCode => x => x.ShortCode == queryParams.Code,
             _ => x => false,
         };
         string? url = await shortenedUrlRepository.GetOriginalUrlByAsync(predicate);

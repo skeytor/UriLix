@@ -19,20 +19,20 @@ public class UrlShorteningController(IUrlShorteningService shorteningService) : 
             ? TypedResults.CreatedAtRoute(
                 result.Value.Code, 
                 nameof(ResolveUrl), 
-                new { result.Value.Code, Type = (int)result.Value.Type })
+                new { result.Value.Code, result.Value.Type })
             : TypedResults.BadRequest();
     }
 
     [HttpGet(Name = nameof(ResolveUrl))]
-    [ProducesResponseType<string>(StatusCodes.Status307TemporaryRedirect)]
+    [ProducesResponseType<string>(StatusCodes.Status302Found)]
     [ProducesResponseType<NotFound>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<BadRequest<ValidationProblemDetails>>(StatusCodes.Status400BadRequest)]
     public async Task<Results<RedirectHttpResult, NotFound, BadRequest<ValidationProblemDetails>>> ResolveUrl(
-        [FromQuery] GetOriginalUrlQueryParam queryParams)
+        [FromQuery] OriginalUrlQueryParam queryParams)
     {
         var result = await shorteningService.GetOriginalUrlAsync(queryParams);
         return result.IsSuccess
-            ? TypedResults.Redirect(result.Value, permanent: true)
+            ? TypedResults.Redirect(result.Value)
             : TypedResults.NotFound();
     }
 }

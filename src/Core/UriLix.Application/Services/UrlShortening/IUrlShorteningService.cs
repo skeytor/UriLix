@@ -6,6 +6,6 @@ namespace UriLix.Application.Services.UrlShortening;
 public interface IUrlShorteningService
 {
     public Task<Result<CreateShortenedUrlResponse>> ShortenUrlAsync(CreateShortenedUrlRequest request);
-    public Task<Result<string>> GetOriginalUrlAsync(GetOriginalUrlQueryParam filter);   
+    public Task<Result<string>> GetOriginalUrlAsync(OriginalUrlQueryParam filter);   
     public Task<IReadOnlyList<GetShortenedUrlResponse>> GetAllURLsAsync(Guid userId);
 }

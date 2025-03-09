@@ -114,6 +114,7 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
         Assert.True(result.IsFailure);
         Assert.Equal(ErrorType.Validation, result.Error.Type);
         Assert.Equal("ShortCode.Duplicate", result.Error.Code);
+        testOutputHelper.WriteLine($"{result.Error.Description}");
     }
 
     [Fact]
@@ -172,14 +173,14 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
     [Theory]
     [InlineData("custom-alias", "https://localhost.com/")]
     public async Task GetOriginalUrlAsync_Should_ReturnOriginalUrl_When_AliasExists(
-        string code, 
+        string alias, 
         string urlExpected)
     {
         Mock<IShortenedUrlRepository> mockRepository = new();
         Mock<IUnitOfWork> mockUnit = new();
         Mock<IUrlShortingProvider> mockProvider = new();
 
-        GetOriginalUrlQueryParam queryParams = new(code, FilterType.Alias);
+        OriginalUrlQueryParam queryParams = new(alias, UrlQueryType.Alias);
         mockRepository.Setup(x => x.GetOriginalUrlByAsync(It.IsAny<Expression<Func<ShortenedUrl, bool>>>()))
             .ReturnsAsync(urlExpected);
         UrlShorteningService sut = new(
@@ -201,7 +202,7 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
         Mock<IUnitOfWork> mockUnit = new();
         Mock<IUrlShortingProvider> mockProvider = new();
 
-        GetOriginalUrlQueryParam queryParams = new(alias, FilterType.Alias);
+        OriginalUrlQueryParam queryParams = new(alias, UrlQueryType.Alias);
         mockRepository.Setup(repo => repo.GetOriginalUrlByAsync(It.IsAny<Expression<Func<ShortenedUrl, bool>>>()))
             .Returns(Task.FromResult<string?>(null));
         UrlShorteningService sut = new(
@@ -218,15 +219,15 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
 
     [Theory]
     [InlineData("xas12", "https://localhost.com/")]
-    public async Task GetOriginalUrlAsync_Should_ReturnOriginalUrl_ShortCodeExist(
-    string code,
+    public async Task GetOriginalUrlAsync_Should_ReturnOriginalUrl_When_ShortCodeExist(
+    string shortCode,
     string urlExpected)
     {
         Mock<IShortenedUrlRepository> mockRepository = new();
         Mock<IUnitOfWork> mockUnit = new();
         Mock<IUrlShortingProvider> mockProvider = new();
 
-        GetOriginalUrlQueryParam queryParams = new(code, FilterType.ShortCode);
+        OriginalUrlQueryParam queryParams = new(shortCode, UrlQueryType.ShortCode);
         mockRepository.Setup(x => x.GetOriginalUrlByAsync(It.IsAny<Expression<Func<ShortenedUrl, bool>>>()))
             .ReturnsAsync(urlExpected);
         UrlShorteningService sut = new(
@@ -248,7 +249,7 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
         Mock<IUnitOfWork> mockUnit = new();
         Mock<IUrlShortingProvider> mockProvider = new();
 
-        GetOriginalUrlQueryParam queryParams = new(shortCode, FilterType.ShortCode);
+        OriginalUrlQueryParam queryParams = new(shortCode, UrlQueryType.ShortCode);
         mockRepository.Setup(repo => repo.GetOriginalUrlByAsync(It.IsAny<Expression<Func<ShortenedUrl, bool>>>()))
             .Returns(Task.FromResult<string?>(null));
         UrlShorteningService sut = new(
