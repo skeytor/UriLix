@@ -77,7 +77,7 @@ public class UrlShorteningControllerTest(
     }
 
     [Theory]
-    [InlineData("/api/UrlShortening", "def34", "https://www.bing.com")]
+    [InlineData("/api/UrlShortening", "def34", "https://www.bing.com/")]
     public async Task GET_ResolveUrl_Should_ReturnOriginalUrl_When_ShortCodeExists(
         string requestUri, string shortCode, string expectedUrl)
     {
@@ -87,11 +87,10 @@ public class UrlShorteningControllerTest(
 
         outputHelper.WriteLine($"Status Code: {response.StatusCode}");
         outputHelper.WriteLine($"Location Header: {response.Headers.Location}");
-        response.EnsureSuccessStatusCode();
 
-        Assert.Equal(System.Net.HttpStatusCode.PermanentRedirect, response.StatusCode);
-        Uri? locationHeader = response.Headers.Location;
-        Assert.NotNull(locationHeader);
-        Assert.Equal(expectedUrl, locationHeader?.AbsoluteUri);
+        Assert.Equal(System.Net.HttpStatusCode.Found, response.StatusCode);
+        Uri location = Assert.IsType<Uri>(response.Headers.Location);
+        Assert.NotNull(location);
+        Assert.Equal(expectedUrl, location.AbsoluteUri);
     }
 }

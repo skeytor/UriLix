@@ -22,7 +22,7 @@ public class UserControllerTest(ITestOutputHelper output)
         mockUserService.Setup(service => service.RegisterAsync(It.IsAny<CreateUserRequest>()))
             .ReturnsAsync(idExpected);
 
-        var result = await sut.CreateAsync(request);
+        var result = await sut.Register(request);
         var createdResult = result.Result as CreatedAtRoute<Guid>;
 
         output.WriteLine($"Location: {createdResult?.RouteName}");
@@ -43,7 +43,7 @@ public class UserControllerTest(ITestOutputHelper output)
         mockUserService.Setup(service => service.RegisterAsync(It.IsAny<CreateUserRequest>()))
             .ReturnsAsync(errorFailure);
 
-        var result = await sut.CreateAsync(request);
+        var result = await sut.Register(request);
 
         var badRequestResult = result.Result as BadRequest;
         Assert.NotNull(badRequestResult);
