@@ -1,7 +1,6 @@
-﻿
-namespace UriLix.API.Options;
+﻿namespace UriLix.API.Options;
 
-public class GitHubOptions
+public sealed class GitHubAuthenticationOptions
 {
     public string ClientId { get; set; } = string.Empty;
     public string ClientSecret { get; set; } = string.Empty;

@@ -1,14 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Net.Http.Headers;
-using System.Security.Claims;
-using System.Text.Json;
+using UriLix.API.Options;
 
 namespace UriLix.API.Security.Authentication;
 
 internal static class CustomOAuthExtensions
 {
-    internal static IServiceCollection AddAuthConfiguration(
+    internal static IServiceCollection AddAuthenticationProvider(
         this IServiceCollection services,
         IConfiguration configuration)
     {
@@ -17,32 +15,16 @@ internal static class CustomOAuthExtensions
             .AddGitHub(configuration);
         return services;
     }
-    internal static AuthenticationBuilder AddGitHub(this AuthenticationBuilder builder, IConfiguration configuration)
+    internal static AuthenticationBuilder AddGitHub(
+        this AuthenticationBuilder builder,
+        IConfiguration configuration)
     {
-        return builder.AddOAuth("GitHub", options =>
-        {
-            options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        builder.Services.Configure<GitHubAuthenticationOptions>(configuration.GetSection("Authentication:GitHub"));
 
-            options.ClientId = configuration["Authentication:GitHub:ClientId"]!;
-            options.ClientSecret = configuration["Authentication:GitHub:ClientSecret"]!;
+        builder.Services.ConfigureOptions<ConfigureGitHubAuthenticationOptions>();
 
-            options.AuthorizationEndpoint = "https://github.com/login/oauth/authorize";
-            options.TokenEndpoint = "https://github.com/login/oauth/access_token";
-            options.UserInformationEndpoint = "https://api.github.com/user";
-            options.SaveTokens = true;
-            options.CallbackPath = "/oauth/github-cb";
-
-            options.ClaimActions.MapJsonKey("sub", "id");
-            options.ClaimActions.MapJsonKey(ClaimTypes.Name, "login");
-
-            options.Events.OnCreatingTicket = async (ctx) =>
-            {
-                using var request = new HttpRequestMessage(HttpMethod.Get, ctx.Options.UserInformationEndpoint);
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", ctx.AccessToken);
-                using var result = await ctx.Backchannel.SendAsync(request);
-                var user = await result.Content.ReadFromJsonAsync<JsonElement>();
-                ctx.RunClaimActions(user);
-            };
-        });
+        // Options will be configured by ConfigureGitHubOAuthOptions
+        builder.AddOAuth(GitHubAuthenticationDefaults.AuthenticationScheme, delegate { });
+        return builder;
     }
 }

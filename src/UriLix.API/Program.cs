@@ -23,7 +23,7 @@ builder.Services
 
 builder.Services.AddApplicationServices();
 
-builder.Services.AddAuthConfiguration(builder.Configuration);
+builder.Services.AddAuthenticationProvider(builder.Configuration);
 
 var app = builder.Build();
 
