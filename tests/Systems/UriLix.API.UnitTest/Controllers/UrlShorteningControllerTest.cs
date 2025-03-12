@@ -11,7 +11,7 @@ public class UrlShorteningControllerTest
 {
     [Theory]
     [InlineData("https://localhost.com", "xa23s")]
-    public async Task ShortenUrl_Should_ReturnShortCode_When_ShortCodeIsNotNullAndAliasIsNull(
+    public async Task ShortenUrl_Should_GenerateShortCode_When_AliasIsNotProvided(
         string longUrl, string shortCodeExpected)
     {
         Mock<IUrlShorteningService> mockService = new();
@@ -31,7 +31,7 @@ public class UrlShorteningControllerTest
 
     [Theory]
     [InlineData("https://longurl.com", "custom-alias")]
-    public async Task ShortenUrl_Should_ReturnAlias_When_AliasIsNotNullAndShortCodeIsNull(
+    public async Task ShortenUrl_Should_ReturnAlias_When_AliasIsProvided(
         string longUrl, string aliasExpected)
     {
         Mock<IUrlShorteningService> mockService = new();
@@ -49,7 +49,7 @@ public class UrlShorteningControllerTest
     }
 
     [Fact]
-    public async Task ShortenUrl_Should_ReturnBadRequest_When_AliasProvidedAlreadyExists()
+    public async Task ShortenUrl_Should_ReturnBadRequest_When_AliasAlreadyExists()
     {
         Mock<IUrlShorteningService> mockService = new();
         CreateShortenedUrlRequest request = new("url", Alias: "alias-exists");

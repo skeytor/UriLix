@@ -2,6 +2,12 @@ using Scalar.AspNetCore;
 using UriLix.API.Extensions;
 using UriLix.Persistence;
 using UriLix.Application;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Net.Http.Headers;
+using System.Text.Json;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
+using UriLix.API.Security.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +23,8 @@ builder.Services
 
 builder.Services.AddApplicationServices();
 
+builder.Services.AddAuthenticationProvider(builder.Configuration);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -28,6 +36,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

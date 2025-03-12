@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace UriLix.API.Controllers;
@@ -13,6 +14,7 @@ public class WeatherForecastController(ILogger<WeatherForecastController> logger
 
     private readonly ILogger<WeatherForecastController> _logger = logger;
 
+    [Authorize]
     [HttpGet(Name = "GetWeatherForecast")]
     public IEnumerable<WeatherForecast> Get()
     {
