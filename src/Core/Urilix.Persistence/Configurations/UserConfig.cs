@@ -27,7 +27,7 @@ internal sealed class UserConfig : IEntityTypeConfiguration<User>
 
         builder.Property(x => x.Password)
             .HasMaxLength(200)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(x => x.CreateAt)
             .ValueGeneratedOnAdd()

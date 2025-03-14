@@ -5,4 +5,5 @@ internal static class TableName
     internal const string Users = "Users";
     internal const string ShortenedUrl = "ShortenedUrl";
     internal const string ClickStatistics = "ClickStatistic";
+    internal const string ExternalLogins = "ExternalLogin";
 }

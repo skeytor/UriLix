@@ -8,7 +8,9 @@ using UriLix.API.Security.Authentication;
 
 namespace UriLix.API.Options;
 
-internal class ConfigureGitHubAuthenticationOptions(IOptions<GitHubAuthenticationOptions> options) 
+internal class ConfigureGitHubAuthenticationOptions(
+    IOptions<GitHubAuthenticationOptions> options,
+    ILogger<ConfigureGitHubAuthenticationOptions> logger) 
     : IConfigureNamedOptions<OAuthOptions>
 {
     private readonly GitHubAuthenticationOptions _gitHubOptions = options.Value;
@@ -31,17 +33,17 @@ internal class ConfigureGitHubAuthenticationOptions(IOptions<GitHubAuthenticatio
         
         options.SaveTokens = true;
         options.CallbackPath = _gitHubOptions.CallbackPath;
-        
+
         options.ClaimActions.MapJsonKey("sub", "id");
         options.ClaimActions.MapJsonKey(ClaimTypes.Name, "login");
 
         options.Events.OnCreatingTicket = async (ctx) =>
         {
-            using var request = new HttpRequestMessage(HttpMethod.Get, ctx.Options.UserInformationEndpoint);
+            using HttpRequestMessage request = new(HttpMethod.Get, ctx.Options.UserInformationEndpoint);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", ctx.AccessToken);
-            using var result = await ctx.Backchannel.SendAsync(request);
-            var user = await result.Content.ReadFromJsonAsync<JsonElement>();
-            ctx.RunClaimActions(user);
+            using HttpResponseMessage result = await ctx.Backchannel.SendAsync(request);
+            JsonElement userData = await result.Content.ReadFromJsonAsync<JsonElement>();
+            ctx.RunClaimActions(userData);
         };
     }
 }
