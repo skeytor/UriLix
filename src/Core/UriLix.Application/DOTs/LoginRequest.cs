@@ -2,4 +2,11 @@
 
 namespace UriLix.Application.DOTs;
 
-public sealed record LoginRequest(string UserName, [DataType(DataType.Password)] string Password);
+public sealed record LoginRequest(
+    [Required]
+    [EmailAddress]
+    string Email,
+
+    [Required]
+    [DataType(DataType.Password)] 
+    string Password);

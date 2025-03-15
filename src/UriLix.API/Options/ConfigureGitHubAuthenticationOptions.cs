@@ -10,7 +10,7 @@ namespace UriLix.API.Options;
 
 internal class ConfigureGitHubAuthenticationOptions(
     IOptions<GitHubAuthenticationOptions> options,
-    ILogger<ConfigureGitHubAuthenticationOptions> logger) 
+    ILogger<ConfigureGitHubAuthenticationOptions> logger)
     : IConfigureNamedOptions<OAuthOptions>
 {
     private readonly GitHubAuthenticationOptions _gitHubOptions = options.Value;
@@ -21,7 +21,6 @@ internal class ConfigureGitHubAuthenticationOptions(
             Configure(options);
         }
     }
-
     public void Configure(OAuthOptions options)
     {
         options.ClientId = _gitHubOptions.ClientId;
@@ -30,7 +29,7 @@ internal class ConfigureGitHubAuthenticationOptions(
         options.AuthorizationEndpoint = _gitHubOptions.AuthorizationEndpoint;
         options.TokenEndpoint = _gitHubOptions.TokenEndpoint;
         options.UserInformationEndpoint = _gitHubOptions.UserInformationEndpoint;
-        
+
         options.SaveTokens = true;
         options.CallbackPath = _gitHubOptions.CallbackPath;
 

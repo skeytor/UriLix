@@ -6,7 +6,7 @@ using UriLix.Shared.UnitOfWork;
 
 namespace UriLix.Persistence;
 
-public sealed class AppDbContext(DbContextOptions<AppDbContext> options) 
+public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
     : DbContext(options), IAppDbContext, IUnitOfWork
 {
     public DbSet<User> Users { get; set; }
@@ -14,6 +14,8 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<ShortenedUrl> ShortenedUrl { get; set; }
 
     public DbSet<ClickStatistic> ClickStatistics { get; set; }
+
+    public DbSet<ExternalLogin> ExternalLogins { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

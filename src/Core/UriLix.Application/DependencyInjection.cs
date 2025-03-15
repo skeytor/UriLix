@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using UriLix.Application.Providers;
+using UriLix.Application.Services.Auth;
 using UriLix.Application.Services.UrlShortening;
 using UriLix.Application.Services.Users;
 
@@ -11,6 +12,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IUrlShorteningService, UrlShorteningService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IAuthService, AuthService>();
         services.AddTransient<IUrlShortingProvider, UrlShortingProvider>();
         return services;
     }
