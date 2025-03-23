@@ -10,7 +10,7 @@ namespace UriLix.Persistence.IntegrationTest;
 public abstract class TestBase(DatabaseFixture fixture, ITestOutputHelper outputHelper) : IAsyncLifetime
 {
     protected readonly ITestOutputHelper testOutputHelper = outputHelper;
-    protected readonly AppDbContext context = TestHelper.GetAppDbContext(fixture.ConnectionString, outputHelper);
+    protected readonly ApplicationDbContext context = TestHelper.GetAppDbContext(fixture.ConnectionString, outputHelper);
     public async Task DisposeAsync() => await context.DisposeAsync();
 
     public async Task InitializeAsync()

@@ -11,7 +11,7 @@ using UriLix.Persistence;
 
 namespace UriLix.Persistence.Migrations
 {
-    [DbContext(typeof(AppDbContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20250228210624_InitialCreate")]
     partial class InitialCreate
     {

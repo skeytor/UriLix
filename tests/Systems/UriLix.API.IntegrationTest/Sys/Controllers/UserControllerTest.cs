@@ -46,7 +46,7 @@ public class UserControllerTest(
     public async Task GET_GetUserProfileAsync_Should_Return200OK_When_UserAlreadyExists()
     {
         using IServiceScope scope = factory.Services.CreateScope();
-        IAppDbContext appDbContext = scope.ServiceProvider.GetRequiredService<IAppDbContext>();
+        IApplicationDbContext appDbContext = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
         Guid id = ( await appDbContext.Users.FirstAsync()).Id;
 
         HttpResponseMessage response = await httpClient.GetAsync($"/api/User/{id}");

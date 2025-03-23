@@ -5,7 +5,7 @@ namespace UriLix.Persistence.IntegrationTest.Initializers;
 
 internal static class DataInitializer
 {
-    internal static async Task SeedData(AppDbContext context, CancellationToken cancellationToken)
+    internal static async Task SeedData(ApplicationDbContext context, CancellationToken cancellationToken)
     {
         Faker<ShortenedUrl> shortenedLinkFaker = new Faker<ShortenedUrl>()
             .RuleFor(x => x.Id, f => f.Random.Guid())

@@ -6,8 +6,8 @@ using UriLix.Shared.UnitOfWork;
 
 namespace UriLix.Persistence;
 
-public sealed class AppDbContext(DbContextOptions<AppDbContext> options) 
-    : DbContext(options), IAppDbContext, IUnitOfWork
+public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) 
+    : DbContext(options), IApplicationDbContext, IUnitOfWork
 {
     public DbSet<User> Users { get; set; }
 
