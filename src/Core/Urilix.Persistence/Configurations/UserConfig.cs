@@ -47,7 +47,7 @@ internal sealed class UserConfig : IEntityTypeConfiguration<User>
     }
     private static void ConfigureRelationships(EntityTypeBuilder<User> builder)
     {
-        builder.HasMany(x => x.ShortenedLinks)
+        builder.HasMany(x => x.ShortenedURLs)
             .WithOne(x => x.User)
             .HasForeignKey(x => x.UserId)
             .IsRequired(false)

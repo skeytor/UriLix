@@ -10,5 +10,5 @@ public class User
     public DateTime CreateAt { get; set; }
     public DateTime UpdateAt { get; set; }
     public DateTime? LastLoginAt { get; set; }
-    public ICollection<ShortenedUrl> ShortenedLinks { get; set; } = [];
+    public ICollection<ShortenedUrl> ShortenedURLs { get; set; } = [];
 }

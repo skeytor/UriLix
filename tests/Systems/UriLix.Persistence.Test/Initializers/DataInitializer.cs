@@ -18,7 +18,7 @@ internal static class DataInitializer
             .RuleFor(x => x.FirstName, f => f.Internet.UserName())
             .RuleFor(x => x.Email, f => f.Internet.Email())
             .RuleFor(x => x.Password, f => f.Internet.Password())
-            .RuleFor(x => x.ShortenedLinks, f => [.. shortenedLinkFaker.Generate(3)]);
+            .RuleFor(x => x.ShortenedURLs, f => [.. shortenedLinkFaker.Generate(3)]);
         
         List<ShortenedUrl> links = shortenedLinkFaker.Generate(10);
         List<User> users = userFaker.Generate(10);

@@ -34,7 +34,7 @@ public class ShortenedUrlRepository(IAppDbContext _context)
               .ToListAsync();
     }
 
-    public Task<List<ShortenedUrl>> GetLinksByUser(Guid userId)
+    public Task<List<ShortenedUrl>> GetUrisByUser(Guid userId)
     {
         return context
               .ShortenedUrl
