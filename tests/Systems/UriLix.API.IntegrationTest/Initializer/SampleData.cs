@@ -32,20 +32,20 @@ internal static class SampleData
             ShortCode = "mno90",
         }
     ];
-    internal static IEnumerable<User> Users =>
+    internal static IEnumerable<ApplicationUser> Users =>
     [
-        new User()
+        new ApplicationUser()
         {
             FirstName = "John",
             LastName = "Doe",
             Email = "john@email.com",
-            Password = "Test123"
+            PasswordHash = "Test123"
         },
-        new User() {
+        new ApplicationUser() {
             FirstName = "Jane",
             LastName = "Doe",
             Email = "jane@email.com",
-            Password = "Test123"
+            PasswordHash = "Test123"
         }
     ];
 }

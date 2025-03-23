@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using UriLix.Domain.Entities;
 using UriLix.Persistence.Abstractions;
@@ -7,10 +8,8 @@ using UriLix.Shared.UnitOfWork;
 namespace UriLix.Persistence;
 
 public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) 
-    : DbContext(options), IApplicationDbContext, IUnitOfWork
+    : IdentityDbContext<ApplicationUser>(options), IApplicationDbContext, IUnitOfWork
 {
-    public DbSet<User> Users { get; set; }
-
     public DbSet<ShortenedUrl> ShortenedUrl { get; set; }
 
     public DbSet<ClickStatistic> ClickStatistics { get; set; }

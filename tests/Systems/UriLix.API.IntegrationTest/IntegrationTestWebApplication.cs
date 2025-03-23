@@ -30,7 +30,7 @@ public class IntegrationTestWebApplication<TProgram>
                 .UseSeeding((context, _) =>
                 {
                     context.Set<ShortenedUrl>().AddRange(SampleData.ShortenedURLs);
-                    context.Set<User>().AddRange(SampleData.Users);
+                    context.Set<ApplicationUser>().AddRange(SampleData.Users);
                     context.SaveChanges();
                 }));
         });

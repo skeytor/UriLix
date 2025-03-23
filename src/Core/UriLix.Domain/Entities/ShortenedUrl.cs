@@ -4,7 +4,7 @@ public class ShortenedUrl
 {
     public Guid Id { get; set; }
     public Guid? UserId { get; set; }
-    public User? User { get; set; } = default;
+    public ApplicationUser? User { get; set; } = default;
     public string OriginalUrl { get; set; } = string.Empty;
     public string? ShortCode { get; set; } = string.Empty;
     public string? Alias { get; set; } = string.Empty;

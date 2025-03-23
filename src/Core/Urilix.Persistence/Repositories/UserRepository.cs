@@ -11,10 +11,10 @@ public class UserRepository(IApplicationDbContext context) : BaseRepository(cont
     public Task<bool> EmailExistsAsync(string email) 
         => Context.Users.AnyAsync(u => u.Email == email);
 
-    public Task<User?> FindByAsync(Expression<Func<User, bool>> predicate) 
+    public Task<ApplicationUser?> FindByAsync(Expression<Func<ApplicationUser, bool>> predicate) 
         => Context.Users.FirstOrDefaultAsync(predicate);
 
-    public async Task<User> InsertAsync(User user)
+    public async Task<ApplicationUser> InsertAsync(ApplicationUser user)
     {
         await Context.Users.AddAsync(user);
         return user;

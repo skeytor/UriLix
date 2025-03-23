@@ -27,7 +27,7 @@ public class UserServiceTest
         Assert.True(result.IsSuccess);
         Assert.IsType<Guid>(result.Value);
 
-        mockRepository.Verify(x => x.InsertAsync(It.IsAny<User>()), Times.Once);
+        mockRepository.Verify(x => x.InsertAsync(It.IsAny<ApplicationUser>()), Times.Once);
         mockUnitOfWork.Verify(x => x.SaveChangesAsync(default), Times.Once);
     }
 
@@ -54,14 +54,14 @@ public class UserServiceTest
         Mock<IUserRepository> mockRepository = new();
         Mock<IUnitOfWork> mockUnitOfWork = new();
         Guid userId = Guid.NewGuid();
-        User user = new()
+        ApplicationUser user = new()
         {
-            Id = userId,
+            Id = userId.ToString(),
             FirstName = "Test",
             LastName = "Test1"
         };
         UserService sut = new(mockRepository.Object, mockUnitOfWork.Object);
-        mockRepository.Setup(repo => repo.FindByAsync(It.IsAny<Expression<Func<User, bool>>>()))
+        mockRepository.Setup(repo => repo.FindByAsync(It.IsAny<Expression<Func<ApplicationUser, bool>>>()))
             .ReturnsAsync(user);
 
         var result = await sut.GetProfileAsync(userId);
@@ -76,8 +76,8 @@ public class UserServiceTest
         Mock<IUnitOfWork> mockUnitOfWork = new();
         UserService sut = new(mockRepository.Object, mockUnitOfWork.Object);
 
-        mockRepository.Setup(repo => repo.FindByAsync(It.IsAny<Expression<Func<User, bool>>>()))
-            .Returns(Task.FromResult<User?>(null));
+        mockRepository.Setup(repo => repo.FindByAsync(It.IsAny<Expression<Func<ApplicationUser, bool>>>()))
+            .Returns(Task.FromResult<ApplicationUser?>(null));
 
         var result = await sut.GetProfileAsync(Guid.NewGuid());
 

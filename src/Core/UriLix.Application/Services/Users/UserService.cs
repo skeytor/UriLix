@@ -11,7 +11,7 @@ public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork)
 {
     public async Task<Result<UserProfileResponse>> GetProfileAsync(Guid userId)
     {
-        User? user = await userRepository.FindByAsync(x => x.Id == userId);
+        ApplicationUser? user = await userRepository.FindByAsync(x => x.Id == userId.ToString());
         if (user is null)
         {
             return Result.Failure<UserProfileResponse>(Error.NotFound(
@@ -27,9 +27,9 @@ public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork)
         {
             return Result.Failure<Guid>(Error.Validation("Email.Exists", $"Email {request.Email} already exists"));
         }
-        User user = request.MapToEntity();
+        ApplicationUser user = request.MapToEntity();
         await userRepository.InsertAsync(user);
         await unitOfWork.SaveChangesAsync();
-        return user.Id;
+        return Guid.Parse(user.Id);
     }
 }
