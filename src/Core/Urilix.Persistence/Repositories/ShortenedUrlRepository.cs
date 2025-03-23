@@ -19,25 +19,25 @@ public class ShortenedUrlRepository(IApplicationDbContext _context)
         Guid id, 
         params Expression<Func<ShortenedUrl, TProperty>>[] includes)
     {
-        IQueryable<ShortenedUrl> query = GetRelates(includes);
+        IQueryable<ShortenedUrl> query = GetIncludeEntities(includes);
         return query.FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task<ShortenedUrl?> FindByIdAsync(Guid id) 
         => await Context.ShortenedUrl.FindAsync(id);
 
-    public Task<List<ShortenedUrl>> GetLinksByUser<TProperty>(
+    public Task<List<ShortenedUrl>> GetURLsByUserId<TProperty>(
         Guid userId, 
         params Expression<Func<ShortenedUrl, TProperty>>[] includes)
     {
-        IQueryable<ShortenedUrl> query = GetRelates(includes);
+        IQueryable<ShortenedUrl> query = GetIncludeEntities(includes);
         return query
               .Where(x => x.UserId == userId)
               .AsNoTracking()
               .ToListAsync();
     }
 
-    public Task<List<ShortenedUrl>> GetUrisByUser(Guid userId)
+    public Task<List<ShortenedUrl>> GetURLsByUserId(Guid userId)
     {
         return Context
               .ShortenedUrl
@@ -61,9 +61,9 @@ public class ShortenedUrlRepository(IApplicationDbContext _context)
     public Task<string?> GetOriginalUrlByAsync(Expression<Func<ShortenedUrl, bool>> predicate)
     {
         return Context.ShortenedUrl
-            .Where(predicate)
-            .Select(x => x.OriginalUrl)
-            .FirstOrDefaultAsync();
+              .Where(predicate)
+              .Select(x => x.OriginalUrl)
+              .FirstOrDefaultAsync();
     }
 
     public async Task<ShortenedUrl> InsertAsync(ShortenedUrl shortenedLink)

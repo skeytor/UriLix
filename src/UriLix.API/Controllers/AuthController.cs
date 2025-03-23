@@ -1,15 +1,20 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using UriLix.Application.DOTs;
+using UriLix.Application.Services.Authentication;
 
 namespace UriLix.API.Controllers;
 
 [Route("api/[controller]")]
-public class AuthController : ApiBaseController
+public class AuthController(IAuthService authService) : ApiBaseController
 {
-    [HttpGet("git-hub/login")]
-    public IActionResult LoginWithGitHub()
+    [HttpPost("login")]
+    public async Task<Results<Ok<string>, BadRequest>> LoginAsync(
+        [FromBody]  LoginRequest request)
     {
-        return Challenge(new AuthenticationProperties { RedirectUri = "https://localhost:5001" }, "GitHub");
+        var result = await authService.SingInAsync(request);
+        return result.IsSuccess
+            ? TypedResults.Ok(result.Value)
+            : TypedResults.BadRequest();
     }
 }

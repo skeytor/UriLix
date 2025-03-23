@@ -7,7 +7,7 @@ namespace UriLix.Persistence.Repositories;
 public abstract class BaseRepository(IApplicationDbContext context)
 {
     protected readonly IApplicationDbContext Context = context;
-    protected IQueryable<TEntity> GetRelates<TEntity, TProperty>(
+    protected IQueryable<TEntity> GetIncludeEntities<TEntity, TProperty>(
         params Expression<Func<TEntity, TProperty>>[] includes) where TEntity : class
     {
         IQueryable<TEntity> query = Context.Set<TEntity>().AsQueryable();
