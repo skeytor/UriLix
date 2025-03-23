@@ -2,12 +2,8 @@ using Scalar.AspNetCore;
 using UriLix.API.Extensions;
 using UriLix.Persistence;
 using UriLix.Application;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Net.Http.Headers;
-using System.Text.Json;
-using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
 using UriLix.API.Security.Authentication;
+using UriLix.Domain.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +36,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.MapIdentityApi<ApplicationUser>();
 
 app.MapControllers();
 
