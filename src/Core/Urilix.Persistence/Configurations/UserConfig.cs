@@ -9,7 +9,7 @@ internal sealed class UserConfig : IEntityTypeConfiguration<ApplicationUser>
 {
     public void Configure(EntityTypeBuilder<ApplicationUser> builder)
     {
-        builder.ToTable(TableName.Users);
+        //builder.ToTable(TableName.Users);
 
         builder.Property(x => x.FirstName)
             .HasMaxLength(50)
@@ -29,7 +29,7 @@ internal sealed class UserConfig : IEntityTypeConfiguration<ApplicationUser>
 
         builder.Property(x => x.LastLoginAt)
             .IsRequired(false);
-
+        
         ConfigureRelationships(builder);
     }
     private static void ConfigureRelationships(EntityTypeBuilder<ApplicationUser> builder)

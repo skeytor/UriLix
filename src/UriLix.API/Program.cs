@@ -13,13 +13,13 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.Services.AddIdentityAuthentication(builder.Configuration);
+
 builder.Services
     .AddDatabaseProvider(builder.Configuration)
     .AddRepositories();
 
 builder.Services.AddApplicationServices();
-
-builder.Services.AddAuthenticationProvider(builder.Configuration);
 
 var app = builder.Build();
 

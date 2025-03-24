@@ -12,8 +12,8 @@ public interface IShortenedUrlRepository
         Guid id, params Expression<Func<ShortenedUrl, TProperty>>[] includes);
     Task<ShortenedUrl?> FindByIdAsync(Guid id);
     Task<List<ShortenedUrl>> GetURLsByUserId<TProperty>(
-        Guid userId, params Expression<Func<ShortenedUrl, TProperty>>[] includes);
-    Task<List<ShortenedUrl>> GetURLsByUserId(Guid userId);
+        string userId, params Expression<Func<ShortenedUrl, TProperty>>[] includes);
+    Task<List<ShortenedUrl>> GetURLsByUserId(string userId);
     Task<string?> GetOriginalUrlByAsync(Expression<Func<ShortenedUrl, bool>> predicate);
     Task<bool> ShortCodeExistsAsync(string shortCode);
     Task<bool> AliasExistsAsync(string alias);

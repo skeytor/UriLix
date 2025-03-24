@@ -8,7 +8,7 @@ namespace UriLix.API.Security.Authentication;
 
 internal static class AuthenticationExtensions
 {
-    internal static IServiceCollection AddAuthenticationProvider(
+    internal static IServiceCollection AddIdentityAuthentication(
         this IServiceCollection services,
         IConfiguration configuration)
     {

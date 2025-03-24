@@ -8,7 +8,7 @@ public sealed record CreateShortenedUrlRequest(
     [StringLength(200, ErrorMessage = "The url must at most 200 characters")]
     string OriginalUrl, 
     
-    Guid? UserId = null, 
+    string? UserId = null, 
 
     [MinLength(4, ErrorMessage = "The alias must be at least 5 characters")]
     [MaxLength(20, ErrorMessage = "The alias must be at most 20 characters")]

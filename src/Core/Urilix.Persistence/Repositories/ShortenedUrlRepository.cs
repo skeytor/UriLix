@@ -27,7 +27,7 @@ public class ShortenedUrlRepository(IApplicationDbContext _context)
         => await Context.ShortenedUrl.FindAsync(id);
 
     public Task<List<ShortenedUrl>> GetURLsByUserId<TProperty>(
-        Guid userId, 
+        string userId, 
         params Expression<Func<ShortenedUrl, TProperty>>[] includes)
     {
         IQueryable<ShortenedUrl> query = GetIncludeEntities(includes);
@@ -37,7 +37,7 @@ public class ShortenedUrlRepository(IApplicationDbContext _context)
               .ToListAsync();
     }
 
-    public Task<List<ShortenedUrl>> GetURLsByUserId(Guid userId)
+    public Task<List<ShortenedUrl>> GetURLsByUserId(string userId)
     {
         return Context
               .ShortenedUrl
