@@ -1,70 +1,75 @@
-﻿using Moq;
-using System.Linq.Expressions;
+﻿using Microsoft.AspNetCore.Identity;
+using Moq;
+using System.Security.Claims;
 using UriLix.Application.DOTs;
 using UriLix.Application.Services.Users;
+using UriLix.Application.UnitTest.Helpers;
 using UriLix.Domain.Entities;
-using UriLix.Domain.Repositories;
 using UriLix.Shared.Enums;
-using UriLix.Shared.UnitOfWork;
 
 namespace UriLix.Application.UnitTest.Services;
 
 public class UserServiceTest
 {
     [Fact]
-    public async Task RegisterAsync_Should_ReturnId_When_EmailNoExist()
+    public async Task CreateAsync_Should_ReturnId_When_EmailNoExist()
     {
-        Mock<IUserRepository> mockRepository = new();
-        Mock<IUnitOfWork> mockUnitOfWork = new();
+        var mockUserManager = MockHelper
+            .GetMockedUserManager<ApplicationUser>();
         CreateUserRequest request = new("name", "last name", "email", "password");
-        UserService sut = new(mockRepository.Object, mockUnitOfWork.Object);
+        UserService sut = new(mockUserManager.Object);
 
-        mockRepository.Setup(repo => repo.EmailExistsAsync(It.IsAny<string>()))
-            .ReturnsAsync(false);
+        mockUserManager.Setup(manager => manager.CreateAsync(
+            It.IsAny<ApplicationUser>(), 
+            It.IsAny<string>()))
+            .ReturnsAsync(IdentityResult.Success);
 
-        var result = await sut.RegisterAsync(request);
+        var result = await sut.CreateAsync(request);
 
         Assert.True(result.IsSuccess);
-        Assert.IsType<Guid>(result.Value);
-
-        mockRepository.Verify(x => x.InsertAsync(It.IsAny<ApplicationUser>()), Times.Once);
-        mockUnitOfWork.Verify(x => x.SaveChangesAsync(default), Times.Once);
+        Assert.IsType<string>(result.Value);
     }
 
     [Fact]
-    public async Task RegisterAsync_Should_ReturnFailure_When_EmailExists()
+    public async Task CreateAsync_Should_ReturnFailure_When_EmailExists()
     {
-        Mock<IUserRepository> mockRepository = new();
-        Mock<IUnitOfWork> mockUnitOfWork = new();
+        var mockUserManager = MockHelper.GetMockedUserManager<ApplicationUser>(); ;
         CreateUserRequest request = new("name", "last name", "email", "password");
-        UserService sut = new(mockRepository.Object, mockUnitOfWork.Object);
+        UserService sut = new(mockUserManager.Object);
+        mockUserManager.Setup(manager => manager.CreateAsync(
+            It.IsAny<ApplicationUser>(),
+            It.IsAny<string>()))
+            .ReturnsAsync(IdentityResult.Failed(new IdentityError { Code = "", Description = ""}));
 
-        mockRepository.Setup(repo => repo.EmailExistsAsync(It.IsAny<string>()))
-            .ReturnsAsync(true);
-
-        var result = await sut.RegisterAsync(request);
+        var result = await sut.CreateAsync(request);
 
         Assert.True(result.IsFailure);
         Assert.Equal(ErrorType.Validation, result.Error.Type);
-        Assert.Equal("Email.Exists", result.Error.Code);
+        Assert.Equal("User.CreateFailed", result.Error.Code);
     }
+
     [Fact]
     public async Task GetProfileAsync_Should_ReturnUserData_When_UserExists()
     {
-        Mock<IUserRepository> mockRepository = new();
-        Mock<IUnitOfWork> mockUnitOfWork = new();
-        Guid userId = Guid.NewGuid();
+        string id = Guid.NewGuid().ToString();
+        var mockUserManager = MockHelper.GetMockedUserManager<ApplicationUser>();
         ApplicationUser user = new()
         {
-            Id = userId.ToString(),
+            Id = id,
             FirstName = "Test",
-            LastName = "Test1"
+            LastName = "Test1",
+            Email = "test@email.com"
         };
-        UserService sut = new(mockRepository.Object, mockUnitOfWork.Object);
-        mockRepository.Setup(repo => repo.FindByAsync(It.IsAny<Expression<Func<ApplicationUser, bool>>>()))
+        ClaimsPrincipal claimsPrincipal = new(new ClaimsIdentity(
+        [
+            new(ClaimTypes.NameIdentifier, id)
+        ]));
+        mockUserManager.Setup(manager => manager.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
             .ReturnsAsync(user);
+        UserService sut = new(mockUserManager.Object);
 
-        var result = await sut.GetProfileAsync(userId);
+        var result = await sut.GetUserAsync(claimsPrincipal);
+
         Assert.True(result.IsSuccess);
         Assert.Equal(result.Value.FullName, $"{user.FirstName} {user.LastName}");
     }
@@ -72,14 +77,17 @@ public class UserServiceTest
     [Fact]
     public async Task GetProfileAsync_Should_ReturnFailure_When_UserNoExists()
     {
-        Mock<IUserRepository> mockRepository = new();
-        Mock<IUnitOfWork> mockUnitOfWork = new();
-        UserService sut = new(mockRepository.Object, mockUnitOfWork.Object);
+        var mockUserManager = MockHelper.GetMockedUserManager<ApplicationUser>();
+        UserService sut = new(mockUserManager.Object);
+        string id = Guid.NewGuid().ToString();
+        ClaimsPrincipal claimsPrincipal = new(new ClaimsIdentity(
+        [
+            new(ClaimTypes.NameIdentifier, id)
+        ]));
+        mockUserManager.Setup(manager => manager.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
+            .ReturnsAsync((ApplicationUser?)null);
 
-        mockRepository.Setup(repo => repo.FindByAsync(It.IsAny<Expression<Func<ApplicationUser, bool>>>()))
-            .Returns(Task.FromResult<ApplicationUser?>(null));
-
-        var result = await sut.GetProfileAsync(Guid.NewGuid());
+        var result = await sut.GetUserAsync(claimsPrincipal);
 
         Assert.True(result.IsFailure);
         Assert.Equal(ErrorType.NotFound, result.Error.Type);

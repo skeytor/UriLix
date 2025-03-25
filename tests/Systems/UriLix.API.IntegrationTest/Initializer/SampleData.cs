@@ -4,7 +4,7 @@ namespace UriLix.API.IntegrationTest.Initializer;
 
 internal static class SampleData
 {
-    internal static List<ShortenedUrl> ShortenedURLs =>
+    internal static IEnumerable<ShortenedUrl> ShortenedURLs =>
     [
         new ShortenedUrl()
         {
@@ -39,12 +39,14 @@ internal static class SampleData
             FirstName = "John",
             LastName = "Doe",
             Email = "john@email.com",
+            UserName = "john@email.com",
             PasswordHash = "Test123"
         },
         new ApplicationUser() {
             FirstName = "Jane",
             LastName = "Doe",
             Email = "jane@email.com",
+            UserName = "jane@email.com",
             PasswordHash = "Test123"
         }
     ];

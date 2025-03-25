@@ -1,35 +1,45 @@
-﻿using UriLix.Application.DOTs;
+﻿using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using UriLix.Application.DOTs;
 using UriLix.Application.Extensions;
 using UriLix.Domain.Entities;
-using UriLix.Domain.Repositories;
 using UriLix.Shared.Results;
-using UriLix.Shared.UnitOfWork;
 
 namespace UriLix.Application.Services.Users;
 
-public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork) : IUserService
+public class UserService(
+    UserManager<ApplicationUser> userManager) : IUserService
 {
-    public async Task<Result<UserProfileResponse>> GetProfileAsync(Guid userId)
+    public async Task<Result<UserProfileResponse>> GetUserAsync(ClaimsPrincipal principal)
     {
-        ApplicationUser? user = await userRepository.FindByAsync(x => x.Id == userId.ToString());
+        ApplicationUser? user = await userManager.GetUserAsync(principal);
         if (user is null)
         {
             return Result.Failure<UserProfileResponse>(Error.NotFound(
-                "User.NotFound", 
-                $"User with {userId} not found"));
+                "User.NotFound",
+                $"User not found"));
         }
         return user.MapToResponse();
     }
 
-    public async Task<Result<Guid>> RegisterAsync(CreateUserRequest request)
+    public async Task<Result<string>> CreateAsync(CreateUserRequest request)
     {
-        if (await userRepository.EmailExistsAsync(request.Email))
+        if (await userManager.FindByEmailAsync(request.Email) is not null)
         {
-            return Result.Failure<Guid>(Error.Validation("Email.Exists", $"Email {request.Email} already exists"));
+            return Result.Failure<string>(Error.Validation(
+                "User.AlreadyExists",
+                "User already exists"));
         }
+
         ApplicationUser user = request.MapToEntity();
-        await userRepository.InsertAsync(user);
-        await unitOfWork.SaveChangesAsync();
-        return Guid.Parse(user.Id);
+        
+        IdentityResult result = await userManager.CreateAsync(user, request.Password);
+        if (!result.Succeeded)
+        {
+            return Result.Failure<string>(Error.Validation(
+                "User.CreateFailed", 
+                result.Errors.First().Description));
+        }
+        return user.Id;
     }
 }

@@ -10,8 +10,9 @@ internal static class UserExtension
         {
             FirstName = request.FirstName,
             LastName = request.LastName,
-            Email = request.Email
+            Email = request.Email,
+            UserName = request.Email,
         };
     internal static UserProfileResponse MapToResponse(this ApplicationUser user)
-        => new($"{user.FirstName} {user.LastName}", user.Email);
+        => new($"{user.FirstName} {user.LastName}", user.Email!);
 }

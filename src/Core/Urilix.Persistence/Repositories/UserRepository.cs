@@ -14,6 +14,12 @@ public class UserRepository(IApplicationDbContext context) : BaseRepository(cont
     public Task<ApplicationUser?> FindByAsync(Expression<Func<ApplicationUser, bool>> predicate) 
         => Context.Users.FirstOrDefaultAsync(predicate);
 
+    public Task<ApplicationUser?> FindByEmailAsync(string email) 
+        => Context.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+    public async Task<ApplicationUser?> FindByIdAsync(string id) 
+        => await Context.Users.FindAsync(id);
+
     public async Task<ApplicationUser> InsertAsync(ApplicationUser user)
     {
         await Context.Users.AddAsync(user);

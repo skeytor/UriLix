@@ -12,7 +12,7 @@ using UriLix.Persistence;
 namespace UriLix.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250324013412_AddIdentityModels")]
+    [Migration("20250324025002_AddIdentityModels")]
     partial class AddIdentityModels
     {
         /// <inheritdoc />
