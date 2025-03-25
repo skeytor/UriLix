@@ -8,7 +8,7 @@ internal static class MigrationExtension
     internal static void ApplyMigrations(this WebApplication app)
     {
         using IServiceScope scope = app.Services.CreateScope();
-        AppDbContext context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         context.Database.Migrate();
     }
 }

@@ -23,14 +23,14 @@ public class IntegrationTestWebApplication<TProgram>
     {
         builder.ConfigureTestServices(services =>
         {
-            services.RemoveAll<DbContextOptions<AppDbContext>>();
-            services.AddDbContext<AppDbContext>(options =>
+            services.RemoveAll<DbContextOptions<ApplicationDbContext>>();
+            services.AddDbContext<ApplicationDbContext>(options =>
                 options
                 .UseSqlServer(_msSqlContainer.GetConnectionString())
                 .UseSeeding((context, _) =>
                 {
                     context.Set<ShortenedUrl>().AddRange(SampleData.ShortenedURLs);
-                    context.Set<User>().AddRange(SampleData.Users);
+                    context.Set<ApplicationUser>().AddRange(SampleData.Users);
                     context.SaveChanges();
                 }));
         });

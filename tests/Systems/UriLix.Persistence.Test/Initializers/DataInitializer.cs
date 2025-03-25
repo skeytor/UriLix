@@ -5,7 +5,7 @@ namespace UriLix.Persistence.IntegrationTest.Initializers;
 
 internal static class DataInitializer
 {
-    internal static async Task SeedData(AppDbContext context, CancellationToken cancellationToken)
+    internal static async Task SeedData(ApplicationDbContext context, CancellationToken cancellationToken)
     {
         Faker<ShortenedUrl> shortenedLinkFaker = new Faker<ShortenedUrl>()
             .RuleFor(x => x.Id, f => f.Random.Guid())
@@ -13,15 +13,15 @@ internal static class DataInitializer
             .RuleFor(x => x.ShortCode, f => f.Random.Hash(4))
             .RuleFor(x => x.Alias, f => f.Random.Hash(4));
 
-        Faker<User> userFaker = new Faker<User>()
-            .RuleFor(x => x.Id, f => f.Random.Guid())
+        Faker<ApplicationUser> userFaker = new Faker<ApplicationUser>()
+            .RuleFor(x => x.Id, f => f.Random.Guid().ToString())
             .RuleFor(x => x.FirstName, f => f.Internet.UserName())
             .RuleFor(x => x.Email, f => f.Internet.Email())
-            .RuleFor(x => x.Password, f => f.Internet.Password())
-            .RuleFor(x => x.ShortenedLinks, f => [.. shortenedLinkFaker.Generate(3)]);
+            .RuleFor(x => x.PasswordHash, f => f.Internet.Password())
+            .RuleFor(x => x.ShortenedURLs, f => [.. shortenedLinkFaker.Generate(3)]);
         
         List<ShortenedUrl> links = shortenedLinkFaker.Generate(10);
-        List<User> users = userFaker.Generate(10);
+        List<ApplicationUser> users = userFaker.Generate(10);
         
         await context.Users.AddRangeAsync(users, cancellationToken);
         await context.ShortenedUrl.AddRangeAsync(links, cancellationToken);

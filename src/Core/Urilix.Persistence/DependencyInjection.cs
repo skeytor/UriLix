@@ -13,8 +13,8 @@ public static class DependencyInjection
 
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
-        services.AddScoped<IAppDbContext>(options => options.GetRequiredService<AppDbContext>());
-        services.AddScoped<IUnitOfWork>(options => options.GetRequiredService<AppDbContext>());
+        services.AddScoped<IApplicationDbContext>(options => options.GetRequiredService<ApplicationDbContext>());
+        services.AddScoped<IUnitOfWork>(options => options.GetRequiredService<ApplicationDbContext>());
         services.AddScoped<IShortenedUrlRepository, ShortenedUrlRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         return services;
@@ -22,5 +22,5 @@ public static class DependencyInjection
     public static IServiceCollection AddDatabaseProvider(
         this IServiceCollection services, 
         IConfiguration configuration)
-        => services.AddSqlServer<AppDbContext>(configuration.GetConnectionString(_sectionName));
+        => services.AddSqlServer<ApplicationDbContext>(configuration.GetConnectionString(_sectionName));
 }

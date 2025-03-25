@@ -12,29 +12,32 @@ public class UserControllerTest(
     ITestOutputHelper _outputHelper)
     : BaseWebApplicationTest(_factory, _outputHelper)
 {
-    [Fact]
-    public async Task POST_CreateAsync_Should_Return201Created_When_UserIsValid()
+    [Theory]
+    [InlineData("/api/User/register")]
+    public async Task POST_CreateAsync_Should_Return201Created_When_UserIsValid(string requestUri)
     {
-        CreateUserRequest request = new("test", "test", "email@mail.com", "Password123");
+        CreateUserRequest request = new("test", "test", "email@mail.com", "Password123@");
 
-        HttpResponseMessage response = await httpClient.PostAsJsonAsync("/api/User", request);
+        HttpResponseMessage response = await httpClient.PostAsJsonAsync(requestUri, request);
 
         response.EnsureSuccessStatusCode();
-        Guid id = await response.Content.ReadFromJsonAsync<Guid>();
+        string id = await response.Content.ReadAsStringAsync();
 
         outputHelper.WriteLine($"Response Body: {id}");
         outputHelper.WriteLine($"Location:\n\t{response.Headers.Location}");
 
         Assert.Equal(System.Net.HttpStatusCode.Created, response.StatusCode);
-        Assert.NotEqual(Guid.Empty, id);
+        Assert.NotEqual(string.Empty, id);
     }
 
-    [Fact]
-    public async Task POST_CreateAsync_Should_Return400BadRequest_When_UserEmailAlreadyExists()
+    [Theory]
+    [InlineData("/api/User/register")]
+    public async Task POST_CreateAsync_Should_Return400BadRequest_When_UserAlreadyExists(
+        string requestUri)
     {
-        CreateUserRequest request = new("test", "test", "john@email.com", "Test123");
+        CreateUserRequest request = new("Jhon Doe", "test", "john@email.com", "Test123@");
 
-        HttpResponseMessage response = await httpClient.PostAsJsonAsync("/api/User", request);
+        HttpResponseMessage response = await httpClient.PostAsJsonAsync(requestUri, request);
 
         string message = await response.Content.ReadAsStringAsync();
         outputHelper.WriteLine($"ERROR MESSAGE:\n\t {message}");
@@ -46,12 +49,12 @@ public class UserControllerTest(
     public async Task GET_GetUserProfileAsync_Should_Return200OK_When_UserAlreadyExists()
     {
         using IServiceScope scope = factory.Services.CreateScope();
-        IAppDbContext appDbContext = scope.ServiceProvider.GetRequiredService<IAppDbContext>();
-        Guid id = ( await appDbContext.Users.FirstAsync()).Id;
+        IApplicationDbContext appDbContext = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
+        string id = (await appDbContext.Users.FirstAsync()).Id;
 
         HttpResponseMessage response = await httpClient.GetAsync($"/api/User/{id}");
         response.EnsureSuccessStatusCode();
-        
+
         UserProfileResponse? userProfile = await response.Content.ReadFromJsonAsync<UserProfileResponse>();
         outputHelper.WriteLine($"Response Body: {userProfile}");
         Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
@@ -61,7 +64,7 @@ public class UserControllerTest(
     [Fact]
     public async Task GET_GetUserProfileAsync_Should_Return404NotFound_When_UserNoExists()
     {
-        Guid id = Guid.NewGuid();
+        string id = Guid.NewGuid().ToString();
 
         HttpResponseMessage response = await httpClient.GetAsync($"/api/User/{id}");
 

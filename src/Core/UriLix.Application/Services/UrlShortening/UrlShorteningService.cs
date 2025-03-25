@@ -14,7 +14,8 @@ public class UrlShorteningService(
     IUnitOfWork unitOfWork) : IUrlShorteningService
 {
     private const int MAX_ATTEMPTS = 3;
-    public async Task<Result<CreateShortenedUrlResponse>> ShortenUrlAsync(CreateShortenedUrlRequest request)
+    public async Task<Result<CreateShortenedUrlResponse>> ShortenUrlAsync(
+        CreateShortenedUrlRequest request)
     {
         if (!Uri.TryCreate(request.OriginalUrl, UriKind.Absolute, out _))
         {

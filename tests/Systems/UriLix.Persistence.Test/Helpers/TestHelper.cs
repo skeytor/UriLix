@@ -6,14 +6,14 @@ namespace UriLix.Persistence.IntegrationTest.Helpers;
 
 internal static class TestHelper
 {
-    private static DbContextOptions<AppDbContext> GetMsSQLDbOptions(
+    private static DbContextOptions<ApplicationDbContext> GetMsSQLDbOptions(
         string connectionString,
         ITestOutputHelper testOutput)
-        => new DbContextOptionsBuilder<AppDbContext>()
+        => new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseSqlServer(connectionString)
             .UseAsyncSeeding(async (context, _, _) => await DataInitializer.SeedData(context, default))
             .LogTo(testOutput.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information)
             .Options;
-    internal static AppDbContext GetAppDbContext(string connectionString, ITestOutputHelper testOutput) 
+    internal static ApplicationDbContext GetAppDbContext(string connectionString, ITestOutputHelper testOutput) 
         => new(GetMsSQLDbOptions(connectionString, testOutput));
 }

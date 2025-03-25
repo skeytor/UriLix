@@ -2,12 +2,8 @@ using Scalar.AspNetCore;
 using UriLix.API.Extensions;
 using UriLix.Persistence;
 using UriLix.Application;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Net.Http.Headers;
-using System.Text.Json;
-using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
 using UriLix.API.Security.Authentication;
+using UriLix.Domain.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,13 +13,13 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.Services.AddIdentityAuthentication(builder.Configuration);
+
 builder.Services
     .AddDatabaseProvider(builder.Configuration)
     .AddRepositories();
 
 builder.Services.AddApplicationServices();
-
-builder.Services.AddAuthenticationProvider(builder.Configuration);
 
 var app = builder.Build();
 
@@ -40,6 +36,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.MapIdentityApi<ApplicationUser>();
 
 app.MapControllers();
 

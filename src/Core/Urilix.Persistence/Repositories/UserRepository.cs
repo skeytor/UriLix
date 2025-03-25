@@ -6,16 +6,23 @@ using UriLix.Persistence.Abstractions;
 
 namespace UriLix.Persistence.Repositories;
 
-public class UserRepository(IAppDbContext _context) : BaseRepository(_context), IUserRepository
+public class UserRepository(IApplicationDbContext context) : BaseRepository(context), IUserRepository
 {
-    public Task<bool> EmailExistsAsync(string email) => context.Users.AnyAsync(u => u.Email == email);
+    public Task<bool> EmailExistsAsync(string email) 
+        => Context.Users.AnyAsync(u => u.Email == email);
 
-    public Task<User?> FindByAsync(Expression<Func<User, bool>> predicate) 
-        => context.Users.FirstOrDefaultAsync(predicate);
+    public Task<ApplicationUser?> FindByAsync(Expression<Func<ApplicationUser, bool>> predicate) 
+        => Context.Users.FirstOrDefaultAsync(predicate);
 
-    public async Task<User> InsertAsync(User user)
+    public Task<ApplicationUser?> FindByEmailAsync(string email) 
+        => Context.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+    public async Task<ApplicationUser?> FindByIdAsync(string id) 
+        => await Context.Users.FindAsync(id);
+
+    public async Task<ApplicationUser> InsertAsync(ApplicationUser user)
     {
-        await context.Users.AddAsync(user);
+        await Context.Users.AddAsync(user);
         return user;
     }
 }
