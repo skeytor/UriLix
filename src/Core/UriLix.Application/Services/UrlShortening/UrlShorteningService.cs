@@ -26,6 +26,7 @@ public class UrlShorteningService(
             OriginalUrl = request.OriginalUrl,
             UserId = request.UserId,
         };
+
         // Check if the user provided a custom alias
         if (!string.IsNullOrWhiteSpace(request.Alias))
         {
@@ -40,17 +41,19 @@ public class UrlShorteningService(
             await unitOfWork.SaveChangesAsync();
             return new CreateShortenedUrlResponse(request.Alias, UrlQueryType.Alias);
         }
+
         // If no custom alias is provided, generate a short code
         for (int attempt = 0; attempt < MAX_ATTEMPTS; attempt++)
         {
             string shortCode = urlShortingProvider.GenerateShortCode();
-            if (!await shortenedUrlRepository.ShortCodeExistsAsync(shortCode))
+            if (await shortenedUrlRepository.ShortCodeExistsAsync(shortCode))
             {
-                shortenedUrl.ShortCode = shortCode;
-                await shortenedUrlRepository.InsertAsync(shortenedUrl);
-                await unitOfWork.SaveChangesAsync();
-                return new CreateShortenedUrlResponse(shortCode, UrlQueryType.ShortCode);
+                continue;
             }
+            shortenedUrl.ShortCode = shortCode;
+            await shortenedUrlRepository.InsertAsync(shortenedUrl);
+            await unitOfWork.SaveChangesAsync();
+            return new CreateShortenedUrlResponse(shortCode, UrlQueryType.ShortCode);
         }
         return Result.Failure<CreateShortenedUrlResponse>(
             Error.Validation(

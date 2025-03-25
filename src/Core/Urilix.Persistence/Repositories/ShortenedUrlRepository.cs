@@ -37,34 +37,23 @@ public class ShortenedUrlRepository(IApplicationDbContext _context)
               .ToListAsync();
     }
 
-    public Task<List<ShortenedUrl>> GetURLsByUserId(string userId)
-    {
-        return Context
-              .ShortenedUrl
-              .Where(x =>  x.UserId == userId)
-              .AsNoTracking()
-              .ToListAsync();
-    }
+    public Task<List<ShortenedUrl>> GetURLsByUserId(string userId) 
+        => Context.ShortenedUrl
+                  .Where(x => x.UserId == userId)
+                  .AsNoTracking()
+                  .ToListAsync();
 
-    public Task<string?> GetOriginalUrlAsync(string shortCode)
-    {
-        if (string.IsNullOrWhiteSpace(shortCode))
-        {
-            return Task.FromResult<string?>(null);
-        }
-        return Context.ShortenedUrl
-              .Where(x => x.ShortCode == shortCode)
-              .Select(x => x.OriginalUrl)
-              .FirstOrDefaultAsync();
-    }
+    public Task<string?> GetOriginalUrlAsync(string shortCode) 
+        => Context.ShortenedUrl
+                  .Where(x => x.ShortCode == shortCode)
+                  .Select(x => x.OriginalUrl)
+                  .FirstOrDefaultAsync();
 
-    public Task<string?> GetOriginalUrlByAsync(Expression<Func<ShortenedUrl, bool>> predicate)
-    {
-        return Context.ShortenedUrl
-              .Where(predicate)
-              .Select(x => x.OriginalUrl)
-              .FirstOrDefaultAsync();
-    }
+    public Task<string?> GetOriginalUrlByAsync(Expression<Func<ShortenedUrl, bool>> predicate) 
+        => Context.ShortenedUrl
+                  .Where(predicate)
+                  .Select(x => x.OriginalUrl)
+                  .FirstOrDefaultAsync();
 
     public async Task<ShortenedUrl> InsertAsync(ShortenedUrl shortenedLink)
     {
