@@ -6,8 +6,8 @@ using UriLix.Persistence.Abstractions;
 
 namespace UriLix.Persistence.Repositories;
 
-public class ShortenedUrlRepository(IApplicationDbContext _context) 
-    : BaseRepository(_context), IShortenedUrlRepository
+public class ShortenedUrlRepository(IApplicationDbContext context) 
+    : BaseRepository(context), IShortenedUrlRepository
 {
     public Task<bool> AliasExistsAsync(string alias) 
         => Context.ShortenedUrl.AnyAsync(x => x.Alias == alias);

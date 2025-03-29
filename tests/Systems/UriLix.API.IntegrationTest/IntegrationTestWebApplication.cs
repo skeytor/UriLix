@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
@@ -24,15 +25,14 @@ public class IntegrationTestWebApplication<TProgram>
         builder.ConfigureTestServices(services =>
         {
             services.RemoveAll<DbContextOptions<ApplicationDbContext>>();
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options
-                .UseSqlServer(_msSqlContainer.GetConnectionString())
-                .UseSeeding((context, _) =>
-                {
-                    context.Set<ShortenedUrl>().AddRange(SampleData.ShortenedURLs);
-                    context.Set<ApplicationUser>().AddRange(SampleData.Users);
-                    context.SaveChanges();
-                }));
+            services.AddSqlServer<ApplicationDbContext>(_msSqlContainer.GetConnectionString(),
+                optionsAction: options =>
+                    options.UseSeeding((context, _) =>
+                    {
+                        context.Set<ShortenedUrl>().AddRange(SampleData.ShortenedURLs);
+                        context.Set<ApplicationUser>().AddRange(SampleData.ApplicationUsers());
+                        context.SaveChanges();
+                    }));
         });
         builder.UseEnvironment("Development");
     }
