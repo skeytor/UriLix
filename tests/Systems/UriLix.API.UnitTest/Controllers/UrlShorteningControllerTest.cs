@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
+using System.Security.Claims;
 using UriLix.API.Controllers;
 using UriLix.Application.DOTs;
 using UriLix.Application.Services.UrlShortening;
@@ -16,12 +18,25 @@ public class UrlShorteningControllerTest
     {
         Mock<IUrlShorteningService> mockService = new();
         CreateShortenedUrlRequest request = new(longUrl);
-        CreateShortenedUrlResponse response = new(shortCodeExpected, UrlQueryType.ShortCode);
-        mockService.Setup(service => service.ShortenUrlAsync(It.IsAny<CreateShortenedUrlRequest>()))
-            .ReturnsAsync(response);
-        UrlShorteningController sut = new(mockService.Object);
+        DefaultHttpContext defaultHttpContext = new()
+        {
+            User = new ClaimsPrincipal(new ClaimsIdentity(
+            [
+                new(ClaimTypes.NameIdentifier, "test-user-id")
+            ]))
+        };
+        mockService.Setup(service => service.ShortenUrlAsync(It.IsAny<CreateShortenedUrlRequest>(),
+            It.IsAny<ClaimsPrincipal>()))
+            .ReturnsAsync(shortCodeExpected);
+        UrlShorteningController sut = new(mockService.Object)
+        {
+            ControllerContext = new()
+            {
+                HttpContext = defaultHttpContext
+            }
+        };
 
-        var result = await sut.ShortenUrl(request);
+        var result = await sut.ShortenUrlAsync(request);
 
         var createdAtRouteResult = result.Result as CreatedAtRoute<string>;
 
@@ -36,12 +51,26 @@ public class UrlShorteningControllerTest
     {
         Mock<IUrlShorteningService> mockService = new();
         CreateShortenedUrlRequest request = new(longUrl);
-        CreateShortenedUrlResponse response = new(aliasExpected, UrlQueryType.Alias);
-        mockService.Setup(service => service.ShortenUrlAsync(It.IsAny<CreateShortenedUrlRequest>()))
-            .ReturnsAsync(response);
-        UrlShorteningController sut = new(mockService.Object);
+        DefaultHttpContext defaultHttpContext = new()
+        {
+            User = new ClaimsPrincipal(new ClaimsIdentity(
+            [
+                new(ClaimTypes.NameIdentifier, "test-user-id")
+            ]))
+        };
+        mockService.Setup(service => service.ShortenUrlAsync(
+            It.IsAny<CreateShortenedUrlRequest>(), 
+            It.IsAny<ClaimsPrincipal>()))
+            .ReturnsAsync(aliasExpected);
+        UrlShorteningController sut = new(mockService.Object)
+        {
+            ControllerContext = new()
+            {
+                HttpContext = defaultHttpContext
+            }
+        };
 
-        var result = await sut.ShortenUrl(request);
+        var result = await sut.ShortenUrlAsync(request);
 
         var createdAtRouteResult = result.Result as CreatedAtRoute<string>;
         Assert.NotNull(createdAtRouteResult);
@@ -53,12 +82,20 @@ public class UrlShorteningControllerTest
     {
         Mock<IUrlShorteningService> mockService = new();
         CreateShortenedUrlRequest request = new("url", Alias: "alias-exists");
-        var failure = Result.Failure<CreateShortenedUrlResponse>(Error.Validation("", ""));
-        mockService.Setup(service => service.ShortenUrlAsync(It.IsAny<CreateShortenedUrlRequest>()))
+        var failure = Result.Failure<string>(Error.Validation("", ""));
+        mockService.Setup(service => service.ShortenUrlAsync(
+            It.IsAny<CreateShortenedUrlRequest>(),
+            It.IsAny<ClaimsPrincipal>()))
             .ReturnsAsync(failure);
-        UrlShorteningController sut = new(mockService.Object);
+        UrlShorteningController sut = new(mockService.Object)
+        {
+            ControllerContext = new()
+            {
+                HttpContext = new DefaultHttpContext()
+            }
+        };
 
-        var result = await sut.ShortenUrl(request);
+        var result = await sut.ShortenUrlAsync(request);
 
         var badRequestResult = result.Result as BadRequest;
         Assert.NotNull(badRequestResult);

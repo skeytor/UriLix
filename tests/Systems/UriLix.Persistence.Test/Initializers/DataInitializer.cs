@@ -10,8 +10,7 @@ internal static class DataInitializer
         Faker<ShortenedUrl> shortenedLinkFaker = new Faker<ShortenedUrl>()
             .RuleFor(x => x.Id, f => f.Random.Guid())
             .RuleFor(x => x.OriginalUrl, f => f.Internet.Url())
-            .RuleFor(x => x.ShortCode, f => f.Random.Hash(4))
-            .RuleFor(x => x.Alias, f => f.Random.Hash(4));
+            .RuleFor(x => x.ShortCode, f => f.Random.Hash(4));
 
         Faker<ApplicationUser> userFaker = new Faker<ApplicationUser>()
             .RuleFor(x => x.Id, f => f.Random.Guid().ToString())
