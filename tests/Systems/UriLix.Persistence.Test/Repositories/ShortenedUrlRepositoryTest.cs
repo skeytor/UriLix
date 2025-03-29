@@ -19,7 +19,6 @@ public class ShortenedUrlRepositoryTest(
             ShortenedUrl shortenedUrl = new()
             {
                 OriginalUrl = "https://original.com",
-                Alias = "xl1",
                 ShortCode = "https://short.com",
             };
             ShortenedUrlRepository repository = new(context);

@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using Microsoft.AspNetCore.Authentication.BearerToken;
+using System.Net.Http.Json;
 using UriLix.Application.DOTs;
 using Xunit.Abstractions;
 
@@ -19,8 +20,10 @@ public class AuthControllerTest(
         HttpResponseMessage response = await httpClient.PostAsJsonAsync(uri, request);
         response.EnsureSuccessStatusCode();
 
-        string? token = await response.Content.ReadFromJsonAsync<string>();
-        outputHelper.WriteLine($"== RESPONSE MESSAGE==\n\t{token}");
+        AccessTokenResponse? token = await response.Content.ReadFromJsonAsync<AccessTokenResponse>();
+
+        Assert.NotNull(token);
+        outputHelper.WriteLine($"== RESPONSE MESSAGE==\n\t{token?.AccessToken}");
         Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
     }
 }

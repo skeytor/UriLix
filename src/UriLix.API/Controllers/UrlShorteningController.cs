@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using UriLix.Application.DOTs;
 using UriLix.Application.Services.UrlShortening;
@@ -11,28 +12,41 @@ public class UrlShorteningController(IUrlShorteningService shorteningService) : 
     [HttpPost]
     [ProducesResponseType<string>(StatusCodes.Status201Created)]
     [ProducesResponseType<BadRequest<ValidationProblemDetails>>(StatusCodes.Status400BadRequest)]
-    public async Task<Results<CreatedAtRoute<string>, BadRequest>> ShortenUrl(
+    public async Task<Results<CreatedAtRoute<string>, BadRequest>> ShortenUrlAsync(
         [FromBody] CreateShortenedUrlRequest request)
     {
-        var result = await shorteningService.ShortenUrlAsync(request);
+        var result = await shorteningService.ShortenUrlAsync(request, HttpContext.User);
         return result.IsSuccess
             ? TypedResults.CreatedAtRoute(
-                result.Value.Code, 
-                nameof(ResolveUrl), 
-                new { result.Value.Code, result.Value.Type })
+                result.Value, 
+                nameof(ResolveUrlAsync), 
+                new { code = result.Value })
             : TypedResults.BadRequest();
     }
 
-    [HttpGet(Name = nameof(ResolveUrl))]
+    [HttpGet("{code}", Name = nameof(ResolveUrlAsync))]
     [ProducesResponseType<string>(StatusCodes.Status302Found)]
     [ProducesResponseType<NotFound>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<BadRequest<ValidationProblemDetails>>(StatusCodes.Status400BadRequest)]
-    public async Task<Results<RedirectHttpResult, NotFound, BadRequest<ValidationProblemDetails>>> ResolveUrl(
-        [FromQuery] OriginalUrlQueryParam queryParams)
+    public async Task<Results<RedirectHttpResult, NotFound, BadRequest<ValidationProblemDetails>>> ResolveUrlAsync(
+        string code)
     {
-        var result = await shorteningService.GetOriginalUrlAsync(queryParams);
+        var result = await shorteningService.GetOriginalUrlAsync(code);
         return result.IsSuccess
             ? TypedResults.Redirect(result.Value)
             : TypedResults.NotFound();
+    }
+
+    [HttpGet]
+    [Authorize]
+    [ProducesResponseType<List<ShortenedUrlResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<BadRequest>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<UnauthorizedHttpResult>(StatusCodes.Status401Unauthorized)]
+    public async Task<Results<Ok<IReadOnlyList<ShortenedUrlResponse>>, BadRequest, UnauthorizedHttpResult>> GetShortenedURLsAsync()
+    {
+        var result = await shorteningService.GetAllURLsAsync(HttpContext.User);
+        return result.IsSuccess
+            ? TypedResults.Ok(result.Value)
+            : TypedResults.BadRequest();
     }
 }

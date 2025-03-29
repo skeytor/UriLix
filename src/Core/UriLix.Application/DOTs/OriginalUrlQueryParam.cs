@@ -10,10 +10,10 @@ public sealed record OriginalUrlQueryParam(
     string Code,
 
     [Required]
-    UrlQueryType Type);
+    UrlCodeType CodeType);
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum UrlQueryType
+public enum UrlCodeType
 {
     Alias,
     ShortCode

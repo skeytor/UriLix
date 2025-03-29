@@ -33,10 +33,12 @@ public class UrlShorteningControllerTest(
     [InlineData("https://www.youtube.com/watch?v=191CJFrvBxM&t=923s", "C1stom-1alia2s")]
     public async Task POST_ShortenUrl_Should_Return201CreatedAtRoute_When_CustomAliasIsUnique(string url, string alias)
     {
-        CreateShortenedUrlRequest request = new(url, Alias: alias);
+        CreateShortenedUrlRequest request = new(url, alias);
 
         HttpResponseMessage response = await httpClient.PostAsJsonAsync("/api/UrlShortening", request);
         response.EnsureSuccessStatusCode();
+
+        outputHelper.WriteLine($"== RESPONSE MESSAGE==\n\t{response.Headers.Location}");
         string? aliasCreated = await response.Content.ReadFromJsonAsync<string>();
 
         Assert.Equal(System.Net.HttpStatusCode.Created, response.StatusCode);
@@ -51,7 +53,7 @@ public class UrlShorteningControllerTest(
     [InlineData("https://www.youtube.com/watch?v=191CJFrvBxM&t=923s", "invalid$alias")]
     public async Task POST_ShortenUrl_Should_Return404BadRequest_When_CustomAliasIsInvalid(string url, string invalidAlias)
     {
-        CreateShortenedUrlRequest request = new(url, Alias: invalidAlias);
+        CreateShortenedUrlRequest request = new(url, invalidAlias);
 
         HttpResponseMessage response = await httpClient.PostAsJsonAsync("/api/UrlShortening", request);
 
@@ -79,11 +81,9 @@ public class UrlShorteningControllerTest(
     [Theory]
     [InlineData("/api/UrlShortening", "def34", "https://www.bing.com/")]
     public async Task GET_ResolveUrl_Should_ReturnOriginalUrl_When_ShortCodeExists(
-        string requestUri, string shortCode, string expectedUrl)
+        string uri, string shortCode, string expectedUrl)
     {
-        string url = $"{requestUri}?Code={shortCode}&Type={UrlQueryType.ShortCode}";
-        outputHelper.WriteLine(url);
-        HttpResponseMessage response = await httpClient.GetAsync($"{url}");
+        HttpResponseMessage response = await httpClient.GetAsync($"{uri}/{shortCode}");
 
         outputHelper.WriteLine($"Status Code: {response.StatusCode}");
         outputHelper.WriteLine($"Location Header: {response.Headers.Location}");

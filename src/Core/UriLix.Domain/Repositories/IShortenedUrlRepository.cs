@@ -11,10 +11,10 @@ public interface IShortenedUrlRepository
     Task<ShortenedUrl?> FindByIdAsync<TProperty>(
         Guid id, params Expression<Func<ShortenedUrl, TProperty>>[] includes);
     Task<ShortenedUrl?> FindByIdAsync(Guid id);
+    Task<ShortenedUrl?> FindByShortCodeAsync(string shortCode);
     Task<List<ShortenedUrl>> GetURLsByUserId<TProperty>(
         string userId, params Expression<Func<ShortenedUrl, TProperty>>[] includes);
     Task<List<ShortenedUrl>> GetURLsByUserId(string userId);
-    Task<string?> GetOriginalUrlByAsync(Expression<Func<ShortenedUrl, bool>> predicate);
-    Task<bool> ShortCodeExistsAsync(string shortCode);
-    Task<bool> AliasExistsAsync(string alias);
+    Task<string?> GetOriginalUrlAsync(string code);
+    Task<bool> ShortUrlExistsAsync(string shortCode);
 }
