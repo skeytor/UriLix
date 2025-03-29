@@ -11,6 +11,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.2">
 			<PrivateAssets>all</PrivateAssets>
@@ -23,6 +24,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Core\UriLix.Application\UriLix.Application.csproj" />
 		<ProjectReference Include="..\Core\Urilix.Persistence\UriLix.Persistence.csproj" />
+		<ProjectReference Include="..\UriLix.Infrastructure\UriLix.Infrastructure.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<InternalsVisibleTo Include="UriLix.API.IntegrationTest" />

@@ -1,4 +1,4 @@
-﻿namespace UriLix.API.Security.Authentication;
+﻿namespace UriLix.Infrastructure.Security.Auth;
 
 public class GitHubAuthenticationDefaults
 {
