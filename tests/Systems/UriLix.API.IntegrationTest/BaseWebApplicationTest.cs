@@ -6,15 +6,15 @@ namespace UriLix.API.IntegrationTest;
 
 [Collection(nameof(WebApplicationTestCollection))]
 public abstract class BaseWebApplicationTest(
-    IntegrationTestWebApplication<Program> _factory,
-    ITestOutputHelper _outputHelper)
+    IntegrationTestWebApplication<Program> factory,
+    ITestOutputHelper outputHelper)
 {
 
-    protected readonly HttpClient httpClient = _factory.CreateClient(
+    protected readonly HttpClient httpClient = factory.CreateClient(
         new WebApplicationFactoryClientOptions
         {
             AllowAutoRedirect = false
         });
-    protected readonly IntegrationTestWebApplication<Program> factory = _factory;
-    protected readonly ITestOutputHelper outputHelper = _outputHelper;
+    protected readonly IntegrationTestWebApplication<Program> factory = factory;
+    protected readonly ITestOutputHelper outputHelper = outputHelper;
 }

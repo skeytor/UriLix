@@ -5,9 +5,9 @@ using Xunit.Abstractions;
 namespace UriLix.API.IntegrationTest.Sys.Controllers;
 
 public class UrlShorteningControllerTest(
-    IntegrationTestWebApplication<Program> _factory,
-    ITestOutputHelper _outputHelper)
-    : BaseWebApplicationTest(_factory, _outputHelper)
+    IntegrationTestWebApplication<Program> factory,
+    ITestOutputHelper outputHelper)
+    : BaseWebApplicationTest(factory, outputHelper)
 {
     //[ThingUnderTest}_Should_[ExpectedResult]_[Conditions]
     [Theory]

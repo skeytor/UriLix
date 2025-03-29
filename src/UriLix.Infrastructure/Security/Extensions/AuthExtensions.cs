@@ -25,17 +25,19 @@ public static class AuthExtensions
                 options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             })
+            .AddBearerToken(IdentityConstants.BearerScheme)
             .AddJwtBearer()
             .AddGitHub(configuration)
             .AddIdentityCookies();
 
         services
             .Configure<JwtOptions>(configuration.GetSection("Jwt"))
-            .ConfigureOptions<JwtBearerParametersConfigureOptions>();
+            .ConfigureOptions<JwtBearerConfigureOptions>();
 
         // Add Identity
         services.AddIdentityCore<ApplicationUser>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders()
             .AddApiEndpoints();
 
         // Add JWT provider
