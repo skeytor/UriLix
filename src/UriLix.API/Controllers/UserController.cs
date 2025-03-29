@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using UriLix.Application.DOTs;
@@ -21,6 +21,7 @@ public class UserController(IUserService userService) : ApiBaseController
             : TypedResults.BadRequest();
     }
 
+    [Authorize]
     [HttpGet("me", Name = nameof(GetUserInfo))]
     public async Task<Results<Ok<UserProfileResponse>, NotFound, BadRequest>> GetUserInfo()
     {

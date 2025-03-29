@@ -3,9 +3,9 @@ using UriLix.Domain.Entities;
 
 namespace UriLix.Application.Extensions;
 
-internal static class UserExtension
+public static class UserExtension
 {
-    internal static ApplicationUser MapToEntity(this CreateUserRequest request)
+    public static ApplicationUser ToEntity(this CreateUserRequest request)
         => new()
         {
             FirstName = request.FirstName,
@@ -13,6 +13,6 @@ internal static class UserExtension
             Email = request.Email,
             UserName = request.Email,
         };
-    internal static UserProfileResponse MapToResponse(this ApplicationUser user)
+    public static UserProfileResponse ToResponse(this ApplicationUser user)
         => new($"{user.FirstName} {user.LastName}", user.Email!);
 }

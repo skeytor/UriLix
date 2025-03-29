@@ -1,6 +1,8 @@
-﻿namespace UriLix.API.Options;
+﻿using Microsoft.AspNetCore.Http;
 
-public sealed class GitHubAuthenticationOptions
+namespace UriLix.Infrastructure.Security.Auth;
+
+public sealed class GitHubAuthOptions
 {
     public string ClientId { get; set; } = string.Empty;
     public string ClientSecret { get; set; } = string.Empty;

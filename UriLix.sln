@@ -35,6 +35,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "integrationtests", "integra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UriLix.API.UnitTest", "tests\Systems\UriLix.API.UnitTest\UriLix.API.UnitTest.csproj", "{45B31BB4-9438-4102-B80C-87A3ADAEB91A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UriLix.Infrastructure", "src\UriLix.Infrastructure\UriLix.Infrastructure.csproj", "{18E4C60F-8215-4C07-8CC4-B6AB3B40070F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{45B31BB4-9438-4102-B80C-87A3ADAEB91A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45B31BB4-9438-4102-B80C-87A3ADAEB91A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45B31BB4-9438-4102-B80C-87A3ADAEB91A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18E4C60F-8215-4C07-8CC4-B6AB3B40070F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18E4C60F-8215-4C07-8CC4-B6AB3B40070F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18E4C60F-8215-4C07-8CC4-B6AB3B40070F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18E4C60F-8215-4C07-8CC4-B6AB3B40070F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -99,6 +105,7 @@ Global
 		{D01BF4C4-9366-40D8-9675-FD0DEA6D8B22} = {150D0968-096E-4096-96AA-0A36BB855142}
 		{55F47D11-9C07-4352-9E19-B88E454ED256} = {150D0968-096E-4096-96AA-0A36BB855142}
 		{45B31BB4-9438-4102-B80C-87A3ADAEB91A} = {D01BF4C4-9366-40D8-9675-FD0DEA6D8B22}
+		{18E4C60F-8215-4C07-8CC4-B6AB3B40070F} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7C24ED0E-C2FE-432D-A10A-A6B1145FAEFD}

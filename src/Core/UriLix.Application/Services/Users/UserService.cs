@@ -19,7 +19,7 @@ public class UserService(
                 "User.NotFound",
                 $"User not found"));
         }
-        return user.MapToResponse();
+        return user.ToResponse();
     }
 
     public async Task<Result<string>> CreateAsync(CreateUserRequest request)
@@ -31,7 +31,7 @@ public class UserService(
                 "User already exists"));
         }
 
-        ApplicationUser user = request.MapToEntity();
+        ApplicationUser user = request.ToEntity();
         
         IdentityResult result = await userManager.CreateAsync(user, request.Password);
         if (!result.Succeeded)
