@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using UriLix.Application.DOTs;
 using UriLix.Application.Extensions;
 using UriLix.Application.Providers;
@@ -38,7 +37,7 @@ public class UrlShorteningService(
         {
             if (await shortenedUrlRepository.ShortUrlExistsAsync(request.Alias))
             {
-                return Result.Failure<string>(Error.Conflict(
+                return Result.Failure<string>(Error.Failure(
                     "Alias.Duplicate",
                     $"Alias with name: {request.Alias} already exists"));
             }
@@ -62,7 +61,7 @@ public class UrlShorteningService(
             return shortCode;
         }
         return Result.Failure<string>(
-            Error.Validation(
+            Error.Failure(
                 "ShortCode.Duplicate",
                 $"Failed to generate a unique short code after {MAX_ATTEMPTS} attempts"));
     }

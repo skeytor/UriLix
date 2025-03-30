@@ -8,7 +8,7 @@ using UriLix.Domain.Entities;
 
 namespace UriLix.Infrastructure.Security.Auth.Providers;
 
-public class JWTProvider(IOptions<JwtOptions> options) : IJWTProvider
+public sealed class JWTProvider(IOptions<JwtOptions> options) : IJWTProvider
 {
     private readonly JwtOptions options = options.Value;
     public string GenerateToken(ApplicationUser user)
