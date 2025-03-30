@@ -8,9 +8,11 @@ using UriLix.Application.Services.UrlShortening;
 namespace UriLix.API.Controllers;
 
 [Route("api/[controller]")]
+[Authorize]
 public class UrlShorteningController(IUrlShorteningService shorteningService) : ApiBaseController
 {
     [HttpPost]
+    [AllowAnonymous]
     [ProducesResponseType<string>(StatusCodes.Status201Created)]
     [ProducesResponseType<BadRequest<ValidationProblemDetails>>(StatusCodes.Status400BadRequest)]
     public async Task<Results<CreatedAtRoute<string>, BadRequest<ValidationProblemDetails>>> ShortenUrlAsync(
@@ -26,6 +28,7 @@ public class UrlShorteningController(IUrlShorteningService shorteningService) : 
     }
 
     [HttpGet("{code}", Name = nameof(ResolveUrlAsync))]
+    [AllowAnonymous]
     [ProducesResponseType<string>(StatusCodes.Status302Found)]
     [ProducesResponseType<NotFound>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<BadRequest<ValidationProblemDetails>>(StatusCodes.Status400BadRequest)]
@@ -39,7 +42,6 @@ public class UrlShorteningController(IUrlShorteningService shorteningService) : 
     }
 
     [HttpGet]
-    [Authorize]
     [ProducesResponseType<List<ShortenedUrlResponse>>(StatusCodes.Status200OK)]
     [ProducesResponseType<BadRequest>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<UnauthorizedHttpResult>(StatusCodes.Status401Unauthorized)]
@@ -49,5 +51,18 @@ public class UrlShorteningController(IUrlShorteningService shorteningService) : 
         return result.IsSuccess
             ? TypedResults.Ok(result.Value)
             : TypedResults.BadRequest(result.ToValidationProblemDetails());
+    }
+
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType<Guid>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<Results<Ok<Guid>, NotFound<ValidationProblemDetails>>> UpdateAsync(
+        [FromRoute] Guid id, 
+        [FromBody] UpdateShortenedUrlRequest request)
+    {
+        var result = await shorteningService.UpdateAsync(id, request);
+        return result.IsSuccess
+            ? TypedResults.Ok(result.Value)
+            : TypedResults.NotFound(result.ToValidationProblemDetails());
     }
 }

@@ -90,4 +90,18 @@ public class UrlShorteningService(
         }
         return shortenedUrl.OriginalUrl;
     }
+
+    public async Task<Result<Guid>> UpdateAsync(Guid id, UpdateShortenedUrlRequest request)
+    {
+        ShortenedUrl? shortenedUrl = await shortenedUrlRepository.FindByIdAsync(id);
+        if (shortenedUrl is null)
+        {
+            return Result.Failure<Guid>(Error.NotFound(
+                "Url.NotFound",
+                $"The URL with id: {id} was not found"));
+        }
+        shortenedUrl.OriginalUrl = request.OriginalUrl;
+        await unitOfWork.SaveChangesAsync();
+        return shortenedUrl.Id;
+    }
 }
