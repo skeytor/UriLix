@@ -6,11 +6,9 @@ using UriLix.Persistence.Abstractions;
 
 namespace UriLix.Persistence.Repositories;
 
-public class ShortenedUrlRepository(IApplicationDbContext _context) 
-    : BaseRepository(_context), IShortenedUrlRepository
+public class ShortenedUrlRepository(IApplicationDbContext context) 
+    : BaseRepository(context), IShortenedUrlRepository
 {
-    public Task<bool> AliasExistsAsync(string alias) 
-        => Context.ShortenedUrl.AnyAsync(x => x.Alias == alias);
 
     public void DeleteAsync(Guid id, ShortenedUrl shortenedLink) 
         => Context.ShortenedUrl.Remove(shortenedLink);
@@ -43,15 +41,9 @@ public class ShortenedUrlRepository(IApplicationDbContext _context)
                   .AsNoTracking()
                   .ToListAsync();
 
-    public Task<string?> GetOriginalUrlAsync(string shortCode) 
+    public Task<string?> GetOriginalUrlAsync(string code) 
         => Context.ShortenedUrl
-                  .Where(x => x.ShortCode == shortCode)
-                  .Select(x => x.OriginalUrl)
-                  .FirstOrDefaultAsync();
-
-    public Task<string?> GetOriginalUrlByAsync(Expression<Func<ShortenedUrl, bool>> predicate) 
-        => Context.ShortenedUrl
-                  .Where(predicate)
+                  .Where(x => x.ShortCode == code)
                   .Select(x => x.OriginalUrl)
                   .FirstOrDefaultAsync();
 
@@ -61,9 +53,12 @@ public class ShortenedUrlRepository(IApplicationDbContext _context)
         return shortenedLink;
     }
 
-    public Task<bool> ShortCodeExistsAsync(string shortCode) 
+    public Task<bool> ShortUrlExistsAsync(string shortCode) 
         => Context.ShortenedUrl.AnyAsync(x => x.ShortCode == shortCode);
 
     public void UpdateAsync(ShortenedUrl shortenedLink) 
         => Context.ShortenedUrl.Update(shortenedLink);
+
+    public Task<ShortenedUrl?> FindByShortCodeAsync(string shortCode) 
+        => Context.ShortenedUrl.FirstOrDefaultAsync(x => x.ShortCode == shortCode);
 }

@@ -7,6 +7,7 @@ public sealed record LoginRequest(
     [EmailAddress]
     [DataType(DataType.EmailAddress)]
     string Email,
-    
+
+    [Required]
     [DataType(DataType.Password)] 
     string Password);

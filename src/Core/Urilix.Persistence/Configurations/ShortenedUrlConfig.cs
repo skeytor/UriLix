@@ -16,14 +16,9 @@ internal sealed class ShortenedUrlConfig : IEntityTypeConfiguration<ShortenedUrl
         builder.Property(x => x.OriginalUrl)
             .HasMaxLength(256)
             .IsRequired();
-        
-        builder.Property(x => x.ShortCode)
-            .HasMaxLength(5)
-            .IsRequired(false);
 
-        builder.Property(x => x.Alias)
-            .HasMaxLength(20)
-            .IsRequired(false);
+        builder.Property(x => x.ShortCode)
+            .HasMaxLength(20);
 
         builder.Property(x => x.CreateAt)
             .ValueGeneratedOnAdd()
@@ -34,12 +29,7 @@ internal sealed class ShortenedUrlConfig : IEntityTypeConfiguration<ShortenedUrl
             .HasDefaultValueSql("GETDATE()");
 
         builder.HasIndex(x => x.ShortCode)
-            .IsUnique()
-            .HasFilter("[ShortCode] IS NOT NULL AND [ShortCode] <> ''");
-
-        builder.HasIndex(x => x.Alias)
-            .IsUnique()
-            .HasFilter("[Alias] IS NOT NULL AND [Alias] <> ''");
+            .IsUnique();
 
         ConfigureRelationships(builder);
     }

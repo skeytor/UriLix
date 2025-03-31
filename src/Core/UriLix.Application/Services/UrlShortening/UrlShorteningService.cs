@@ -1,5 +1,6 @@
-﻿using System.Linq.Expressions;
+﻿using System.Security.Claims;
 using UriLix.Application.DOTs;
+using UriLix.Application.Extensions;
 using UriLix.Application.Providers;
 using UriLix.Domain.Entities;
 using UriLix.Domain.Repositories;
@@ -14,73 +15,93 @@ public class UrlShorteningService(
     IUnitOfWork unitOfWork) : IUrlShorteningService
 {
     private const int MAX_ATTEMPTS = 3;
-    public async Task<Result<CreateShortenedUrlResponse>> ShortenUrlAsync(
-        CreateShortenedUrlRequest request)
+    public async Task<Result<string>> ShortenUrlAsync(
+        CreateShortenedUrlRequest request, ClaimsPrincipal? principal = null)
     {
         if (!Uri.TryCreate(request.OriginalUrl, UriKind.Absolute, out _))
         {
-            return Result.Failure<CreateShortenedUrlResponse>(Error.Failure("Url.Invalid", "Invalid URL Format"));
+            return Result.Failure<string>(Error.Failure(
+                "Url.Invalid", 
+                "Invalid URL Format"));
         }
-        ShortenedUrl shortenedUrl = new()
+
+        ShortenedUrl shortenedUrl = request.ToEntity();
+
+        if (principal is not null and { Identity.IsAuthenticated: true })
         {
-            OriginalUrl = request.OriginalUrl,
-            UserId = request.UserId,
-        };
+            shortenedUrl.UserId = principal.FindFirstValue(ClaimTypes.NameIdentifier);;
+        }
 
         // Check if the user provided a custom alias
         if (!string.IsNullOrWhiteSpace(request.Alias))
         {
-            if (await shortenedUrlRepository.AliasExistsAsync(request.Alias))
+            if (await shortenedUrlRepository.ShortUrlExistsAsync(request.Alias))
             {
-                return Result.Failure<CreateShortenedUrlResponse>(Error.Validation(
+                return Result.Failure<string>(Error.Failure(
                     "Alias.Duplicate",
                     $"Alias with name: {request.Alias} already exists"));
             }
-            shortenedUrl.Alias = request.Alias;
+            shortenedUrl.ShortCode = request.Alias;
             await shortenedUrlRepository.InsertAsync(shortenedUrl);
             await unitOfWork.SaveChangesAsync();
-            return new CreateShortenedUrlResponse(request.Alias, UrlQueryType.Alias);
+            return request.Alias;
         }
 
         // If no custom alias is provided, generate a short code
         for (int attempt = 0; attempt < MAX_ATTEMPTS; attempt++)
         {
             string shortCode = urlShortingProvider.GenerateShortCode();
-            if (await shortenedUrlRepository.ShortCodeExistsAsync(shortCode))
+            if (await shortenedUrlRepository.ShortUrlExistsAsync(shortCode))
             {
                 continue;
             }
             shortenedUrl.ShortCode = shortCode;
             await shortenedUrlRepository.InsertAsync(shortenedUrl);
             await unitOfWork.SaveChangesAsync();
-            return new CreateShortenedUrlResponse(shortCode, UrlQueryType.ShortCode);
+            return shortCode;
         }
-        return Result.Failure<CreateShortenedUrlResponse>(
-            Error.Validation(
+        return Result.Failure<string>(
+            Error.Failure(
                 "ShortCode.Duplicate",
                 $"Failed to generate a unique short code after {MAX_ATTEMPTS} attempts"));
     }
 
-    public Task<IReadOnlyList<GetShortenedUrlResponse>> GetAllURLsAsync(Guid userId)
+    public async Task<Result<IReadOnlyList<ShortenedUrlResponse>>> GetAllURLsAsync(ClaimsPrincipal principal)
     {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Result<string>> GetOriginalUrlAsync(OriginalUrlQueryParam queryParams)
-    {
-        Expression<Func<ShortenedUrl, bool>> predicate = queryParams.Type switch
+        string? userId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrWhiteSpace(userId))
         {
-            UrlQueryType.Alias => x => x.Alias == queryParams.Code,
-            UrlQueryType.ShortCode => x => x.ShortCode == queryParams.Code,
-            _ => x => false,
-        };
-        string? url = await shortenedUrlRepository.GetOriginalUrlByAsync(predicate);
-        if (url is null)
+            return Result.Failure<IReadOnlyList<ShortenedUrlResponse>>(Error.Validation("", ""));
+        }
+        return (await shortenedUrlRepository.GetURLsByUserId(userId))
+            .ToResponse()
+            .ToList()
+            .AsReadOnly();
+
+    }
+    public async Task<Result<string>> GetOriginalUrlAsync(string alias)
+    {
+        ShortenedUrl? shortenedUrl = await shortenedUrlRepository.FindByShortCodeAsync(alias);
+        if (shortenedUrl is null)
         {
             return Result.Failure<string>(Error.NotFound(
                 "Url.NotFound", 
-                $"The code: {queryParams.Code} was not found"));
+                $"The code: {alias} was not found"));
         }
-        return url;
+        return shortenedUrl.OriginalUrl;
+    }
+
+    public async Task<Result<Guid>> UpdateAsync(Guid id, UpdateShortenedUrlRequest request)
+    {
+        ShortenedUrl? shortenedUrl = await shortenedUrlRepository.FindByIdAsync(id);
+        if (shortenedUrl is null)
+        {
+            return Result.Failure<Guid>(Error.NotFound(
+                "Url.NotFound",
+                $"The URL with id: {id} was not found"));
+        }
+        shortenedUrl.OriginalUrl = request.OriginalUrl;
+        await unitOfWork.SaveChangesAsync();
+        return shortenedUrl.Id;
     }
 }

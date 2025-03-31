@@ -52,7 +52,7 @@ public class UserControllerTest(
         IApplicationDbContext appDbContext = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
         string id = (await appDbContext.Users.FirstAsync()).Id;
 
-        HttpResponseMessage response = await httpClient.GetAsync($"/api/User/{id}");
+        HttpResponseMessage response = await httpClient.GetAsync($"/api/User/me");
         response.EnsureSuccessStatusCode();
 
         UserProfileResponse? userProfile = await response.Content.ReadFromJsonAsync<UserProfileResponse>();

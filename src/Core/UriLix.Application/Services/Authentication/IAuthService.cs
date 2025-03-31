@@ -5,5 +5,5 @@ namespace UriLix.Application.Services.Authentication;
 
 public interface IAuthService
 {
-    public Task<Result<string>> SignIn(LoginRequest request);
+    public Task<Result<JwtAccessTokenResponse>> SignIn(LoginRequest request);
 }

@@ -5,7 +5,7 @@ using UriLix.Infrastructure.Security.Auth;
 
 namespace UriLix.Infrastructure.Security.Options;
 
-internal sealed class JwtBearerParametersConfigureOptions(IOptions<JwtOptions> jwtOptions) 
+internal sealed class JwtBearerConfigureOptions(IOptions<JwtOptions> jwtOptions) 
     : IConfigureNamedOptions<JwtBearerOptions>
 {
     private readonly JwtOptions jwtOptions = jwtOptions.Value;
