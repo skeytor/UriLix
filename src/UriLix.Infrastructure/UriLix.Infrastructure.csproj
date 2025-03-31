@@ -17,4 +17,8 @@
     <ProjectReference Include="..\Core\Urilix.Persistence\UriLix.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Security\Authorization\" />
+  </ItemGroup>
+
 </Project>
