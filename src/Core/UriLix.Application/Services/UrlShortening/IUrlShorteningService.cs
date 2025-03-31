@@ -10,4 +10,5 @@ public interface IUrlShorteningService
         CreateShortenedUrlRequest request, ClaimsPrincipal? principal = null);
     public Task<Result<string>> GetOriginalUrlAsync(string Code);   
     public Task<Result<IReadOnlyList<ShortenedUrlResponse>>> GetAllURLsAsync(ClaimsPrincipal principal);
+    public Task<Result<Guid>> UpdateAsync(Guid id, UpdateShortenedUrlRequest request);
 }

@@ -1,8 +1,9 @@
-﻿using UriLix.Domain.Entities;
+﻿using UriLix.Application.DOTs;
+using UriLix.Domain.Entities;
 
 namespace UriLix.Application.Providers;
 
 public interface IJWTProvider
 {
-    string GenerateToken(ApplicationUser user);
+    JwtAccessTokenResponse GenerateToken(ApplicationUser user);
 }
