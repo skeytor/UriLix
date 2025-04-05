@@ -5,14 +5,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using UriLix.Application.Providers;
 using UriLix.Domain.Entities;
-using UriLix.Infrastructure.Security.Auth;
 using UriLix.Infrastructure.Security.Auth.Providers;
 using UriLix.Infrastructure.Security.Options;
 using UriLix.Persistence;
 
-namespace UriLix.Infrastructure.Security.Extensions;
+namespace UriLix.Infrastructure.Security.Auth;
 
-public static class AuthExtensions
+public static class AuthDependencyInjection
 {
     public static IServiceCollection AddIdentityAuthProvider(
     this IServiceCollection services,

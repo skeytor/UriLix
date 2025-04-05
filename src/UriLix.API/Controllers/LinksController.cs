@@ -9,14 +9,15 @@ namespace UriLix.API.Controllers;
 
 [Route("api/[controller]")]
 [Authorize]
-public class UrlShorteningController(IUrlShorteningService shorteningService) : ApiBaseController
+public class LinksController(
+    IUrlShorteningService shorteningService) : ApiBaseController
 {
     [HttpPost]
     [AllowAnonymous]
     [ProducesResponseType<string>(StatusCodes.Status201Created)]
     [ProducesResponseType<BadRequest<ValidationProblemDetails>>(StatusCodes.Status400BadRequest)]
     public async Task<Results<CreatedAtRoute<string>, BadRequest<ValidationProblemDetails>>> ShortenUrlAsync(
-        [FromBody] CreateShortenedUrlRequest request)
+        [FromBody] CreateShortenUrlRequest request)
     {
         var result = await shorteningService.ShortenUrlAsync(request, HttpContext.User);
         return result.IsSuccess
@@ -35,22 +36,10 @@ public class UrlShorteningController(IUrlShorteningService shorteningService) : 
     public async Task<Results<RedirectHttpResult, NotFound<ValidationProblemDetails>>> ResolveUrlAsync(
         string code)
     {
-        var result = await shorteningService.GetOriginalUrlAsync(code);
+        var result = await shorteningService.GetOriginalUrlAsync(code, Request);
         return result.IsSuccess
             ? TypedResults.Redirect(result.Value)
             : TypedResults.NotFound(result.ToValidationProblemDetails());
-    }
-
-    [HttpGet]
-    [ProducesResponseType<List<ShortenedUrlResponse>>(StatusCodes.Status200OK)]
-    [ProducesResponseType<BadRequest>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<UnauthorizedHttpResult>(StatusCodes.Status401Unauthorized)]
-    public async Task<Results<Ok<IReadOnlyList<ShortenedUrlResponse>>, BadRequest<ValidationProblemDetails>>> GetShortenedURLsAsync()
-    {
-        var result = await shorteningService.GetAllURLsAsync(HttpContext.User);
-        return result.IsSuccess
-            ? TypedResults.Ok(result.Value)
-            : TypedResults.BadRequest(result.ToValidationProblemDetails());
     }
 
     [HttpPut("{id:guid}")]
@@ -58,7 +47,7 @@ public class UrlShorteningController(IUrlShorteningService shorteningService) : 
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok<Guid>, NotFound<ValidationProblemDetails>>> UpdateAsync(
         [FromRoute] Guid id, 
-        [FromBody] UpdateShortenedUrlRequest request)
+        [FromBody] UpdateShortenUrlRequest request)
     {
         var result = await shorteningService.UpdateAsync(id, request);
         return result.IsSuccess

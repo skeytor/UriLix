@@ -1,9 +1,11 @@
 using Scalar.AspNetCore;
 using UriLix.API.Extensions;
-using UriLix.Infrastructure.Security.Extensions;
 using UriLix.Persistence;
 using UriLix.Application;
 using UriLix.Domain.Entities;
+using UriLix.Infrastructure.Security.Auth;
+using UriLix.Infrastructure.Security.Authorization;
+using UriLix.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,13 +15,21 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+// Add Authorization policies
+builder.Services.AddPolicyAuthorization();
+
+// Add authentication
 builder.Services.AddIdentityAuthProvider(builder.Configuration);
 
 builder.Services
     .AddDatabaseProvider(builder.Configuration)
     .AddRepositories();
 
-builder.Services.AddApplicationServices();
+builder.Services
+    .AddApplicationServices()
+    .AddCache(builder.Configuration);
+
+builder.Services.AddServicesProviders();
 
 var app = builder.Build();
 

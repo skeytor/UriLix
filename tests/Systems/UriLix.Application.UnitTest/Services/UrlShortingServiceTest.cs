@@ -26,10 +26,12 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
         mockProvider
             .Setup(x => x.GenerateShortCode())
             .Returns(shortCodeExpected);
-        CreateShortenedUrlRequest request = new(url);
+        CreateShortenUrlRequest request = new(url);
         UrlShorteningService sut = new(
             mockRepository.Object,
             mockProvider.Object,
+            default!,
+            default!,
             mockUnit.Object);
 
         var result = await sut.ShortenUrlAsync(request);
@@ -49,8 +51,13 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
         Mock<IShortenedUrlRepository> mockRepository = new();
         Mock<IUrlShortingProvider> mockProvider = new();
         Mock<IUnitOfWork> mockUnitOfWork = new();
-        UrlShorteningService sut = new(mockRepository.Object, mockProvider.Object, mockUnitOfWork.Object);
-        CreateShortenedUrlRequest request = new(invalidUrl);
+        UrlShorteningService sut = new(
+            mockRepository.Object,
+            mockProvider.Object,
+            default!,
+            default!,
+            mockUnitOfWork.Object);
+        CreateShortenUrlRequest request = new(invalidUrl);
 
         var result = await sut.ShortenUrlAsync(request);
 
@@ -73,12 +80,14 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
             .SetupSequence(x => x.GenerateShortCode())
             .Returns(invalidCode) // First attempt
             .Returns(shortCodeExpected); // Second attempt
-        CreateShortenedUrlRequest request = new(url);
+        CreateShortenUrlRequest request = new(url);
         UrlShorteningService sut = new(
             mockRepository.Object,
             mockProvider.Object,
+            default!,
+            default!,
             mockUnit.Object);
-        
+
         var result = await sut.ShortenUrlAsync(request);
         
         Assert.True(result.IsSuccess);
@@ -103,10 +112,12 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
         mockProvider.Setup(x => x.GenerateShortCode())
             .Returns(string.Empty);
 
-        CreateShortenedUrlRequest request = new(url);
+        CreateShortenUrlRequest request = new(url);
         UrlShorteningService sut = new(
             mockRepository.Object,
             mockProvider.Object,
+            default!,
+            default!,
             mockUnit.Object);
 
         var result = await sut.ShortenUrlAsync(request);
@@ -126,7 +137,7 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
 
         string url = "https://localhost.com";
         string aliasExpected = "my-custom-alias";
-        CreateShortenedUrlRequest request = new(url, Alias: aliasExpected);
+        CreateShortenUrlRequest request = new(url, Alias: aliasExpected);
 
         mockRepository.Setup(x => x.ShortUrlExistsAsync(It.IsAny<string>()))
             .ReturnsAsync(false);
@@ -134,6 +145,8 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
         UrlShorteningService sut = new(
             mockRepository.Object,
             mockProvider.Object,
+            default!,
+            default!,
             mockUnit.Object);
 
         var result = await sut.ShortenUrlAsync(request);
@@ -154,12 +167,14 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
         Mock<IUrlShortingProvider> mockProvider = new();
         string url = "https://localhost.com";
         string alias = "my-custom-alias";
-        CreateShortenedUrlRequest request = new(url, Alias: alias);
+        CreateShortenUrlRequest request = new(url, Alias: alias);
         mockRepository.Setup(x => x.ShortUrlExistsAsync(It.IsAny<string>()))
             .ReturnsAsync(true);
         UrlShorteningService sut = new(
             mockRepository.Object,
             mockProvider.Object,
+            default!,
+            default!,
             mockUnit.Object);
 
         var result = await sut.ShortenUrlAsync(request);
@@ -185,9 +200,11 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
         UrlShorteningService sut = new(
             mockRepository.Object,
             mockProvider.Object,
+            default!,
+            default!,
             mockUnit.Object);
 
-        var result = await sut.GetOriginalUrlAsync(alias);
+        var result = await sut.GetOriginalUrlAsync(alias, default);
         
         Assert.True(result.IsSuccess);
         Assert.Equal(urlExpected, result.Value);
@@ -205,9 +222,11 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
         UrlShorteningService sut = new(
             mockRepository.Object,
             mockProvider.Object,
+            default!,
+            default!,
             mockUnit.Object);
 
-        var result = await sut.GetOriginalUrlAsync(alias);
+        var result = await sut.GetOriginalUrlAsync(alias, default!);
 
         Assert.True(result.IsFailure);
         Assert.Equal(ErrorType.NotFound, result.Error.Type);
@@ -229,9 +248,11 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
         UrlShorteningService sut = new(
             mockRepository.Object,
             mockProvider.Object,
+            default!,
+            default!,
             mockUnit.Object);
 
-        var result = await sut.GetOriginalUrlAsync(shortCode);
+        var result = await sut.GetOriginalUrlAsync(shortCode, default!);
 
         Assert.True(result.IsSuccess);
         Assert.Equal(urlExpected, result.Value);
@@ -249,9 +270,11 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
         UrlShorteningService sut = new(
             mockRepository.Object,
             mockProvider.Object,
+            default!,
+            default!,
             mockUnit.Object);
 
-        var result = await sut.GetOriginalUrlAsync(shortCode);
+        var result = await sut.GetOriginalUrlAsync(shortCode, default!);
 
         Assert.True(result.IsFailure);
         Assert.Equal(ErrorType.NotFound, result.Error.Type);

@@ -7,7 +7,7 @@ using UriLix.Application.Services.Users;
 namespace UriLix.API.Controllers;
 
 [Route("api/[controller]")]
-public class UserController(IUserService userService) : ApiBaseController
+public class UsersController(IUserService userService) : ApiBaseController
 {
     [HttpPost("register")]
     [ProducesResponseType<Guid>(StatusCodes.Status201Created)]

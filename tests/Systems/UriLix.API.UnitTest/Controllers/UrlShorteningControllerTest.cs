@@ -17,7 +17,7 @@ public class UrlShorteningControllerTest
         string longUrl, string shortCodeExpected)
     {
         Mock<IUrlShorteningService> mockService = new();
-        CreateShortenedUrlRequest request = new(longUrl);
+        CreateShortenUrlRequest request = new(longUrl);
         DefaultHttpContext defaultHttpContext = new()
         {
             User = new ClaimsPrincipal(new ClaimsIdentity(
@@ -25,10 +25,10 @@ public class UrlShorteningControllerTest
                 new(ClaimTypes.NameIdentifier, "test-user-id")
             ]))
         };
-        mockService.Setup(service => service.ShortenUrlAsync(It.IsAny<CreateShortenedUrlRequest>(),
+        mockService.Setup(service => service.ShortenUrlAsync(It.IsAny<CreateShortenUrlRequest>(),
             It.IsAny<ClaimsPrincipal>()))
             .ReturnsAsync(shortCodeExpected);
-        UrlShorteningController sut = new(mockService.Object)
+        LinksController sut = new(mockService.Object)
         {
             ControllerContext = new()
             {
@@ -50,7 +50,7 @@ public class UrlShorteningControllerTest
         string longUrl, string aliasExpected)
     {
         Mock<IUrlShorteningService> mockService = new();
-        CreateShortenedUrlRequest request = new(longUrl);
+        CreateShortenUrlRequest request = new(longUrl);
         DefaultHttpContext defaultHttpContext = new()
         {
             User = new ClaimsPrincipal(new ClaimsIdentity(
@@ -59,10 +59,10 @@ public class UrlShorteningControllerTest
             ]))
         };
         mockService.Setup(service => service.ShortenUrlAsync(
-            It.IsAny<CreateShortenedUrlRequest>(), 
+            It.IsAny<CreateShortenUrlRequest>(), 
             It.IsAny<ClaimsPrincipal>()))
             .ReturnsAsync(aliasExpected);
-        UrlShorteningController sut = new(mockService.Object)
+        LinksController sut = new(mockService.Object)
         {
             ControllerContext = new()
             {
@@ -81,13 +81,13 @@ public class UrlShorteningControllerTest
     public async Task ShortenUrl_Should_ReturnBadRequest_When_AliasAlreadyExists()
     {
         Mock<IUrlShorteningService> mockService = new();
-        CreateShortenedUrlRequest request = new("url", Alias: "alias-exists");
+        CreateShortenUrlRequest request = new("url", Alias: "alias-exists");
         var failure = Result.Failure<string>(Error.Validation("", ""));
         mockService.Setup(service => service.ShortenUrlAsync(
-            It.IsAny<CreateShortenedUrlRequest>(),
+            It.IsAny<CreateShortenUrlRequest>(),
             It.IsAny<ClaimsPrincipal>()))
             .ReturnsAsync(failure);
-        UrlShorteningController sut = new(mockService.Object)
+        LinksController sut = new(mockService.Object)
         {
             ControllerContext = new()
             {
