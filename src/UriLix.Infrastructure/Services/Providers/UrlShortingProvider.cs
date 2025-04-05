@@ -1,4 +1,6 @@
-﻿namespace UriLix.Application.Providers;
+﻿using UriLix.Application.Providers;
+
+namespace UriLix.Infrastructure.Services.Providers;
 
 public class UrlShortingProvider : IUrlShortingProvider
 {

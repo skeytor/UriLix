@@ -17,7 +17,7 @@ public class UrlShorteningControllerTest(
         const int EXPECTED_LENGHT = 5;
         CreateShortenedUrlRequest request = new(url);
 
-        HttpResponseMessage response = await httpClient.PostAsJsonAsync("/api/UrlShortening", request);
+        HttpResponseMessage response = await httpClient.PostAsJsonAsync("/api/Links", request);
 
         response.EnsureSuccessStatusCode();
         outputHelper.WriteLine($"== RESPONSE MESSAGE==\n\t{response.Headers.Location}");
@@ -35,7 +35,7 @@ public class UrlShorteningControllerTest(
     {
         CreateShortenedUrlRequest request = new(url, alias);
 
-        HttpResponseMessage response = await httpClient.PostAsJsonAsync("/api/UrlShortening", request);
+        HttpResponseMessage response = await httpClient.PostAsJsonAsync("/api/Links", request);
         response.EnsureSuccessStatusCode();
 
         outputHelper.WriteLine($"== RESPONSE MESSAGE==\n\t{response.Headers.Location}");
@@ -55,7 +55,7 @@ public class UrlShorteningControllerTest(
     {
         CreateShortenedUrlRequest request = new(url, invalidAlias);
 
-        HttpResponseMessage response = await httpClient.PostAsJsonAsync("/api/UrlShortening", request);
+        HttpResponseMessage response = await httpClient.PostAsJsonAsync("/api/Links", request);
 
         string message = await response.Content.ReadAsStringAsync();
         outputHelper.WriteLine($"== RESPONSE MESSAGE==\n\t{message}");
@@ -70,7 +70,7 @@ public class UrlShorteningControllerTest(
     {
         CreateShortenedUrlRequest request = new(invalidUrl);
 
-        HttpResponseMessage response = await httpClient.PostAsJsonAsync("/api/UrlShortening", request);
+        HttpResponseMessage response = await httpClient.PostAsJsonAsync("/api/Links", request);
 
         string message = await response.Content.ReadAsStringAsync();
         outputHelper.WriteLine($"== RESPONSE MESSAGE==\n\t{message}");
@@ -79,7 +79,7 @@ public class UrlShorteningControllerTest(
     }
 
     [Theory]
-    [InlineData("/api/UrlShortening", "def34", "https://www.bing.com/")]
+    [InlineData("/api/Links", "def34", "https://www.bing.com/")]
     public async Task GET_ResolveUrl_Should_ReturnOriginalUrl_When_ShortCodeExists(
         string uri, string shortCode, string expectedUrl)
     {

@@ -1,7 +1,10 @@
-﻿using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Http;
+using System.Net;
+using System.Security.Claims;
 using UriLix.Application.DOTs;
 using UriLix.Application.Extensions;
 using UriLix.Application.Providers;
+using UriLix.Application.Services.ClickStatistics;
 using UriLix.Domain.Entities;
 using UriLix.Domain.Repositories;
 using UriLix.Shared.Results;
@@ -12,6 +15,7 @@ namespace UriLix.Application.Services.UrlShortening;
 public class UrlShorteningService(
     IShortenedUrlRepository shortenedUrlRepository,
     IUrlShortingProvider urlShortingProvider,
+    IClickTrackingService statisticsService,
     IUnitOfWork unitOfWork) : IUrlShorteningService
 {
     private const int MAX_ATTEMPTS = 3;
@@ -21,7 +25,7 @@ public class UrlShorteningService(
         if (!Uri.TryCreate(request.OriginalUrl, UriKind.Absolute, out _))
         {
             return Result.Failure<string>(Error.Failure(
-                "Url.Invalid", 
+                "Url.Invalid",
                 "Invalid URL Format"));
         }
 
@@ -29,7 +33,7 @@ public class UrlShorteningService(
 
         if (principal is not null and { Identity.IsAuthenticated: true })
         {
-            shortenedUrl.UserId = principal.FindFirstValue(ClaimTypes.NameIdentifier);;
+            shortenedUrl.UserId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
         }
 
         // Check if the user provided a custom alias
@@ -66,28 +70,16 @@ public class UrlShorteningService(
                 $"Failed to generate a unique short code after {MAX_ATTEMPTS} attempts"));
     }
 
-    public async Task<Result<IReadOnlyList<ShortenedUrlResponse>>> GetAllURLsAsync(ClaimsPrincipal principal)
-    {
-        string? userId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrWhiteSpace(userId))
-        {
-            return Result.Failure<IReadOnlyList<ShortenedUrlResponse>>(Error.Validation("", ""));
-        }
-        return (await shortenedUrlRepository.GetURLsByUserId(userId))
-            .ToResponse()
-            .ToList()
-            .AsReadOnly();
-
-    }
-    public async Task<Result<string>> GetOriginalUrlAsync(string alias)
+    public async Task<Result<string>> GetOriginalUrlAsync(string alias, HttpRequest request)
     {
         ShortenedUrl? shortenedUrl = await shortenedUrlRepository.FindByShortCodeAsync(alias);
         if (shortenedUrl is null)
         {
             return Result.Failure<string>(Error.NotFound(
-                "Url.NotFound", 
+                "Url.NotFound",
                 $"The code: {alias} was not found"));
         }
+        await statisticsService.RecordClickAsync(shortenedUrl, request);
         return shortenedUrl.OriginalUrl;
     }
 
