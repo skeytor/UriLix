@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System.Net;
-using UriLix.Application.DOTs;
-using UriLix.Application.Providers;
 using UriLix.Domain.Entities;
 using UriLix.Domain.Repositories;
 using UriLix.Shared.Results;
@@ -26,7 +23,7 @@ public class ClickTrackingService(
         {
             ShortenedUrlId = shortenedUrl.Id,
             Device = "mobile",
-            Browser = "browser",
+            Browser = "Chrome",
             UserAgent = userAgent,
             Referer = referer,
             VisitedAt = DateTime.UtcNow

@@ -3,9 +3,9 @@ using UriLix.Domain.Entities;
 
 namespace UriLix.Application.Extensions;
 
-public static class UrlShortenerExtensions
+public static class ShortenedUrlExtensions
 {
-    public static ShortenedUrl ToEntity(this CreateShortenedUrlRequest source) =>
+    public static ShortenedUrl ToEntity(this CreateShortenUrlRequest source) =>
         new()
         {
             OriginalUrl = source.OriginalUrl,
