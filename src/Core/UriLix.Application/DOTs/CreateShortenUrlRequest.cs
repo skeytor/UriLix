@@ -2,7 +2,7 @@
 
 namespace UriLix.Application.DOTs;
 
-public sealed record CreateShortenedUrlRequest(
+public sealed record CreateShortenUrlRequest(
     [Required]
     [Url(ErrorMessage = "The URL must be in a valid format.")]
     [StringLength(200, ErrorMessage = "The url must at most 200 characters")]

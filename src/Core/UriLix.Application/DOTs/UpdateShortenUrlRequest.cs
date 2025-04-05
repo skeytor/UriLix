@@ -2,4 +2,4 @@
 
 namespace UriLix.Application.DOTs;
 
-public sealed record UpdateShortenedUrlRequest([Required, Url] string OriginalUrl);
+public sealed record UpdateShortenUrlRequest([Required, Url] string OriginalUrl);

@@ -8,7 +8,7 @@ namespace UriLix.Application.Services.UrlShortening;
 public interface IUrlShorteningService
 {
     public Task<Result<string>> ShortenUrlAsync(
-        CreateShortenedUrlRequest request, ClaimsPrincipal? principal = null);
+        CreateShortenUrlRequest request, ClaimsPrincipal? principal = null);
     public Task<Result<string>> GetOriginalUrlAsync(string Code, HttpRequest request);   
-    public Task<Result<Guid>> UpdateAsync(Guid id, UpdateShortenedUrlRequest request);
+    public Task<Result<Guid>> UpdateAsync(Guid id, UpdateShortenUrlRequest request);
 }

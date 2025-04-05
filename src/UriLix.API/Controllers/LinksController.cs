@@ -17,7 +17,7 @@ public class LinksController(
     [ProducesResponseType<string>(StatusCodes.Status201Created)]
     [ProducesResponseType<BadRequest<ValidationProblemDetails>>(StatusCodes.Status400BadRequest)]
     public async Task<Results<CreatedAtRoute<string>, BadRequest<ValidationProblemDetails>>> ShortenUrlAsync(
-        [FromBody] CreateShortenedUrlRequest request)
+        [FromBody] CreateShortenUrlRequest request)
     {
         var result = await shorteningService.ShortenUrlAsync(request, HttpContext.User);
         return result.IsSuccess
@@ -47,7 +47,7 @@ public class LinksController(
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok<Guid>, NotFound<ValidationProblemDetails>>> UpdateAsync(
         [FromRoute] Guid id, 
-        [FromBody] UpdateShortenedUrlRequest request)
+        [FromBody] UpdateShortenUrlRequest request)
     {
         var result = await shorteningService.UpdateAsync(id, request);
         return result.IsSuccess

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System.Net;
+using Microsoft.Extensions.Caching.Hybrid;
 using System.Security.Claims;
 using UriLix.Application.DOTs;
 using UriLix.Application.Extensions;
@@ -15,12 +15,14 @@ namespace UriLix.Application.Services.UrlShortening;
 public class UrlShorteningService(
     IShortenedUrlRepository shortenedUrlRepository,
     IUrlShortingProvider urlShortingProvider,
-    IClickTrackingService statisticsService,
+    IClickTrackingService clickTrackingService,
+    HybridCache hybridCache,
     IUnitOfWork unitOfWork) : IUrlShorteningService
 {
     private const int MAX_ATTEMPTS = 3;
+
     public async Task<Result<string>> ShortenUrlAsync(
-        CreateShortenedUrlRequest request, ClaimsPrincipal? principal = null)
+        CreateShortenUrlRequest request, ClaimsPrincipal? principal = null)
     {
         if (!Uri.TryCreate(request.OriginalUrl, UriKind.Absolute, out _))
         {
@@ -31,7 +33,7 @@ public class UrlShorteningService(
 
         ShortenedUrl shortenedUrl = request.ToEntity();
 
-        if (principal is not null and { Identity.IsAuthenticated: true })
+        if (principal is not null && principal.Identity?.IsAuthenticated == true)
         {
             shortenedUrl.UserId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
         }
@@ -48,6 +50,7 @@ public class UrlShorteningService(
             shortenedUrl.ShortCode = request.Alias;
             await shortenedUrlRepository.InsertAsync(shortenedUrl);
             await unitOfWork.SaveChangesAsync();
+            await hybridCache.SetAsync(request.Alias, shortenedUrl);
             return request.Alias;
         }
 
@@ -62,6 +65,7 @@ public class UrlShorteningService(
             shortenedUrl.ShortCode = shortCode;
             await shortenedUrlRepository.InsertAsync(shortenedUrl);
             await unitOfWork.SaveChangesAsync();
+            await hybridCache.SetAsync(shortenedUrl.ShortCode, shortenedUrl);
             return shortCode;
         }
         return Result.Failure<string>(
@@ -72,18 +76,22 @@ public class UrlShorteningService(
 
     public async Task<Result<string>> GetOriginalUrlAsync(string alias, HttpRequest request)
     {
-        ShortenedUrl? shortenedUrl = await shortenedUrlRepository.FindByShortCodeAsync(alias);
-        if (shortenedUrl is null)
+        ShortenedUrl? url = await hybridCache.GetOrCreateAsync(alias, async entry =>
+        {
+            return await shortenedUrlRepository.FindByShortCodeAsync(alias);
+        },
+        tags: ["codes"]);
+        if (url is null)
         {
             return Result.Failure<string>(Error.NotFound(
                 "Url.NotFound",
-                $"The code: {alias} was not found"));
+                $"The URL with alias: {alias} was not found"));
         }
-        await statisticsService.RecordClickAsync(shortenedUrl, request);
-        return shortenedUrl.OriginalUrl;
+        await clickTrackingService.RecordClickAsync(url, request);
+        return url.OriginalUrl;
     }
 
-    public async Task<Result<Guid>> UpdateAsync(Guid id, UpdateShortenedUrlRequest request)
+    public async Task<Result<Guid>> UpdateAsync(Guid id, UpdateShortenUrlRequest request)
     {
         ShortenedUrl? shortenedUrl = await shortenedUrlRepository.FindByIdAsync(id);
         if (shortenedUrl is null)
@@ -94,6 +102,6 @@ public class UrlShorteningService(
         }
         shortenedUrl.OriginalUrl = request.OriginalUrl;
         await unitOfWork.SaveChangesAsync();
-        return shortenedUrl.Id;
+        return Result.Success(shortenedUrl.Id);
     }
 }
