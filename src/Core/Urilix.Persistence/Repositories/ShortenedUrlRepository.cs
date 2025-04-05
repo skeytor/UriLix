@@ -10,7 +10,7 @@ public class ShortenedUrlRepository(IApplicationDbContext context)
     : BaseRepository(context), IShortenedUrlRepository
 {
 
-    public void DeleteAsync(Guid id, ShortenedUrl shortenedLink) 
+    public void Delete(Guid id, ShortenedUrl shortenedLink) 
         => Context.ShortenedUrl.Remove(shortenedLink);
 
     public Task<ShortenedUrl?> FindByIdAsync<TProperty>(
@@ -21,7 +21,7 @@ public class ShortenedUrlRepository(IApplicationDbContext context)
         return query.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task<ShortenedUrl?> FindByIdAsync(Guid id) 
+    public async ValueTask<ShortenedUrl?> FindByIdAsync(Guid id) 
         => await Context.ShortenedUrl.FindAsync(id);
 
     public Task<List<ShortenedUrl>> GetURLsByUserId<TProperty>(
@@ -56,9 +56,9 @@ public class ShortenedUrlRepository(IApplicationDbContext context)
     public Task<bool> ShortUrlExistsAsync(string shortCode) 
         => Context.ShortenedUrl.AnyAsync(x => x.ShortCode == shortCode);
 
-    public void UpdateAsync(ShortenedUrl shortenedLink) 
+    public void Update(ShortenedUrl shortenedLink) 
         => Context.ShortenedUrl.Update(shortenedLink);
 
-    public Task<ShortenedUrl?> FindByShortCodeAsync(string shortCode) 
-        => Context.ShortenedUrl.FirstOrDefaultAsync(x => x.ShortCode == shortCode);
+    public ValueTask<ShortenedUrl?> FindByShortCodeAsync(string shortCode) 
+        => Context.ShortenedUrl.FindAsync(shortCode);
 }
