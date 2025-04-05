@@ -5,6 +5,7 @@ using UriLix.Application;
 using UriLix.Domain.Entities;
 using UriLix.Infrastructure.Security.Auth;
 using UriLix.Infrastructure.Security.Authorization;
+using UriLix.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,8 @@ builder.Services
     .AddRepositories();
 
 builder.Services.AddApplicationServices();
+
+builder.Services.AddServicesProviders();
 
 var app = builder.Build();
 

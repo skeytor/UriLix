@@ -13,35 +13,20 @@ internal sealed class ClickStatisticConfig : IEntityTypeConfiguration<ClickStati
 
         builder.HasIndex(x => x.Id);
 
-        builder.Property(x => x.IpAddress)
-            .HasMaxLength(11)
-            .IsRequired();
-
         builder.Property(x => x.Device)
-            .HasMaxLength(50)
-            .IsRequired();
-
-        builder.Property(x => x.Country)
-            .HasMaxLength(50)
-            .IsRequired();
+            .HasMaxLength(25);
 
         builder.Property(x => x.Browser)
-            .HasMaxLength(20)
-            .IsRequired();
+            .HasMaxLength(20);
 
         builder.Property(x => x.UserAgent)
-            .HasMaxLength(20)
-            .IsRequired();
+            .HasMaxLength(150);
 
-        builder.Property(x => x.UserAgent)
-            .HasMaxLength(20)
-            .IsRequired();
-
-        builder.Property(x => x.Referrer)
-            .HasMaxLength(20)
-            .IsRequired();
+        builder.Property(x => x.Referer)
+            .HasMaxLength(150);
 
         builder.Property(x => x.VisitedAt)
-            .IsRequired();
+            .ValueGeneratedOnAdd()
+            .HasDefaultValueSql("GETDATE()");
     }
 }

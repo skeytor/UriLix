@@ -28,7 +28,7 @@ public class UrlShorteningControllerTest
         mockService.Setup(service => service.ShortenUrlAsync(It.IsAny<CreateShortenedUrlRequest>(),
             It.IsAny<ClaimsPrincipal>()))
             .ReturnsAsync(shortCodeExpected);
-        UrlShorteningController sut = new(mockService.Object)
+        LinksController sut = new(mockService.Object)
         {
             ControllerContext = new()
             {
@@ -62,7 +62,7 @@ public class UrlShorteningControllerTest
             It.IsAny<CreateShortenedUrlRequest>(), 
             It.IsAny<ClaimsPrincipal>()))
             .ReturnsAsync(aliasExpected);
-        UrlShorteningController sut = new(mockService.Object)
+        LinksController sut = new(mockService.Object)
         {
             ControllerContext = new()
             {
@@ -87,7 +87,7 @@ public class UrlShorteningControllerTest
             It.IsAny<CreateShortenedUrlRequest>(),
             It.IsAny<ClaimsPrincipal>()))
             .ReturnsAsync(failure);
-        UrlShorteningController sut = new(mockService.Object)
+        LinksController sut = new(mockService.Object)
         {
             ControllerContext = new()
             {

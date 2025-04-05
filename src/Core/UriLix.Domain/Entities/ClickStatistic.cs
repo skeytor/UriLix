@@ -4,12 +4,10 @@ public class ClickStatistic
 {
     public int Id { get; set; }
     public Guid ShortenedUrlId { get; set; }
-    public ShortenedUrl ShortenedUrl { get; set; } = null!;
-    public string IpAddress { get; set; } = string.Empty;
+    public ShortenedUrl ShortenedUrl { get; set; } = default!;
     public string Device { get; set; } = string.Empty;
-    public string Country { set; get; } = string.Empty;
     public string Browser { get; set; } = string.Empty;
     public string UserAgent { get; set; } = string.Empty;
-    public string Referrer { get; set; } = string.Empty;
+    public string Referer { get; set; } = string.Empty;
     public DateTime VisitedAt { get; set; }
 }

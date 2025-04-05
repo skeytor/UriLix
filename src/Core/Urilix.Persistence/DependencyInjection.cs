@@ -17,6 +17,7 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork>(options => options.GetRequiredService<ApplicationDbContext>());
         services.AddScoped<IShortenedUrlRepository, ShortenedUrlRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IClickTrackingRepository, ClickTrackingRepository>();
         return services;
     }
     public static IServiceCollection AddDatabaseProvider(

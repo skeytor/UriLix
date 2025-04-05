@@ -18,7 +18,7 @@ public class UserControllerTest(ITestOutputHelper output)
         string idExpected = Guid.NewGuid().ToString();
         Mock<IUserService> mockUserService = new();
         CreateUserRequest request = new("John Doe", "Smit", "email@example.com", "123Password");
-        UserController sut = new(mockUserService.Object);
+        UsersController sut = new(mockUserService.Object);
 
         mockUserService.Setup(service => service.CreateAsync(It.IsAny<CreateUserRequest>()))
             .ReturnsAsync(idExpected);
@@ -38,7 +38,7 @@ public class UserControllerTest(ITestOutputHelper output)
 
         Mock<IUserService> mockUserService = new();
         CreateUserRequest request = new("John Doe", "Smit", "email@email.com", "Test13");
-        UserController sut = new(mockUserService.Object);
+        UsersController sut = new(mockUserService.Object);
         mockUserService.Setup(service => service.CreateAsync(It.IsAny<CreateUserRequest>()))
             .ReturnsAsync(errorFailure);
 
@@ -60,7 +60,7 @@ public class UserControllerTest(ITestOutputHelper output)
                 new(ClaimTypes.NameIdentifier, "test-user-id")
             ]))
         };
-        UserController sut = new(mockUserService.Object)
+        UsersController sut = new(mockUserService.Object)
         {
             ControllerContext = new()
             {
