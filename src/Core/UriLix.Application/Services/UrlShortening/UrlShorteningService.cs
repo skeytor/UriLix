@@ -102,6 +102,6 @@ public class UrlShorteningService(
         }
         shortenedUrl.OriginalUrl = request.OriginalUrl;
         await unitOfWork.SaveChangesAsync();
-        return Result.Success(shortenedUrl.Id);
+        return shortenedUrl.Id;
     }
 }
