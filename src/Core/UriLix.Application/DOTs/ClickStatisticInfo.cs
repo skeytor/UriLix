@@ -2,6 +2,5 @@
 
 public sealed record ClickStatisticInfo(
     string UserAgent,
-    string Referer,
-    string? IPAddress = null
+    string Referer
     );

@@ -25,7 +25,9 @@ builder.Services
     .AddDatabaseProvider(builder.Configuration)
     .AddRepositories();
 
-builder.Services.AddApplicationServices();
+builder.Services
+    .AddApplicationServices()
+    .AddCache(builder.Configuration);
 
 builder.Services.AddServicesProviders();
 

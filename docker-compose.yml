@@ -1,19 +1,31 @@
 services:
+
   urilix.api:
     image: ${DOCKER_REGISTRY-}urilixapi
     build:
       context: .
       dockerfile: src/UriLix.API/Dockerfile
     container_name: urilix.api
+
   urilix.database:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=P@ssword123
     volumes:
-      - urilix:/var/opt/mssql
+      - mssql_data:/var/opt/mssql
     ports:
       - "1433:1433"
     container_name: urilix.database
+
+  urilix.redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    container_name: urilix.redis
+
 volumes:
-  urilix:  
+  mssql_data:
+  redis_data:  
