@@ -3,9 +3,10 @@ using UriLix.Domain.Specifications;
 
 namespace UriLix.Persistence.Specifications;
 
-public static class SpecificationEvaluator
+internal static class SpecificationEvaluator
 {
-    public static IQueryable<T> GetQuery<T>(IQueryable<T> inputQuery, Specification<T> specification) where T : class
+    internal static IQueryable<T> GetQuery<T>(IQueryable<T> inputQuery, Specification<T> specification) 
+        where T : class
     {
         IQueryable<T> query = inputQuery;
         if (specification.Criteria is not null)
@@ -18,7 +19,6 @@ public static class SpecificationEvaluator
         }
         query = specification.IncludeExpression
             .Aggregate(query, (current, includeExpression) => current.Include(includeExpression));
-
         if (specification.OrderByExpression is not null)
         {
             query = query.OrderBy(specification.OrderByExpression);

@@ -31,9 +31,7 @@ public class UrlShorteningService(
                 "Url.Invalid",
                 "Invalid URL Format"));
         }
-
         ShortenedUrl shortenedUrl = request.ToEntity();
-
         if (principal is not null && principal.Identity?.IsAuthenticated == true)
         {
             shortenedUrl.UserId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -74,7 +72,6 @@ public class UrlShorteningService(
                 "ShortCode.Duplicate",
                 $"Failed to generate a unique short code after {MAX_ATTEMPTS} attempts"));
     }
-
     public async Task<Result<string>> GetOriginalUrlAsync(string alias, HttpRequest request)
     {
         ShortenedUrl? url = await hybridCache.GetOrCreateAsync(alias, async entry =>
@@ -91,7 +88,6 @@ public class UrlShorteningService(
         await clickTrackingService.RecordClickAsync(url, request);
         return url.OriginalUrl;
     }
-
     public async Task<Result<Guid>> UpdateAsync(Guid id, UpdateShortenUrlRequest request)
     {
         ShortenedUrl? shortenedUrl = await shortenedUrlRepository.FindByIdAsync(id);
@@ -105,7 +101,6 @@ public class UrlShorteningService(
         await unitOfWork.SaveChangesAsync();
         return shortenedUrl.Id;
     }
-
     public async Task<Result<PagedResult<ShortenedUrlResponse>>> GetAllPagedAsync(
         ClaimsPrincipal principal, 
         PaginationQuery paginationQuery)
