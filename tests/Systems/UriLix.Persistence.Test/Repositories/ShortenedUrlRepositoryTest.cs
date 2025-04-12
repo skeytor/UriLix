@@ -57,7 +57,7 @@ public class ShortenedUrlRepositoryTest(
             Guid id = context.ShortenedUrl.First().Id;
             ShortenedUrlRepository repository = new(context);
 
-            var result = await repository.FindByIdAsync(id, includes: x => x.User);
+            var result = await repository.FindByIdAsync(id);
 
             Assert.NotNull(result);
             Assert.NotNull(result.User);

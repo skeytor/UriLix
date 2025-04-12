@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 using UriLix.Domain.Entities;
 using UriLix.Domain.Repositories;
 using UriLix.Persistence.Abstractions;
+using UriLix.Persistence.Specifications;
+using UriLix.Shared.Pagination;
 
 namespace UriLix.Persistence.Repositories;
 
@@ -10,36 +11,11 @@ public class ShortenedUrlRepository(IApplicationDbContext context)
     : BaseRepository(context), IShortenedUrlRepository
 {
 
-    public void DeleteAsync(Guid id, ShortenedUrl shortenedLink) 
+    public void Delete(Guid id, ShortenedUrl shortenedLink) 
         => Context.ShortenedUrl.Remove(shortenedLink);
 
-    public Task<ShortenedUrl?> FindByIdAsync<TProperty>(
-        Guid id, 
-        params Expression<Func<ShortenedUrl, TProperty>>[] includes)
-    {
-        IQueryable<ShortenedUrl> query = GetIncludeEntities(includes);
-        return query.FirstOrDefaultAsync(x => x.Id == id);
-    }
-
-    public async Task<ShortenedUrl?> FindByIdAsync(Guid id) 
+    public async ValueTask<ShortenedUrl?> FindByIdAsync(Guid id) 
         => await Context.ShortenedUrl.FindAsync(id);
-
-    public Task<List<ShortenedUrl>> GetURLsByUserId<TProperty>(
-        string userId, 
-        params Expression<Func<ShortenedUrl, TProperty>>[] includes)
-    {
-        IQueryable<ShortenedUrl> query = GetIncludeEntities(includes);
-        return query
-              .Where(x => x.UserId == userId)
-              .AsNoTracking()
-              .ToListAsync();
-    }
-
-    public Task<List<ShortenedUrl>> GetURLsByUserId(string userId) 
-        => Context.ShortenedUrl
-                  .Where(x => x.UserId == userId)
-                  .AsNoTracking()
-                  .ToListAsync();
 
     public Task<string?> GetOriginalUrlAsync(string code) 
         => Context.ShortenedUrl
@@ -56,9 +32,20 @@ public class ShortenedUrlRepository(IApplicationDbContext context)
     public Task<bool> ShortUrlExistsAsync(string shortCode) 
         => Context.ShortenedUrl.AnyAsync(x => x.ShortCode == shortCode);
 
-    public void UpdateAsync(ShortenedUrl shortenedLink) 
+    public void Update(ShortenedUrl shortenedLink) 
         => Context.ShortenedUrl.Update(shortenedLink);
 
     public Task<ShortenedUrl?> FindByShortCodeAsync(string shortCode) 
         => Context.ShortenedUrl.FirstOrDefaultAsync(x => x.ShortCode == shortCode);
+
+    public async Task<IReadOnlyList<ShortenedUrl>> GetAllByUserIdAsync(string userId, PaginationQuery paginationQuery) 
+        => await SpecificationEvaluator
+            .GetQuery(Context.ShortenedUrl.AsQueryable(), new GetAllByUserIdSpec(userId, paginationQuery))
+            .AsNoTracking()
+            .ToListAsync();
+
+    public Task<int> CountByUserIdAsync(string userId) 
+        => Context.ShortenedUrl
+            .AsNoTracking()
+            .CountAsync(x => x.UserId == userId);
 }

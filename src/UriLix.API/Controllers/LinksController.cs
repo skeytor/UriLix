@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using UriLix.API.Extensions;
 using UriLix.Application.DOTs;
 using UriLix.Application.Services.UrlShortening;
+using UriLix.Shared.Pagination;
 
 namespace UriLix.API.Controllers;
 
@@ -28,17 +29,30 @@ public class LinksController(
             : TypedResults.BadRequest(result.ToValidationProblemDetails());
     }
 
-    [HttpGet("{code}", Name = nameof(ResolveUrlAsync))]
+    [HttpGet("{code:maxlength(20)}", Name = nameof(ResolveUrlAsync))]
     [AllowAnonymous]
     [ProducesResponseType<string>(StatusCodes.Status302Found)]
     [ProducesResponseType<NotFound>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<BadRequest<ValidationProblemDetails>>(StatusCodes.Status400BadRequest)]
     public async Task<Results<RedirectHttpResult, NotFound<ValidationProblemDetails>>> ResolveUrlAsync(
-        string code)
+        [FromRoute] string code)
     {
         var result = await shorteningService.GetOriginalUrlAsync(code, Request);
         return result.IsSuccess
             ? TypedResults.Redirect(result.Value)
+            : TypedResults.NotFound(result.ToValidationProblemDetails());
+    }
+
+    [HttpGet]
+    [Authorize]
+    [ProducesResponseType<PagedResult<ShortenedUrlResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<NotFound<ValidationProblemDetails>>(StatusCodes.Status404NotFound)]
+    public async Task<Results<Ok<PagedResult<ShortenedUrlResponse>>, NotFound<ValidationProblemDetails>>> GetAllAsync(
+        [FromQuery] PaginationQuery paginationQuery)
+    {
+        var result = await shorteningService.GetAllPagedAsync(HttpContext.User, paginationQuery);
+        return result.IsSuccess
+            ? TypedResults.Ok(result.Value)
             : TypedResults.NotFound(result.ToValidationProblemDetails());
     }
 
