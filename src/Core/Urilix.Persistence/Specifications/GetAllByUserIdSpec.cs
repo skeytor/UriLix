@@ -7,7 +7,7 @@ namespace UriLix.Persistence.Specifications;
 
 internal class GetAllByUserIdSpec : Specification<ShortenedUrl>
 {
-    public GetAllByUserIdSpec(string userId, PaginationQuery paginationQuery) 
+    internal GetAllByUserIdSpec(string userId, PaginationQuery paginationQuery) 
         : base(x => x.UserId == userId)
     {
         ArgumentNullException.ThrowIfNull(userId);
@@ -30,15 +30,12 @@ internal class GetAllByUserIdSpec : Specification<ShortenedUrl>
             AddOrderBy(keySelector);
         }
     }
-
-    private static Expression<Func<ShortenedUrl, object>> GetSortProperty(PaginationQuery paginationQuery)
-    {
-        return paginationQuery.SortColumn?.ToLower() switch
+    private static Expression<Func<ShortenedUrl, object>> GetSortProperty(PaginationQuery paginationQuery) 
+        => paginationQuery.SortColumn?.ToLower() switch
         {
             "code" => x => x.ShortCode,
             "url" => x => x.OriginalUrl,
             "createdAt" => x => x.CreateAt,
             _ => x => x.Id,
         };
-    }
 }

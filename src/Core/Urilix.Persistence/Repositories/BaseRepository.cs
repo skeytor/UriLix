@@ -7,9 +7,7 @@ namespace UriLix.Persistence.Repositories;
 public abstract class BaseRepository(IApplicationDbContext context)
 {
     protected readonly IApplicationDbContext Context = context;
-    protected IQueryable<TEntity> ApplySpecification<TEntity>(Specification<TEntity> specification) 
-        where TEntity : class
-    {
-        return SpecificationEvaluator.GetQuery(Context.Set<TEntity>(), specification);
-    }
+    protected IQueryable<TEntity> ApplySpecification<TEntity>(Specification<TEntity> specification)
+        where TEntity : class 
+        => SpecificationEvaluator.GetQuery(Context.Set<TEntity>(), specification);
 }
