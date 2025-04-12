@@ -7,6 +7,7 @@ using UriLix.Application.Providers;
 using UriLix.Application.Services.ClickStatistics;
 using UriLix.Domain.Entities;
 using UriLix.Domain.Repositories;
+using UriLix.Shared.Pagination;
 using UriLix.Shared.Results;
 using UriLix.Shared.UnitOfWork;
 
@@ -103,5 +104,21 @@ public class UrlShorteningService(
         shortenedUrl.OriginalUrl = request.OriginalUrl;
         await unitOfWork.SaveChangesAsync();
         return shortenedUrl.Id;
+    }
+
+    public async Task<Result<PagedResult<ShortenedUrlResponse>>> GetAllPagedAsync(
+        ClaimsPrincipal principal, 
+        PaginationQuery paginationQuery)
+    {
+        string userId = principal.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        IReadOnlyList<ShortenedUrlResponse> data = (await shortenedUrlRepository
+            .GetAllByUserIdAsync(userId, paginationQuery))
+            .ToResponse();
+        int totalCount = await shortenedUrlRepository.CountByUserIdAsync(userId);
+        return PagedResult<ShortenedUrlResponse>.Create(
+            data, 
+            paginationQuery.Page, 
+            paginationQuery.PageSize, 
+            totalCount);
     }
 }
