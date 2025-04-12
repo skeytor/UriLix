@@ -1,5 +1,8 @@
 ﻿namespace UriLix.Domain.Entities;
 
+/// <summary>
+/// Represents a shortened URL entity.
+/// </summary>
 public class ShortenedUrl
 {
     public Guid Id { get; set; }
