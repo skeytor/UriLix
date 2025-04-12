@@ -11,9 +11,7 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
     : IdentityDbContext<ApplicationUser>(options), IApplicationDbContext, IUnitOfWork
 {
     public DbSet<ShortenedUrl> ShortenedUrl { get; set; }
-
     public DbSet<ClickStatistic> ClickStatistics { get; set; }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
