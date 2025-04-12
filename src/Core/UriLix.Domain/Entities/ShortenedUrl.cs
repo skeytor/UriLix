@@ -1,6 +1,5 @@
 ﻿namespace UriLix.Domain.Entities;
 
-// Create a summary of the class
 /// <summary>
 /// Represents a shortened URL entity.
 /// </summary>
