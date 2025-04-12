@@ -1,5 +1,8 @@
 ﻿namespace UriLix.Domain.Entities;
 
+/// <summary>
+/// Represents a click statistic entity to track the details of each click on a shortened URL.
+/// </summary>
 public class ClickStatistic
 {
     public int Id { get; set; }

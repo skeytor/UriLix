@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
 namespace UriLix.Domain.Entities;
-
+/// <summary>
+/// Represents a user in the application. It extends the <see cref="IdentityUser"/> class to include additional properties.
+/// </summary>
 public class ApplicationUser : IdentityUser
 {
     public string FirstName { get; set; } = string.Empty;
