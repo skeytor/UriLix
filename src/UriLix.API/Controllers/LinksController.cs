@@ -20,7 +20,7 @@ public class LinksController(
     public async Task<Results<CreatedAtRoute<string>, BadRequest<ValidationProblemDetails>>> ShortenUrlAsync(
         [FromBody] CreateShortenUrlRequest request)
     {
-        var result = await shorteningService.ShortenUrlAsync(request, HttpContext.User);
+        var result = await shorteningService.ShortenUrlAsync(request, User);
         return result.IsSuccess
             ? TypedResults.CreatedAtRoute(
                 result.Value,
@@ -50,7 +50,7 @@ public class LinksController(
     public async Task<Results<Ok<PagedResult<ShortenedUrlResponse>>, NotFound<ValidationProblemDetails>>> GetAllAsync(
         [FromQuery] PaginationQuery paginationQuery)
     {
-        var result = await shorteningService.GetAllPagedAsync(HttpContext.User, paginationQuery);
+        var result = await shorteningService.GetAllPagedAsync(User, paginationQuery);
         return result.IsSuccess
             ? TypedResults.Ok(result.Value)
             : TypedResults.NotFound(result.ToValidationProblemDetails());
@@ -63,7 +63,7 @@ public class LinksController(
         [FromRoute] Guid id,
         [FromBody] UpdateShortenUrlRequest request)
     {
-        var result = await shorteningService.UpdateAsync(id, request);
+        var result = await shorteningService.UpdateAsync(id, request, User);
         return result.IsSuccess
             ? TypedResults.Ok(result.Value)
             : TypedResults.NotFound(result.ToValidationProblemDetails());
@@ -75,7 +75,7 @@ public class LinksController(
     public async Task<Results<Ok<Guid>, NotFound<ValidationProblemDetails>>> DeleteAsync(
         [FromRoute] Guid id)
     {
-        var result = await shorteningService.DeleteAsync(id, HttpContext.User);
+        var result = await shorteningService.DeleteAsync(id, User);
         return result.IsSuccess
             ? TypedResults.Ok(result.Value)
             : TypedResults.NotFound(result.ToValidationProblemDetails());

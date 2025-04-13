@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Hybrid;
 using System.Security.Claims;
 using UriLix.Application.DOTs;
@@ -17,13 +18,14 @@ public class UrlShorteningService(
     IShortenedUrlRepository shortenedUrlRepository,
     IUrlShortingProvider urlShortingProvider,
     IClickTrackingService clickTrackingService,
+    IAuthorizationService authorizationService,
     HybridCache hybridCache,
     IUnitOfWork unitOfWork) : IUrlShorteningService
 {
     private const int MAX_ATTEMPTS = 3;
 
     public async Task<Result<string>> ShortenUrlAsync(
-        CreateShortenUrlRequest request, ClaimsPrincipal? principal = null)
+        CreateShortenUrlRequest request, ClaimsPrincipal? user = null)
     {
         if (!Uri.TryCreate(request.OriginalUrl, UriKind.Absolute, out _))
         {
@@ -32,9 +34,9 @@ public class UrlShorteningService(
                 "Invalid URL Format"));
         }
         ShortenedUrl shortenedUrl = request.ToEntity();
-        if (principal is not null && principal.Identity?.IsAuthenticated == true)
+        if (user is not null && user.Identity?.IsAuthenticated == true)
         {
-            shortenedUrl.UserId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
+            shortenedUrl.UserId = user.FindFirstValue(ClaimTypes.NameIdentifier);
         }
 
         // Check if the user provided a custom alias
@@ -72,7 +74,7 @@ public class UrlShorteningService(
                 "ShortCode.Duplicate",
                 $"Failed to generate a unique short code after {MAX_ATTEMPTS} attempts"));
     }
-    public async Task<Result<string>> GetOriginalUrlAsync(string alias, HttpRequest request)
+    public async Task<Result<string>> GetOriginalUrlAsync(string alias, HttpRequest httpRequestInfo)
     {
         ShortenedUrl? url = await hybridCache.GetOrCreateAsync(alias, async entry =>
         {
@@ -85,10 +87,10 @@ public class UrlShorteningService(
                 "Url.NotFound",
                 $"The URL with alias: {alias} was not found"));
         }
-        await clickTrackingService.RecordClickAsync(url, request);
+        _ = Task.Run(async () => await clickTrackingService.RecordClickAsync(url, httpRequestInfo));
         return url.OriginalUrl;
     }
-    public async Task<Result<Guid>> UpdateAsync(Guid id, UpdateShortenUrlRequest request)
+    public async Task<Result<Guid>> UpdateAsync(Guid id, UpdateShortenUrlRequest request, ClaimsPrincipal user)
     {
         ShortenedUrl? shortenedUrl = await shortenedUrlRepository.FindByIdAsync(id);
         if (shortenedUrl is null)
@@ -97,15 +99,23 @@ public class UrlShorteningService(
                 "Url.NotFound",
                 $"The URL with id: {id} was not found"));
         }
+        AuthorizationResult authResult = await authorizationService.AuthorizeAsync(user, shortenedUrl, "EditPolicy");
+        if (!authResult.Succeeded)
+        {
+            return Result.Failure<Guid>(Error.Failure(
+                "Url.Forbidden",
+                "You are not authorized to edit this URL"));
+        }
+
         shortenedUrl.OriginalUrl = request.OriginalUrl;
         await unitOfWork.SaveChangesAsync();
         return shortenedUrl.Id;
     }
     public async Task<Result<PagedResult<ShortenedUrlResponse>>> GetAllPagedAsync(
-        ClaimsPrincipal principal, 
+        ClaimsPrincipal user, 
         PaginationQuery paginationQuery)
     {
-        string userId = principal.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        string userId = user.FindFirstValue(ClaimTypes.NameIdentifier)!;
         IReadOnlyList<ShortenedUrlResponse> data = (await shortenedUrlRepository
             .GetAllByUserIdAsync(userId, paginationQuery))
             .ToResponse();
@@ -117,7 +127,7 @@ public class UrlShorteningService(
             totalCount);
     }
 
-    public async Task<Result<Guid>> DeleteAsync(Guid id, ClaimsPrincipal principal)
+    public async Task<Result<Guid>> DeleteAsync(Guid id, ClaimsPrincipal user)
     {
         ShortenedUrl? shortenedUrl = await shortenedUrlRepository.FindByIdAsync(id);
         if (shortenedUrl is null)
@@ -125,6 +135,13 @@ public class UrlShorteningService(
             return Result.Failure<Guid>(Error.NotFound(
                 "Url.NotFound",
                 $"The URL with id: {id} was not found"));
+        }
+        AuthorizationResult authResult = await authorizationService.AuthorizeAsync(user, shortenedUrl, "EditPolicy");
+        if (!authResult.Succeeded)
+        {
+            return Result.Failure<Guid>(Error.Failure(
+                "Url.Forbidden",
+                "You are not authorized to delete this URL"));
         }
         shortenedUrlRepository.Delete(id, shortenedUrl);
         await unitOfWork.SaveChangesAsync();

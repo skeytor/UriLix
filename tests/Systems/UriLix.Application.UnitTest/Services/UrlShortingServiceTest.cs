@@ -32,6 +32,7 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
             mockProvider.Object,
             default!,
             default!,
+            default!,
             mockUnit.Object);
 
         var result = await sut.ShortenUrlAsync(request);
@@ -54,6 +55,7 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
         UrlShorteningService sut = new(
             mockRepository.Object,
             mockProvider.Object,
+            default!,
             default!,
             default!,
             mockUnitOfWork.Object);
@@ -85,6 +87,7 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
             mockRepository.Object,
             mockProvider.Object,
             default!,
+            default,
             default!,
             mockUnit.Object);
 
@@ -118,6 +121,7 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
             mockProvider.Object,
             default!,
             default!,
+            default!,
             mockUnit.Object);
 
         var result = await sut.ShortenUrlAsync(request);
@@ -145,6 +149,7 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
         UrlShorteningService sut = new(
             mockRepository.Object,
             mockProvider.Object,
+            default!,
             default!,
             default!,
             mockUnit.Object);
@@ -175,6 +180,7 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
             mockProvider.Object,
             default!,
             default!,
+            default!,
             mockUnit.Object);
 
         var result = await sut.ShortenUrlAsync(request);
@@ -202,6 +208,7 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
             mockProvider.Object,
             default!,
             default!,
+            default!,
             mockUnit.Object);
 
         var result = await sut.GetOriginalUrlAsync(alias, default);
@@ -222,6 +229,7 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
         UrlShorteningService sut = new(
             mockRepository.Object,
             mockProvider.Object,
+            default!,
             default!,
             default!,
             mockUnit.Object);
@@ -250,6 +258,7 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
             mockProvider.Object,
             default!,
             default!,
+            default!,
             mockUnit.Object);
 
         var result = await sut.GetOriginalUrlAsync(shortCode, default!);
@@ -270,6 +279,7 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
         UrlShorteningService sut = new(
             mockRepository.Object,
             mockProvider.Object,
+            default!,
             default!,
             default!,
             mockUnit.Object);
