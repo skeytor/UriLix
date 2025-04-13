@@ -15,4 +15,5 @@ public interface IUrlShorteningService
     public Task<Result<PagedResult<ShortenedUrlResponse>>> GetAllPagedAsync(
         ClaimsPrincipal principal, 
         PaginationQuery paginationQuery);
+    public Task<Result<Guid>> DeleteAsync(Guid id, ClaimsPrincipal principal);
 }

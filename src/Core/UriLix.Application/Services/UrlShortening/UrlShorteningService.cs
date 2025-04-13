@@ -116,4 +116,18 @@ public class UrlShorteningService(
             paginationQuery.PageSize, 
             totalCount);
     }
+
+    public async Task<Result<Guid>> DeleteAsync(Guid id, ClaimsPrincipal principal)
+    {
+        ShortenedUrl? shortenedUrl = await shortenedUrlRepository.FindByIdAsync(id);
+        if (shortenedUrl is null)
+        {
+            return Result.Failure<Guid>(Error.NotFound(
+                "Url.NotFound",
+                $"The URL with id: {id} was not found"));
+        }
+        shortenedUrlRepository.Delete(id, shortenedUrl);
+        await unitOfWork.SaveChangesAsync();
+        return id;
+    }
 }

@@ -23,8 +23,8 @@ public class LinksController(
         var result = await shorteningService.ShortenUrlAsync(request, HttpContext.User);
         return result.IsSuccess
             ? TypedResults.CreatedAtRoute(
-                result.Value, 
-                nameof(ResolveUrlAsync), 
+                result.Value,
+                nameof(ResolveUrlAsync),
                 new { code = result.Value })
             : TypedResults.BadRequest(result.ToValidationProblemDetails());
     }
@@ -60,10 +60,22 @@ public class LinksController(
     [ProducesResponseType<Guid>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok<Guid>, NotFound<ValidationProblemDetails>>> UpdateAsync(
-        [FromRoute] Guid id, 
+        [FromRoute] Guid id,
         [FromBody] UpdateShortenUrlRequest request)
     {
         var result = await shorteningService.UpdateAsync(id, request);
+        return result.IsSuccess
+            ? TypedResults.Ok(result.Value)
+            : TypedResults.NotFound(result.ToValidationProblemDetails());
+    }
+
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType<Guid>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<Results<Ok<Guid>, NotFound<ValidationProblemDetails>>> DeleteAsync(
+        [FromRoute] Guid id)
+    {
+        var result = await shorteningService.DeleteAsync(id, HttpContext.User);
         return result.IsSuccess
             ? TypedResults.Ok(result.Value)
             : TypedResults.NotFound(result.ToValidationProblemDetails());
