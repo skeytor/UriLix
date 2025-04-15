@@ -1,8 +1,10 @@
-﻿using Moq;
+﻿using Microsoft.Extensions.Caching.Hybrid;
+using Moq;
 using System.Linq.Expressions;
 using UriLix.Application.DOTs;
 using UriLix.Application.Providers;
 using UriLix.Application.Services.UrlShortening;
+using UriLix.Application.Services.UrlShortening.Shortening;
 using UriLix.Domain.Entities;
 using UriLix.Domain.Repositories;
 using UriLix.Shared.Enums;
@@ -20,27 +22,22 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
     public async Task ShortenUrlAsync_Should_ReturnShortCode_When_UrlIsValid(
         string url, string shortCodeExpected)
     {
-        Mock<IShortenedUrlRepository> mockRepository = new();
+        Mock<IShortenedUrlRepository> mockRepo = new();
         Mock<IUnitOfWork> mockUnit = new();
         Mock<IUrlShortingProvider> mockProvider = new();
+        Mock<HybridCache> mockCache = new();
         mockProvider
             .Setup(x => x.GenerateShortCode())
             .Returns(shortCodeExpected);
         CreateShortenUrlRequest request = new(url);
-        UrlShorteningService sut = new(
-            mockRepository.Object,
-            mockProvider.Object,
-            default!,
-            default!,
-            default!,
-            mockUnit.Object);
-
-        var result = await sut.ShortenUrlAsync(request);
+        ShortenUrlService sut = new(mockRepo.Object, mockProvider.Object, mockCache.Object, mockUnit.Object);
+       
+        var result = await sut.ExecuteAsync(request);
 
         Assert.True(result.IsSuccess);
         Assert.Equal(shortCodeExpected, result.Value);
 
-        mockRepository.Verify(x => x.InsertAsync(It.IsAny<ShortenedUrl>()), Times.Once);
+        mockRepo.Verify(x => x.InsertAsync(It.IsAny<ShortenedUrl>()), Times.Once);
         mockUnit.Verify(x => x.SaveChangesAsync(default), Times.Once);
     }
 
@@ -49,19 +46,14 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
     [InlineData("http:/url-invalid")]
     public async Task ShortenUrlAsync_Should_ReturnFailure_When_UrlIsInvalid(string invalidUrl)
     {
-        Mock<IShortenedUrlRepository> mockRepository = new();
+        Mock<IShortenedUrlRepository> mockRepo = new();
         Mock<IUrlShortingProvider> mockProvider = new();
-        Mock<IUnitOfWork> mockUnitOfWork = new();
-        UrlShorteningService sut = new(
-            mockRepository.Object,
-            mockProvider.Object,
-            default!,
-            default!,
-            default!,
-            mockUnitOfWork.Object);
+        Mock<IUnitOfWork> mockUnit = new();
+        Mock<HybridCache> mockCache = new();
+        ShortenUrlService sut = new(mockRepo.Object, mockProvider.Object, mockCache.Object, mockUnit.Object);
         CreateShortenUrlRequest request = new(invalidUrl);
 
-        var result = await sut.ShortenUrlAsync(request);
+        var result = await sut.ExecuteAsync(request);
 
         Assert.True(result.IsFailure);
         Assert.Equal("Url.Invalid", result.Error.Code);
@@ -72,10 +64,11 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
     public async Task ShortenUrlAsync_Should_Retry_When_ShortCodeGeneratedIsDuplicated(
         string url, string invalidCode, string shortCodeExpected)
     {
-        Mock<IShortenedUrlRepository> mockRepository = new();
+        Mock<IShortenedUrlRepository> mockRepo = new();
         Mock<IUnitOfWork> mockUnit = new();
         Mock<IUrlShortingProvider> mockProvider = new();
-        mockRepository.SetupSequence(x => x.ShortUrlExistsAsync(It.IsAny<string>()))
+        Mock<HybridCache> mockCache = new();
+        mockRepo.SetupSequence(x => x.ShortUrlExistsAsync(It.IsAny<string>()))
             .ReturnsAsync(true) // First attempt: short code exists
             .ReturnsAsync(false); // Second attempt: short code is unique
         mockProvider
@@ -83,20 +76,14 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
             .Returns(invalidCode) // First attempt
             .Returns(shortCodeExpected); // Second attempt
         CreateShortenUrlRequest request = new(url);
-        UrlShorteningService sut = new(
-            mockRepository.Object,
-            mockProvider.Object,
-            default!,
-            default,
-            default!,
-            mockUnit.Object);
+        ShortenUrlService sut = new(mockRepo.Object, mockProvider.Object, mockCache.Object, mockUnit.Object);
 
-        var result = await sut.ShortenUrlAsync(request);
+        var result = await sut.ExecuteAsync(request);
         
         Assert.True(result.IsSuccess);
         Assert.Equal(shortCodeExpected, result.Value);
         
-        mockRepository.Verify(x => x.ShortUrlExistsAsync(It.IsAny<string>()), Times.Exactly(2));
+        mockRepo.Verify(x => x.ShortUrlExistsAsync(It.IsAny<string>()), Times.Exactly(2));
         mockProvider.Verify(x => x.GenerateShortCode(), Times.Exactly(2));
     }
 
@@ -104,30 +91,25 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
     [InlineData("https://localhost.com")]
     public async Task ShortenUrlAsync_Should_ReturnFailure_When_AllShortCodesAreDuplicated(string url)
     {
-        Mock<IShortenedUrlRepository> mockRepository = new();
+        Mock<IShortenedUrlRepository> mockRepo = new();
         Mock<IUnitOfWork> mockUnit = new();
         Mock<IUrlShortingProvider> mockProvider = new();
+        Mock<HybridCache> mockCache = new();
 
        // Simulate all short codes being duplicates
-        mockRepository.Setup(x => x.ShortUrlExistsAsync(It.IsAny<string>()))
+        mockRepo.Setup(x => x.ShortUrlExistsAsync(It.IsAny<string>()))
             .ReturnsAsync(true);
 
         mockProvider.Setup(x => x.GenerateShortCode())
             .Returns(string.Empty);
 
         CreateShortenUrlRequest request = new(url);
-        UrlShorteningService sut = new(
-            mockRepository.Object,
-            mockProvider.Object,
-            default!,
-            default!,
-            default!,
-            mockUnit.Object);
+        ShortenUrlService sut = new(mockRepo.Object, mockProvider.Object, mockCache.Object, mockUnit.Object);
 
-        var result = await sut.ShortenUrlAsync(request);
+        var result = await sut.ExecuteAsync(request);
         
         Assert.True(result.IsFailure);
-        Assert.Equal(ErrorType.Validation, result.Error.Type);
+        Assert.Equal(ErrorType.Failure, result.Error.Type);
         Assert.Equal("ShortCode.Duplicate", result.Error.Code);
         testOutputHelper.WriteLine($"{result.Error.Description}");
     }
@@ -135,53 +117,42 @@ public class UrlShortingServiceTest(ITestOutputHelper testOutputHelper)
     [Fact]
     public async Task ShortenUrlAsync_Should_ReturnAlias_When_CustomAliasIsProvided()
     {
-        Mock<IShortenedUrlRepository> mockRepository = new();
+        Mock<IShortenedUrlRepository> mockRepo = new();
         Mock<IUnitOfWork> mockUnit = new();
         Mock<IUrlShortingProvider> mockProvider = new();
+        Mock<HybridCache> mockCache = new();
 
         string url = "https://localhost.com";
         string aliasExpected = "my-custom-alias";
         CreateShortenUrlRequest request = new(url, Alias: aliasExpected);
 
-        mockRepository.Setup(x => x.ShortUrlExistsAsync(It.IsAny<string>()))
+        mockRepo.Setup(x => x.ShortUrlExistsAsync(It.IsAny<string>()))
             .ReturnsAsync(false);
 
-        UrlShorteningService sut = new(
-            mockRepository.Object,
-            mockProvider.Object,
-            default!,
-            default!,
-            default!,
-            mockUnit.Object);
+        ShortenUrlService sut = new(mockRepo.Object, mockProvider.Object, mockCache.Object, mockUnit.Object);
 
-        var result = await sut.ShortenUrlAsync(request);
+        var result = await sut.ExecuteAsync(request);
         testOutputHelper.WriteLine($"Response:\n\t Custom Alias {result.Value}");
 
         Assert.True(result.IsSuccess);
         Assert.Equal(aliasExpected, result.Value);
 
-        mockRepository.Verify(x => x.InsertAsync(It.IsAny<ShortenedUrl>()), Times.Once);
+        mockRepo.Verify(x => x.InsertAsync(It.IsAny<ShortenedUrl>()), Times.Once);
         mockUnit.Verify(x => x.SaveChangesAsync(default), Times.Once);
     }
 
     [Fact]
     public async Task ShortenUrlAsync_Should_ReturnFailure_When_CustomAliasAlreadyExists()
     {
-        Mock<IShortenedUrlRepository> mockRepository = new();
+        Mock<IShortenedUrlRepository> mockRepo = new();
         Mock<IUnitOfWork> mockUnit = new();
         Mock<IUrlShortingProvider> mockProvider = new();
         string url = "https://localhost.com";
         string alias = "my-custom-alias";
         CreateShortenUrlRequest request = new(url, Alias: alias);
-        mockRepository.Setup(x => x.ShortUrlExistsAsync(It.IsAny<string>()))
+        mockRepo.Setup(x => x.ShortUrlExistsAsync(It.IsAny<string>()))
             .ReturnsAsync(true);
-        UrlShorteningService sut = new(
-            mockRepository.Object,
-            mockProvider.Object,
-            default!,
-            default!,
-            default!,
-            mockUnit.Object);
+        ShortenUrlService sut = new(mockRepo.Object, mockProvider.Object, mockCache.Object, mockUnit.Object);
 
         var result = await sut.ShortenUrlAsync(request);
         testOutputHelper.WriteLine($"Error:\n\t {result.Error.Description}");  

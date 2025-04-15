@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using UriLix.API.Extensions;
 using UriLix.Application.DOTs;
 using UriLix.Application.Services.UrlShortening;
+using UriLix.Application.Services.UrlShortening.Shortening;
 using UriLix.Shared.Pagination;
 
 namespace UriLix.API.Controllers;
@@ -11,7 +12,8 @@ namespace UriLix.API.Controllers;
 [Route("api/[controller]")]
 [Authorize]
 public class LinksController(
-    IUrlShorteningService shorteningService) : ApiBaseController
+    IUrlShorteningService shorteningService,
+    IShortenUrlService shortenUrlService) : ApiBaseController
 {
     [HttpPost]
     [AllowAnonymous]
@@ -20,7 +22,7 @@ public class LinksController(
     public async Task<Results<CreatedAtRoute<string>, BadRequest<ValidationProblemDetails>>> ShortenUrlAsync(
         [FromBody] CreateShortenUrlRequest request)
     {
-        var result = await shorteningService.ShortenUrlAsync(request, User);
+        var result = await shortenUrlService.ExecuteAsync(request, User);
         return result.IsSuccess
             ? TypedResults.CreatedAtRoute(
                 result.Value,

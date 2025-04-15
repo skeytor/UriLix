@@ -30,7 +30,7 @@ public class UrlShorteningService(
         if (!Uri.TryCreate(request.OriginalUrl, UriKind.Absolute, out _))
         {
             return Result.Failure<string>(Error.Failure(
-                "Url.Invalid",
+                "Url.Invalid",  
                 "Invalid URL Format"));
         }
         ShortenedUrl shortenedUrl = request.ToEntity();
