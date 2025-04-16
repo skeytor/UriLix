@@ -7,7 +7,7 @@ using UriLix.Application.UnitTest.Helpers;
 using UriLix.Domain.Entities;
 using UriLix.Shared.Enums;
 
-namespace UriLix.Application.UnitTest.Services;
+namespace UriLix.Application.UnitTest.Services.User;
 
 public class UserServiceTest
 {
