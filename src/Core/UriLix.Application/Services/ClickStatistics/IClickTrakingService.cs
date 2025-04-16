@@ -6,6 +6,5 @@ namespace UriLix.Application.Services.ClickStatistics;
 
 public interface IClickTrackingService
 {
-    Task<Result> RecordClickAsync(ShortenedUrl shortenedUrl, HttpRequest httpRequest);
-    Task<Result> GetStatisticsForUrlAsync(string code);
+    Task<Result> RecordClickAsync(ShortenedUrl shortenedUrl, IHeaderDictionary headersInfo);
 }

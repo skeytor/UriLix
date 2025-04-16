@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.Net.Http.Headers;
 using UriLix.Domain.Entities;
 using UriLix.Domain.Repositories;
 using UriLix.Shared.Results;
@@ -10,22 +11,15 @@ public class ClickTrackingService(
     IClickTrackingRepository repository,
     IUnitOfWork unitOfWork) : IClickTrackingService
 {
-    public Task<Result> GetStatisticsForUrlAsync(string code)
+    public async Task<Result> RecordClickAsync(ShortenedUrl shortenedUrl, IHeaderDictionary headersInfo)
     {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Result> RecordClickAsync(ShortenedUrl shortenedUrl, HttpRequest request)
-    {
-        string userAgent = request.Headers["User-Agent"].ToString();
-        string referer = request.Headers["Referer"].ToString() ?? string.Empty;
         ClickStatistic clickStatistic = new()
         {
             ShortenedUrlId = shortenedUrl.Id,
             Device = "mobile",
             Browser = "Chrome",
-            UserAgent = userAgent,
-            Referer = referer,
+            UserAgent = headersInfo["User-Agent"].ToString(),
+            Referer = headersInfo["Referrer"].ToString(),
             VisitedAt = DateTime.UtcNow
         };
         await repository.InsertAsync(clickStatistic);

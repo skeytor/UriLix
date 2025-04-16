@@ -1,14 +1,16 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace UriLix.Infrastructure.Security.Authorization;
 
 public static class AuthorizationDependencyInjection
 {
-    public static IServiceCollection AddPolicyAuthorization(this IServiceCollection services)
+    public static IServiceCollection AddAuthorizationPolicy(this IServiceCollection services)
     {
         services.AddAuthorizationBuilder()
-            .AddPolicy("Admin", policy => policy.RequireRole("Admin"))
-            .AddPolicy("User", policy => policy.RequireRole("User"));
+            .AddPolicy("EditPolicy",
+                policy => policy.Requirements.Add(new SameUserRequirement()));
+        services.AddSingleton<IAuthorizationHandler, ShortenedUrlAuthorizationHandler>();
         return services;
     }
 }

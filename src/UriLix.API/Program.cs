@@ -16,7 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 // Add Authorization policies
-builder.Services.AddPolicyAuthorization();
+builder.Services.AddAuthorizationPolicy();
 
 // Add authentication
 builder.Services.AddIdentityAuthProvider(builder.Configuration);
