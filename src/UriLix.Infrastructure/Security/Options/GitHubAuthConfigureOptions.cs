@@ -6,6 +6,7 @@ using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Text.Json;
 using UriLix.Infrastructure.Security.Auth;
+using UriLix.Infrastructure.Security.Helpers;
 
 namespace UriLix.Infrastructure.Security.Options;
 
@@ -33,16 +34,19 @@ internal sealed class GitHubAuthConfigureOptions(IOptions<GitHubAuthOptions> git
         options.SaveTokens = true;
         options.CallbackPath = gitHubOptions.CallbackPath;
 
-        options.ClaimActions.MapJsonKey("sub", "id");
+        options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "id");
         options.ClaimActions.MapJsonKey(ClaimTypes.Name, "login");
 
         options.Events.OnCreatingTicket = async (ctx) =>
         {
-            using HttpRequestMessage request = new(HttpMethod.Get, ctx.Options.UserInformationEndpoint);
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", ctx.AccessToken);
-            using HttpResponseMessage result = await ctx.Backchannel.SendAsync(request);
-            JsonElement user = await result.Content.ReadFromJsonAsync<JsonElement>();
-            ctx.RunClaimActions(user);
+            JsonElement userData = await GitHubHelpers.GetUserInfo(ctx, ctx.Options.UserInformationEndpoint);
+            ctx.RunClaimActions(userData);
+            JsonElement emailData = await GitHubHelpers.GetUserInfo(ctx, $"{ctx.Options.UserInformationEndpoint}/emails");
+            // Gets the primary email address from the list of emails
+            string email = emailData.EnumerateArray()
+                .FirstOrDefault(e => e.GetProperty("primary").GetBoolean())
+                .GetProperty("email").GetString() ?? string.Empty;
+            ctx?.Identity?.AddClaim(new Claim(ClaimTypes.Email, email));
         };
     }
 }
