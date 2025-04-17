@@ -6,8 +6,9 @@ using System.Text;
 using UriLix.Application.DOTs;
 using UriLix.Application.Providers;
 using UriLix.Domain.Entities;
+using UriLix.Infrastructure.Security.Auth;
 
-namespace UriLix.Infrastructure.Security.Auth.Providers;
+namespace UriLix.Infrastructure.Security.Providers;
 
 public sealed class JWTProvider(IOptions<JwtOptions> options) : IJWTProvider
 {

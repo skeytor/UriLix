@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using UriLix.Application.Services.Authentication;
+using UriLix.Application.Services.Auth;
 using UriLix.Application.Services.ClickStatistics;
 using UriLix.Application.Services.UrlShortening.Delete;
 using UriLix.Application.Services.UrlShortening.GetAll;
