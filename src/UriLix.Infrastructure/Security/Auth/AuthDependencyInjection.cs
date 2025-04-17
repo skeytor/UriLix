@@ -5,8 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using UriLix.Application.Providers;
 using UriLix.Domain.Entities;
-using UriLix.Infrastructure.Security.Auth.Providers;
 using UriLix.Infrastructure.Security.Options;
+using UriLix.Infrastructure.Security.Providers;
 using UriLix.Persistence;
 
 namespace UriLix.Infrastructure.Security.Auth;
