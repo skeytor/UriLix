@@ -17,7 +17,7 @@ public class AuthService(
         ExternalLoginInfo? info = await signInManager.GetExternalLoginInfoAsync();
         if (info is null)
         {
-            return Result.Failure<JwtAccessTokenResponse>(Error.Failure("ExternalLogin.Info", ""));
+            return Result.Failure<JwtAccessTokenResponse>(Error.Failure("ExternalLoginInfo.Missing", "External login information is missing."));
         }
         ApplicationUser? user = await userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
         if (user is not null)
@@ -43,11 +43,7 @@ public class AuthService(
                 "User.Create",
                 createdResult.Errors.First().Description));
         }
-        else
-        {
-            return Result.Failure<JwtAccessTokenResponse>(Error.Failure("User.Create", ""));
-        }
-
+        return Result.Failure<JwtAccessTokenResponse>(Error.Failure("User.Create", "Failed to create the user due to an unknown error."));
     }
 
     public async Task<Result<JwtAccessTokenResponse>> SignIn(LoginRequest request)

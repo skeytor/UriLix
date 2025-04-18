@@ -35,9 +35,9 @@ public static class AuthDependencyInjection
 
         // Add Identity
         services.AddIdentityCore<ApplicationUser>()
+            .AddSignInManager()
             .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders()
-            .AddApiEndpoints();
+            .AddDefaultTokenProviders();
 
         // Add JWT provider
         services.AddScoped<IJWTProvider, JWTProvider>();

@@ -44,14 +44,14 @@ public class AuthController(
         [FromQuery] string? returnUrl = null, 
         [FromQuery] string? remoteError = null)
     {
-        if (remoteError is not null)
+        if (string.IsNullOrWhiteSpace(remoteError))
         {
             return BadRequest();
         }
         AuthenticateResult authResult = await HttpContext.AuthenticateAsync(IdentityConstants.ExternalScheme);
         if (!authResult.Succeeded)
         {
-            return BadRequest();
+            return BadRequest("Authentication flow failed. Please start over");
         }
         var result = await authService.SigInWithOAuth();
         return result.IsSuccess
