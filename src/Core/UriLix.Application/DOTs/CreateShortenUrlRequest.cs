@@ -2,6 +2,11 @@
 
 namespace UriLix.Application.DOTs;
 
+/// <summary>
+/// Represents a request to create a shortened URL, including optional custom alias validation.
+/// </summary>
+/// <param name="OriginalUrl">The original URL to be shortened</param>
+/// <param name="Alias">Optional custom alias for the shortened URL</param>
 public sealed record CreateShortenUrlRequest(
     [Required]
     [Url(ErrorMessage = "The URL must be in a valid format.")]

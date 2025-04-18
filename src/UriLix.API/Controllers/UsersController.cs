@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using UriLix.API.Extensions;
 using UriLix.Application.DOTs;
 using UriLix.Application.Services.Users;
 
@@ -23,11 +24,13 @@ public class UsersController(IUserService userService) : ApiBaseController
 
     [Authorize]
     [HttpGet("me", Name = nameof(GetUserInfo))]
-    public async Task<Results<Ok<UserProfileResponse>, NotFound, BadRequest>> GetUserInfo()
+    [ProducesResponseType<UserProfileResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<BadRequest<ValidationProblemDetails>>(StatusCodes.Status400BadRequest)]
+    public async Task<Results<Ok<UserProfileResponse>, BadRequest<ValidationProblemDetails>>> GetUserInfo()
     {
         var result = await userService.GetUserAsync(HttpContext.User);
         return result.IsSuccess
             ? TypedResults.Ok(result.Value)
-            : TypedResults.BadRequest();
+            : TypedResults.BadRequest(result.ToValidationProblemDetails());
     }
 }
