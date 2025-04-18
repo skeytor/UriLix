@@ -11,8 +11,18 @@ using UriLix.Application.Services.Users;
 
 namespace UriLix.Application;
 
+/// <summary>
+/// Dependency injection extension methods for the application layer.
+/// </summary>
 public static class DependencyInjection
 {
+    /// <summary>
+    /// Registers application services with the dependency injection container.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add services</param>
+    /// <returns>
+    /// The same service collection so that multiple calls can be chained together.
+    /// </returns>
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddScoped<IShortenUrlService, ShortenUrlService>();
@@ -25,6 +35,13 @@ public static class DependencyInjection
         services.AddScoped<IClickTrackingService, ClickTrackingService>();
         return services;
     }
+    /// <summary>
+    /// Registers the Redis caching services with the dependency injection container.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add services</param>
+    /// <returns>
+    /// The same service collection so that multiple calls can be chained together.
+    /// </returns>
     public static IServiceCollection AddCache(
         this IServiceCollection services,
         IConfiguration configuration)
