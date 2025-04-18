@@ -30,7 +30,7 @@ public class AuthController(
 
     [HttpGet("external-login")]
     public IActionResult ExternalLogin(
-        [FromQuery, Required] LoginProviders provider, 
+        [FromQuery, Required] OAuthProviders provider, 
         [FromQuery] string? returnUrl = null)
     {
         string? redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Auth", new { ReturnUrl = returnUrl });

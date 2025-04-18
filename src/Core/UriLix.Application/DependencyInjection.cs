@@ -19,9 +19,9 @@ public static class DependencyInjection
     /// <summary>
     /// Registers application services with the dependency injection container.
     /// </summary>
-    /// <param name="services"></param>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add services</param>
     /// <returns>
-    /// 
+    /// The same service collection so that multiple calls can be chained together.
     /// </returns>
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
@@ -36,11 +36,12 @@ public static class DependencyInjection
         return services;
     }
     /// <summary>
-    /// Registers the caching services with the dependency injection container.
+    /// Registers the Redis caching services with the dependency injection container.
     /// </summary>
-    /// <param name="services"></param>
-    /// <param name="configuration"></param>
-    /// <returns></returns>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add services</param>
+    /// <returns>
+    /// The same service collection so that multiple calls can be chained together.
+    /// </returns>
     public static IServiceCollection AddCache(
         this IServiceCollection services,
         IConfiguration configuration)

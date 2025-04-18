@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.Extensions.Options;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Text.Json;
 using UriLix.Infrastructure.Security.Auth;
@@ -42,7 +40,6 @@ internal sealed class GitHubAuthConfigureOptions(IOptions<GitHubAuthOptions> git
             JsonElement userData = await GitHubHelpers.GetUserInfo(ctx, ctx.Options.UserInformationEndpoint);
             ctx.RunClaimActions(userData);
             JsonElement emailData = await GitHubHelpers.GetUserInfo(ctx, $"{ctx.Options.UserInformationEndpoint}/emails");
-            // Gets the primary email address from the list of emails
             string email = emailData.EnumerateArray()
                 .FirstOrDefault(e => e.GetProperty("primary").GetBoolean())
                 .GetProperty("email").GetString() ?? string.Empty;
