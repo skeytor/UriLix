@@ -5,6 +5,7 @@ UriLix is a .NET 9-based project designed to provide robust and scalable URL Sho
 
 ## Key Features
 - Built on .NET 9 for modern performance and features.
+- Authentication and Authorization.
 - Redis caching.
 - Modular architecture with separate API and application layers.
 - Comprehensive unit and integration tests using xUnit.
@@ -65,3 +66,6 @@ dotnet test UriLix.sln
 4. Run and launch the app.
 ```bash
 docker-compose up -d --build
+```
+
+5. Access to Scalar Web Api Doc by [Scalar Docs](https://localhost:5001/scalar/v1)
