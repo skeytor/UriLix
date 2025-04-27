@@ -3,7 +3,7 @@ using UriLix.Persistence;
 
 namespace UriLix.API.Extensions;
 
-internal static class MigrationExtension
+internal static class MigrationExtensions
 {
     internal static void ApplyMigrations(this WebApplication app)
     {

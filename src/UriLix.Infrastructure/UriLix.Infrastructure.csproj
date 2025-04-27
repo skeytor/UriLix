@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\UriLix.Application\UriLix.Application.csproj" />
-    <ProjectReference Include="..\Core\Urilix.Persistence\UriLix.Persistence.csproj" />
+    <ProjectReference Include="..\Core\UriLix.Persistence\UriLix.Persistence.csproj" />
   </ItemGroup>
 
 </Project>
