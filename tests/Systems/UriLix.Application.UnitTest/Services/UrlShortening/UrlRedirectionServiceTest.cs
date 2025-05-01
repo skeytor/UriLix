@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.Hybrid;
+﻿using Microsoft.Extensions.Caching.Hybrid;
 using Moq;
 using UriLix.Application.Services.ClickStatistics;
 using UriLix.Application.Services.UrlShortening.GetOriginalUrl;
