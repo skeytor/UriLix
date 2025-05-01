@@ -15,10 +15,9 @@ WORKDIR /app
 COPY ["src/UriLix.API/UriLix.API.csproj", "UriLix.API/"]
 COPY ["src/UriLix.Shared/UriLix.Shared.csproj", "UriLix.Shared/"]
 COPY ["src/Core/UriLix.Domain/UriLix.Domain.csproj", "UriLix.Domain/"]
-COPY ["src/Core/UriLix.Persistence/UriLix.Persistence.csproj", "UriLix.Persistence/"]
 COPY ["src/Core/UriLix.Application/UriLix.Application.csproj", "UriLix.Application/"]
+COPY ["src/Core/UriLix.Persistence/UriLix.Persistence.csproj", "UriLix.Persistence/"]
 COPY ["src/UriLix.Infrastructure/UriLix.Infrastructure.csproj", "UriLix.Infrastructure/"]
-
 RUN dotnet restore "./UriLix.API/UriLix.API.csproj"
 COPY . .
 WORKDIR "/app/src/UriLix.API"

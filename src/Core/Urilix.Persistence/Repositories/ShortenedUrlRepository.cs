@@ -12,8 +12,8 @@ public class ShortenedUrlRepository(IApplicationDbContext context)
 {
     public void Delete(Guid id, ShortenedUrl shortenedLink) 
         => Context.ShortenedUrl.Remove(shortenedLink);
-    public async ValueTask<ShortenedUrl?> FindByIdAsync(Guid id) 
-        => await Context.ShortenedUrl.FindAsync(id);
+    public ValueTask<ShortenedUrl?> FindByIdAsync(Guid id) 
+        => Context.ShortenedUrl.FindAsync(id);
     public Task<string?> GetOriginalUrlAsync(string code) 
         => Context.ShortenedUrl
                   .Where(x => x.ShortCode == code)

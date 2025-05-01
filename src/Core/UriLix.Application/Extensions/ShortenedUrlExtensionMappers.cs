@@ -29,7 +29,13 @@ internal static class ShortenedUrlExtensionMappers
     /// A new <see cref="ShortenedUrlResponse"/> containing the details of the shortened URL.
     /// </returns>
     internal static ShortenedUrlResponse ToResponse(this ShortenedUrl source)
-        => new(source.Id, source.ShortCode, source.OriginalUrl, source.CreateAt, source.UpdateAt);
+        => new(
+            source.Id, 
+            source.ShortCode, 
+            source.OriginalUrl,
+            source.ClickStatistics.Count,
+            source.CreateAt, 
+            source.UpdateAt);
 
     /// <summary>
     /// Maps a collection of <see cref="ShortenedUrl"/> entities to a read-only list of <see cref="ShortenedUrlResponse"/> DTOs.

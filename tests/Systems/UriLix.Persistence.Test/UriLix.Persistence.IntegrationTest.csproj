@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Core\Urilix.Persistence\UriLix.Persistence.csproj" />
+    <ProjectReference Include="..\..\..\src\Core\UriLix.Persistence\UriLix.Persistence.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -23,10 +23,13 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Core\UriLix.Application\UriLix.Application.csproj" />
-		<ProjectReference Include="..\Core\Urilix.Persistence\UriLix.Persistence.csproj" />
+		<ProjectReference Include="..\Core\UriLix.Persistence\UriLix.Persistence.csproj" />
 		<ProjectReference Include="..\UriLix.Infrastructure\UriLix.Infrastructure.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<InternalsVisibleTo Include="UriLix.API.IntegrationTest" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Helpers\" />
 	</ItemGroup>
 </Project>

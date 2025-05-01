@@ -26,10 +26,10 @@ public static class DependencyInjection
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddScoped<IShortenUrlService, ShortenUrlService>();
-        services.AddScoped<IUrlRedirectionService, UrlRedirectionService>();
-        services.AddScoped<IUrlQueryService, UrlQueryService>();
-        services.AddScoped<IUrlDeleteService, UrlDeleteService>();
-        services.AddScoped<IUrlUpdateService, UrlUpdateService>();
+        services.AddScoped<IResolveUrlService, ResolveUrlService>();
+        services.AddScoped<IRetrieveUrlService, RetrieveUrlService>();
+        services.AddScoped<IDeleteUrlService, DeleteUrlService>();
+        services.AddScoped<IUpdateUrlService, UpdateUrlService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IClickTrackingService, ClickTrackingService>();

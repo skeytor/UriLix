@@ -8,9 +8,11 @@
 /// <param name="OriginalUrl">The original long URL that was shortened.</param>
 /// <param name="CreatedAt">The UTC date and time when the shortened URL was created.</param>
 /// <param name="UpdateAt">The UTC date and time when the shortened URL was last updated.</param>
+/// <param name="TotalClicks">Total clicks of URL.</param>
 public sealed record ShortenedUrlResponse(
     Guid Id, 
     string ShortCode,
     string OriginalUrl,
+    int TotalClicks,
     DateTime CreatedAt,
     DateTime UpdateAt);
