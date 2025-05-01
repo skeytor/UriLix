@@ -7,9 +7,10 @@ using UriLix.Shared.Results;
 
 namespace UriLix.Application.Services.UrlShortening.GetAll;
 
-public class UrlQueryService(IShortenedUrlRepository shortenedUrlRepository) : IUrlQueryService
+public class RetrieveUrlService(IShortenedUrlRepository shortenedUrlRepository) : IRetrieveUrlService
 {
-    public async Task<Result<PagedResult<ShortenedUrlResponse>>> ExecuteAsync(PaginationQuery parameters, ClaimsPrincipal user)
+    public async Task<Result<PagedResult<ShortenedUrlResponse>>> ExecuteAsync(
+        PaginationQuery parameters, ClaimsPrincipal user)
     {
         string userId = user.FindFirstValue(ClaimTypes.NameIdentifier)!;
         IReadOnlyList<ShortenedUrlResponse> data = (await shortenedUrlRepository

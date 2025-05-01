@@ -12,7 +12,7 @@ namespace UriLix.Persistence;
 /// </summary>
 public static class DependencyInjection
 {
-    private const string _sectionName = "Database";
+    private const string DATABASE_SECTION = "Database";
 
     /// <summary>
     /// Registers all repository implementations and related database services with the dependency injection container.
@@ -37,5 +37,5 @@ public static class DependencyInjection
     public static IServiceCollection AddDatabaseProvider(
         this IServiceCollection services, 
         IConfiguration configuration)
-        => services.AddSqlServer<ApplicationDbContext>(configuration.GetConnectionString(_sectionName));
+        => services.AddSqlServer<ApplicationDbContext>(configuration.GetConnectionString(DATABASE_SECTION));
 }

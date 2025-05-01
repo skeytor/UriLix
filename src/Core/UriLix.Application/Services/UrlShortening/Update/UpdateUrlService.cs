@@ -1,18 +1,19 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using UriLix.Application.DOTs;
 using UriLix.Domain.Entities;
 using UriLix.Domain.Repositories;
 using UriLix.Shared.Results;
 using UriLix.Shared.UnitOfWork;
 
-namespace UriLix.Application.Services.UrlShortening.Delete;
+namespace UriLix.Application.Services.UrlShortening.Update;
 
-public class UrlDeleteService(
+public class UpdateUrlService(
     IShortenedUrlRepository shortenedUrlRepository,
     IAuthorizationService authorizationService,
-    IUnitOfWork unitOfWork) : IUrlDeleteService
+    IUnitOfWork unitOfWork) : IUpdateUrlService
 {
-    public async Task<Result<Guid>> ExecuteAsync(Guid id, ClaimsPrincipal user)
+    public async Task<Result<Guid>> ExecuteAsync(Guid id, UpdateShortenUrlRequest request, ClaimsPrincipal user)
     {
         ShortenedUrl? shortenedUrl = await shortenedUrlRepository.FindByIdAsync(id);
         if (shortenedUrl is null)
@@ -26,10 +27,11 @@ public class UrlDeleteService(
         {
             return Result.Failure<Guid>(Error.Failure(
                 "Url.Forbidden",
-                "You are not authorized to delete this URL"));
+                "You are not authorized to edit this URL"));
         }
-        shortenedUrlRepository.Delete(id, shortenedUrl);
+
+        shortenedUrl.OriginalUrl = request.OriginalUrl;
         await unitOfWork.SaveChangesAsync();
-        return id;
+        return shortenedUrl.Id;
     }
 }

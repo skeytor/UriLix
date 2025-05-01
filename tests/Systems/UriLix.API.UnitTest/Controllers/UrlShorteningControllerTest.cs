@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System.Security.Claims;
 using UriLix.API.Controllers;
@@ -27,7 +28,7 @@ public class UrlShorteningControllerTest
             It.IsAny<CreateShortenUrlRequest>(),
             It.IsAny<ClaimsPrincipal>()))
             .ReturnsAsync(shortCodeExpected);
-        LinksController sut = new(shortenUrlService: mockService.Object, default!, default!, default!, default!)
+        LinksController sut = new()
         {
             ControllerContext = new()
             {
@@ -35,7 +36,7 @@ public class UrlShorteningControllerTest
             }
         };
 
-        var result = await sut.ShortenUrlAsync(request);
+        var result = await sut.ShortenUrlAsync(request, mockService.Object);
 
         var createdAtRouteResult = result.Result as CreatedAtRoute<string>;
 
@@ -54,7 +55,7 @@ public class UrlShorteningControllerTest
             It.IsAny<CreateShortenUrlRequest>(),
             It.IsAny<ClaimsPrincipal>()))
             .ReturnsAsync(aliasExpected);
-        LinksController sut = new(shortenUrlService: mockService.Object, default!, default!, default!, default!)
+        LinksController sut = new()
         {
             ControllerContext = new()
             {
@@ -62,7 +63,7 @@ public class UrlShorteningControllerTest
             }
         };
 
-        var result = await sut.ShortenUrlAsync(request);
+        var result = await sut.ShortenUrlAsync(request, mockService.Object);
 
         var createdAtRouteResult = result.Result as CreatedAtRoute<string>;
         Assert.NotNull(createdAtRouteResult);
@@ -80,7 +81,7 @@ public class UrlShorteningControllerTest
             It.IsAny<CreateShortenUrlRequest>(),
             It.IsAny<ClaimsPrincipal>()))
             .ReturnsAsync(failure);
-        LinksController sut = new(shortenUrlService: mockService.Object, default!, default!, default!, default!)
+        LinksController sut = new()
         {
             ControllerContext = new()
             {
@@ -88,9 +89,9 @@ public class UrlShorteningControllerTest
             }
         };
 
-        var result = await sut.ShortenUrlAsync(request);
+        var result = await sut.ShortenUrlAsync(request, mockService.Object);
 
-        var badRequestResult = result.Result as BadRequest;
+        var badRequestResult = result.Result as BadRequest<ValidationProblemDetails>;
         Assert.NotNull(badRequestResult);
     }
 }

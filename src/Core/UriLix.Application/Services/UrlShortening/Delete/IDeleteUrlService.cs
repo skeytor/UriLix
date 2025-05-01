@@ -3,7 +3,7 @@ using UriLix.Shared.Results;
 
 namespace UriLix.Application.Services.UrlShortening.Delete;
 
-public interface IUrlDeleteService
+public interface IDeleteUrlService
 {
     Task<Result<Guid>> ExecuteAsync(Guid id, ClaimsPrincipal user);
 }

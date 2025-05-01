@@ -14,21 +14,17 @@ namespace UriLix.API.Controllers;
 
 [Route("api/[controller]")]
 [Authorize]
-public class LinksController(
-    IShortenUrlService shortenUrlService,
-    IUrlRedirectionService urlRedirectionService,
-    IUrlUpdateService urlUpdateService,
-    IUrlQueryService urlQueryService,
-    IUrlDeleteService urlDeleteService) : ApiBaseController
+public class LinksController : ApiBaseController
 {
     [HttpPost]
     [AllowAnonymous]
     [ProducesResponseType<string>(StatusCodes.Status201Created)]
     [ProducesResponseType<BadRequest<ValidationProblemDetails>>(StatusCodes.Status400BadRequest)]
     public async Task<Results<CreatedAtRoute<string>, BadRequest<ValidationProblemDetails>>> ShortenUrlAsync(
-        [FromBody] CreateShortenUrlRequest request)
+        [FromBody] CreateShortenUrlRequest request,
+        [FromServices] IShortenUrlService shortenService)
     {
-        var result = await shortenUrlService.ExecuteAsync(request, User);
+        var result = await shortenService.ExecuteAsync(request, User);
         return result.IsSuccess
             ? TypedResults.CreatedAtRoute(
                 result.Value,
@@ -43,9 +39,10 @@ public class LinksController(
     [ProducesResponseType<NotFound>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<BadRequest<ValidationProblemDetails>>(StatusCodes.Status400BadRequest)]
     public async Task<Results<RedirectHttpResult, NotFound<ValidationProblemDetails>>> ResolveUrlAsync(
-        [FromRoute] string code)
+        [FromRoute] string code,
+        [FromServices] IResolveUrlService resolveUrlService)
     {
-        var result = await urlRedirectionService.ExecuteAsync(code, Request.Headers);
+        var result = await resolveUrlService.ExecuteAsync(code, Request.Headers);
         return result.IsSuccess
             ? TypedResults.Redirect(result.Value)
             : TypedResults.NotFound(result.ToValidationProblemDetails());
@@ -56,9 +53,10 @@ public class LinksController(
     [ProducesResponseType<PagedResult<ShortenedUrlResponse>>(StatusCodes.Status200OK)]
     [ProducesResponseType<NotFound<ValidationProblemDetails>>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok<PagedResult<ShortenedUrlResponse>>, NotFound<ValidationProblemDetails>>> GetAllAsync(
-        [FromQuery] PaginationQuery paginationQuery)
+        [FromQuery] PaginationQuery paginationQuery,
+        [FromServices] IRetrieveUrlService retrieveUrlService)
     {
-        var result = await urlQueryService.ExecuteAsync(paginationQuery, User);
+        var result = await retrieveUrlService.ExecuteAsync(paginationQuery, User);
         return result.IsSuccess
             ? TypedResults.Ok(result.Value)
             : TypedResults.NotFound(result.ToValidationProblemDetails());
@@ -69,9 +67,10 @@ public class LinksController(
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok<Guid>, NotFound<ValidationProblemDetails>>> UpdateAsync(
         [FromRoute] Guid id,
-        [FromBody] UpdateShortenUrlRequest request)
+        [FromBody] UpdateShortenUrlRequest request,
+        [FromServices] IUpdateUrlService updateUrlService)
     {
-        var result = await urlUpdateService.ExecuteAsync(id, request, User);
+        var result = await updateUrlService.ExecuteAsync(id, request, User);
         return result.IsSuccess
             ? TypedResults.Ok(result.Value)
             : TypedResults.NotFound(result.ToValidationProblemDetails());
@@ -81,9 +80,10 @@ public class LinksController(
     [ProducesResponseType<Guid>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok<Guid>, NotFound<ValidationProblemDetails>>> DeleteAsync(
-        [FromRoute] Guid id)
+        [FromRoute] Guid id,
+        [FromServices] IDeleteUrlService deleteUrlService)
     {
-        var result = await urlDeleteService.ExecuteAsync(id, User);
+        var result = await deleteUrlService.ExecuteAsync(id, User);
         return result.IsSuccess
             ? TypedResults.Ok(result.Value)
             : TypedResults.NotFound(result.ToValidationProblemDetails());

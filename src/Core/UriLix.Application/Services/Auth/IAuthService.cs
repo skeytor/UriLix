@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using UriLix.Application.DOTs;
+﻿using UriLix.Application.DOTs;
 using UriLix.Shared.Results;
 
 namespace UriLix.Application.Services.Auth;
