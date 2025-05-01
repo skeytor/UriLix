@@ -25,7 +25,14 @@ public class ResolveUrlService(
             "Url.NotFound",
                 $"The URL with alias: {code} was not found"));
         }
-        _ = Task.Run(async () => await clickTrackingService.RecordClickAsync(url, headersInfo));
+        try
+        {
+            _ = clickTrackingService.RecordClickAsync(url, headersInfo);
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
         return url.OriginalUrl;
     }
 }
