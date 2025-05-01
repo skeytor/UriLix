@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Hybrid;
-using System.Net.Http.Headers;
 using UriLix.Application.Services.ClickStatistics;
 using UriLix.Domain.Entities;
 using UriLix.Domain.Repositories;
@@ -8,10 +7,10 @@ using UriLix.Shared.Results;
 
 namespace UriLix.Application.Services.UrlShortening.GetOriginalUrl;
 
-public class UrlRedirectionService(
+public class ResolveUrlService(
     IShortenedUrlRepository repository,
     IClickTrackingService clickTrackingService,
-    HybridCache hybridCache) : IUrlRedirectionService
+    HybridCache hybridCache) : IResolveUrlService
 {
     public async Task<Result<string>> ExecuteAsync(string code, IHeaderDictionary headersInfo)
     {

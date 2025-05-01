@@ -5,7 +5,7 @@ using UriLix.Shared.Results;
 
 namespace UriLix.Application.Services.UrlShortening.GetAll;
 
-public interface IUrlQueryService
+public interface IRetrieveUrlService
 {
     public Task<Result<PagedResult<ShortenedUrlResponse>>> ExecuteAsync(
         PaginationQuery parameters, 

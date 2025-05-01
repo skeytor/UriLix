@@ -46,7 +46,7 @@ public class UrlRedirectionServiceTest
 
         mockRepo.Setup(repo => repo.GetOriginalUrlAsync(It.IsAny<string>()))
             .ReturnsAsync(urlExpected);
-        UrlRedirectionService sut = new(mockRepo.Object, mockTrackingService.Object, mockHybridCache.Object);
+        ResolveUrlService sut = new(mockRepo.Object, mockTrackingService.Object, mockHybridCache.Object);
 
         var result = await sut.ExecuteAsync(alias, default!);
 
@@ -64,7 +64,7 @@ public class UrlRedirectionServiceTest
         mockRepo.Setup(repo => repo.GetOriginalUrlAsync(It.IsAny<string>()))
             .Returns(Task.FromResult<string?>(null));
 
-        UrlRedirectionService sut = new(mockRepo.Object, mockTrackingService.Object, mockHybridCache.Object);
+        ResolveUrlService sut = new(mockRepo.Object, mockTrackingService.Object, mockHybridCache.Object);
 
         var result = await sut.ExecuteAsync(alias, default!);
 

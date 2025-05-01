@@ -4,7 +4,7 @@ using UriLix.Shared.Results;
 
 namespace UriLix.Application.Services.UrlShortening.Update;
 
-public interface IUrlUpdateService
+public interface IUpdateUrlService
 {
     Task<Result<Guid>> ExecuteAsync(Guid id, UpdateShortenUrlRequest request, ClaimsPrincipal user);
 }
