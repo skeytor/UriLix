@@ -10,7 +10,7 @@ namespace UriLix.Infrastructure.Security.Auth;
 /// JSON serialization/deserialization of enum values as strings.
 /// </remarks>
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum OAuthProviders
+public enum OAuthProvider
 {
     GitHub = 1,
 }

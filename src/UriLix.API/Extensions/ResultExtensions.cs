@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using UriLix.Shared.Enums;
 using UriLix.Shared.Results;
 
@@ -21,6 +21,7 @@ internal static class ResultExtensions
             _ => CreateProblemDetails(result.Error, 500)
         };
     }
+
     private static ValidationProblemDetails CreateProblemDetails(
         Error error,
         int? status = null,

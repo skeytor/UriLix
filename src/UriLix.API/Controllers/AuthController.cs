@@ -14,12 +14,13 @@ namespace UriLix.API.Controllers;
 [Route("api/[controller]")]
 public class AuthController(
     IAuthService authService,
-    SignInManager<ApplicationUser> signInManager) : ApiBaseController
+    SignInManager<ApplicationUser> signInManager,
+    ILogger<AuthController> logger) : ApiBaseController
 {
     [HttpPost("login")]
     [ProducesResponseType<JwtAccessTokenResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<BadRequest<ValidationProblemDetails>>(StatusCodes.Status400BadRequest)]
-    public async Task<Results<Ok<JwtAccessTokenResponse>, NotFound, BadRequest<ValidationProblemDetails>>> SingIn(
+    public async Task<Results<Ok<JwtAccessTokenResponse>, NotFound, BadRequest<ValidationProblemDetails>>> Login(
         [FromBody] LoginRequest request)
     {
         var result = await authService.SignIn(request);
@@ -30,7 +31,7 @@ public class AuthController(
 
     [HttpGet("external-login")]
     public IActionResult ExternalLogin(
-        [FromQuery, Required] OAuthProviders provider, 
+        [FromQuery, Required] OAuthProvider provider, 
         [FromQuery] string? returnUrl = null)
     {
         string? redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Auth", new { ReturnUrl = returnUrl });
@@ -44,7 +45,8 @@ public class AuthController(
         [FromQuery] string? returnUrl = null, 
         [FromQuery] string? remoteError = null)
     {
-        if (string.IsNullOrWhiteSpace(remoteError))
+        logger.LogInformation("{}", returnUrl);
+        if (!string.IsNullOrWhiteSpace(remoteError))
         {
             return BadRequest();
         }
