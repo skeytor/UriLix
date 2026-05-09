@@ -29,7 +29,4 @@
 	<ItemGroup>
 		<InternalsVisibleTo Include="UriLix.API.IntegrationTest" />
 	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Helpers\" />
-	</ItemGroup>
 </Project>

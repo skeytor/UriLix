@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: src/UriLix.API/Dockerfile
     container_name: urilix.api
+    restart: unless-stopped
 
   urilix.database:
     image: mcr.microsoft.com/mssql/server:2022-latest
